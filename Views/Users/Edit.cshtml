@@ -1,0 +1,229 @@
+@model QuanLyCuaHangBanLe.Models.User
+
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+}
+
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        border: 1px solid #e5e5e5;
+    }
+
+    .form-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f5f5f5;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #1a1a1a;
+    }
+
+    .form-header p {
+        margin: 8px 0 0 0;
+        color: #718096;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background: #fafafa;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #1a1a1a;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-control:disabled {
+        background: #f5f5f5;
+        color: #a0aec0;
+        cursor: not-allowed;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: #fafafa;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: #1a1a1a;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .text-danger {
+        color: #e53e3e;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 35px;
+        padding-top: 25px;
+        border-top: 2px solid #f5f5f5;
+    }
+
+    .btn {
+        padding: 12px 28px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-submit {
+        background: #1a1a1a;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: #000000;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-cancel {
+        background: #e5e5e5;
+        color: #1a1a1a;
+    }
+
+    .btn-cancel:hover {
+        background: #d4d4d4;
+    }
+
+    .required-badge {
+        color: #e53e3e;
+        font-weight: bold;
+        margin-left: 4px;
+    }
+
+    .info-text {
+        color: #718096;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        font-style: italic;
+    }
+
+    .user-id-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #f0f0f0;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #666;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h1>✏️ Chỉnh sửa người dùng <span class="user-id-badge">@($"ND{Model.UserId:D3}")</span></h1>
+        <p>Cập nhật thông tin tài khoản người dùng</p>
+    </div>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="Password" />
+        <input type="hidden" asp-for="CreatedAt" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Username" class="form-label">
+                Tên đăng nhập<span class="required-badge">*</span>
+            </label>
+            <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                Mật khẩu
+            </label>
+            <input type="password" class="form-control" value="********" disabled />
+            <span class="info-text">🔒 Để thay đổi mật khẩu, vui lòng sử dụng chức năng đổi mật khẩu riêng</span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="FullName" class="form-label">
+                Họ và tên<span class="required-badge">*</span>
+            </label>
+            <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Role" class="form-label">
+                Vai trò<span class="required-badge">*</span>
+            </label>
+            <select asp-for="Role" class="form-select">
+                <option value="staff">👨‍💼 Nhân viên</option>
+                <option value="admin">👑 Quản trị viên</option>
+            </select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+            <span class="info-text">💡 Chọn vai trò phù hợp với quyền hạn của người dùng</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Ngày tạo</label>
+            <input type="text" class="form-control" value="@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")" disabled />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                ✔️ Cập nhật thông tin
+            </button>
+            <a asp-action="Index" class="btn btn-cancel">
+                ❌ Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

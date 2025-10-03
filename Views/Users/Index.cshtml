@@ -1,0 +1,279 @@
+@model IEnumerable<QuanLyCuaHangBanLe.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        padding: 12px 24px;
+        background: #1a1a1a;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary:hover {
+        background: #000000;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .users-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+    }
+
+    .users-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid #e5e5e5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 10px 15px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        width: 300px;
+        font-size: 0.9rem;
+        background: #fafafa;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #1a1a1a;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .users-table thead {
+        background: #fafafa;
+    }
+
+    .users-table th {
+        padding: 15px 20px;
+        text-align: left;
+        font-weight: 600;
+        color: #666666;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .users-table td {
+        padding: 18px 20px;
+        border-bottom: 1px solid #f5f5f5;
+        color: #1a1a1a;
+        font-size: 0.95rem;
+    }
+
+    .users-table tbody tr {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .users-table tbody tr:hover {
+        background: #fafafa;
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .user-username {
+        color: #666666;
+        font-size: 0.85rem;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .role-admin {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .role-staff {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-edit {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+
+    .btn-edit:hover {
+        background: #90cdf4;
+    }
+
+    .btn-delete {
+        background: #fed7d7;
+        color: #c53030;
+    }
+
+    .btn-delete:hover {
+        background: #fc8181;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #a0aec0;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .date-text {
+        color: #718096;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <h1>👤 Quản lý người dùng</h1>
+        <p style="color: #718096; margin-top: 5px;">Quản lý tài khoản người dùng hệ thống</p>
+    </div>
+    <a asp-action="Create" class="btn-primary">
+        <span>➕</span>
+        Thêm người dùng mới
+    </a>
+</div>
+
+<div class="users-card">
+    <div class="users-header">
+        <input type="text" class="search-input" placeholder="🔍 Tìm kiếm người dùng..." />
+        <div style="color: #718096; font-size: 0.9rem;">
+            Tổng: <strong style="color: #2d3748;">@Model.Count()</strong> người dùng
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Mã ND</th>
+                    <th>Tên người dùng</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@($"ND{user.UserId:D3}")</td>
+                        <td>
+                            <div class="user-name">@user.FullName</div>
+                        </td>
+                        <td>
+                            <div class="user-username">@user.Username</div>
+                        </td>
+                        <td>
+                            @if (user.Role.ToLower() == "admin")
+                            {
+                                <span class="role-badge role-admin">👑 Admin</span>
+                            }
+                            else
+                            {
+                                <span class="role-badge role-staff">👨‍💼 Nhân viên</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="date-text">@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@user.UserId" class="btn-action btn-edit">✏️ Sửa</a>
+                                <form asp-action="Delete" asp-route-id="@user.UserId" method="post" style="display: inline;">
+                                    <button type="submit" 
+                                            class="btn-action btn-delete" 
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">
+                                        🗑️ Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">👤</div>
+            <div>Chưa có người dùng nào</div>
+        </div>
+    }
+</div>
+
+<script>
+    // Tìm kiếm người dùng
+    document.querySelector('.search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('.users-table tbody tr');
+        
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+</script>
