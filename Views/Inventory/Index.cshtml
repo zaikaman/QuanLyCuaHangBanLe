@@ -23,13 +23,15 @@
         background: white;
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid #667eea;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #1a1a1a;
+        border: 1px solid #e5e5e5;
+        border-left: 4px solid #1a1a1a;
     }
 
     .stat-box h3 {
         font-size: 0.85rem;
-        color: #718096;
+        color: #666666;
         margin-bottom: 8px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -38,19 +40,20 @@
     .stat-box .value {
         font-size: 2rem;
         font-weight: 700;
-        color: #2d3748;
+        color: #1a1a1a;
     }
 
     .inventory-card {
         background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         overflow: hidden;
+        border: 1px solid #e5e5e5;
     }
 
     .inventory-header {
         padding: 20px 25px;
-        border-bottom: 2px solid #f7fafc;
+        border-bottom: 1px solid #e5e5e5;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -58,10 +61,11 @@
 
     .search-input {
         padding: 10px 15px;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
         width: 300px;
         font-size: 0.9rem;
+        background: #fafafa;
     }
 
     .inventory-table {
@@ -70,72 +74,74 @@
     }
 
     .inventory-table thead {
-        background: #f7fafc;
+        background: #fafafa;
     }
 
     .inventory-table th {
         padding: 15px 20px;
         text-align: left;
         font-weight: 600;
-        color: #4a5568;
+        color: #666666;
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e5e5;
     }
 
     .inventory-table td {
         padding: 18px 20px;
-        border-bottom: 1px solid #f7fafc;
-        color: #2d3748;
+        border-bottom: 1px solid #f5f5f5;
+        color: #1a1a1a;
         font-size: 0.95rem;
     }
 
     .inventory-table tbody tr:hover {
-        background: #f7fafc;
+        background: #fafafa;
     }
 
     .product-name {
         font-weight: 600;
-        color: #2d3748;
+        color: #1a1a1a;
     }
 
     .quantity-badge {
         display: inline-block;
         padding: 6px 14px;
-        border-radius: 20px;
+        border-radius: 6px;
         font-weight: 600;
         font-size: 0.9rem;
     }
 
     .quantity-badge.low {
-        background: #fed7d7;
-        color: #c53030;
+        background: #ffebee;
+        color: #c62828;
     }
 
     .quantity-badge.medium {
-        background: #feebc8;
-        color: #c05621;
+        background: #fff3e0;
+        color: #e65100;
     }
 
     .quantity-badge.high {
-        background: #c6f6d5;
-        color: #22543d;
+        background: #e8f5e9;
+        color: #2e7d32;
     }
 
     .btn-action {
         padding: 8px 16px;
         border-radius: 8px;
-        background: #bee3f8;
-        color: #2c5282;
-        border: none;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
         font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .btn-action:hover {
-        background: #90cdf4;
+        background: #e5e5e5;
+        border-color: #1a1a1a;
     }
 </style>
 
@@ -188,7 +194,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>SP@item.ProductId.ToString("D3")</td>
+                    <td>@($"SP{item.ProductId:D3}")</td>
                     <td>
                         <div class="product-name">Sản phẩm #@item.ProductId</div>
                     </td>

@@ -14,34 +14,37 @@
 
     .btn-primary {
         padding: 12px 24px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1a1a1a;
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        background: #000000;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
     }
 
     .products-card {
         background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         overflow: hidden;
+        border: 1px solid #e5e5e5;
     }
 
     .products-header {
         padding: 20px 25px;
-        border-bottom: 2px solid #f7fafc;
+        border-bottom: 1px solid #e5e5e5;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -55,23 +58,27 @@
 
     .search-input {
         padding: 10px 15px;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
         width: 300px;
         font-size: 0.9rem;
+        background: #fafafa;
     }
 
     .search-input:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: #1a1a1a;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
     }
 
     .filter-select {
         padding: 10px 15px;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
         font-size: 0.9rem;
         cursor: pointer;
+        background: #fafafa;
     }
 
     .products-table {
@@ -80,48 +87,49 @@
     }
 
     .products-table thead {
-        background: #f7fafc;
+        background: #fafafa;
     }
 
     .products-table th {
         padding: 15px 20px;
         text-align: left;
         font-weight: 600;
-        color: #4a5568;
+        color: #666666;
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e5e5;
     }
 
     .products-table td {
         padding: 18px 20px;
-        border-bottom: 1px solid #f7fafc;
-        color: #2d3748;
+        border-bottom: 1px solid #f5f5f5;
+        color: #1a1a1a;
         font-size: 0.95rem;
     }
 
     .products-table tbody tr {
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .products-table tbody tr:hover {
-        background: #f7fafc;
+        background: #fafafa;
     }
 
     .product-name {
         font-weight: 600;
-        color: #2d3748;
+        color: #1a1a1a;
     }
 
     .product-barcode {
-        color: #718096;
+        color: #666666;
         font-size: 0.85rem;
         font-family: 'Courier New', monospace;
     }
 
     .price-cell {
         font-weight: 600;
-        color: #38a169;
+        color: #2e7d32;
     }
 
     .actions {
@@ -224,7 +232,7 @@
                 @foreach (var product in Model)
                 {
                     <tr>
-                        <td>SP@product.ProductId.ToString("D3")</td>
+                        <td>@($"SP{product.ProductId:D3}")</td>
                         <td>
                             <div class="product-name">@product.ProductName</div>
                         </td>
