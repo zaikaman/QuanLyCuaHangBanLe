@@ -1,21 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using QuanLyCuaHangBanLe.Models;
+using QuanLyCuaHangBanLe.Services;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
     public class ProductsController : Controller
     {
-        // Temporary data - will be replaced with database
-        private static List<Product> products = new List<Product>
-        {
-            new Product { ProductId = 1, ProductName = "Coca Cola lon", CategoryId = 1, Price = 314838, Unit = "hộp", Barcode = "8900000000001" },
-            new Product { ProductId = 2, ProductName = "Pepsi lon", CategoryId = 1, Price = 114807, Unit = "cái", Barcode = "8900000000002" },
-            new Product { ProductId = 3, ProductName = "Trà Xanh 0 độ", CategoryId = 1, Price = 415725, Unit = "tuýp", Barcode = "8900000000003" },
-            new Product { ProductId = 4, ProductName = "Sting dâu", CategoryId = 1, Price = 351670, Unit = "cái", Barcode = "8900000000004" },
-            new Product { ProductId = 5, ProductName = "Red Bull", CategoryId = 1, Price = 402179, Unit = "lon", Barcode = "8900000000005" },
-        };
+        private readonly ProductService _productService;
+        private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly IGenericRepository<Supplier> _supplierRepository;
 
-        public IActionResult Index()
+        public ProductsController(
+            ProductService productService,
+            IGenericRepository<Category> categoryRepository,
+            IGenericRepository<Supplier> supplierRepository)
+        {
+            _productService = productService;
+            _categoryRepository = categoryRepository;
+            _supplierRepository = supplierRepository;
+        }
+
+        public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -23,29 +29,84 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            var products = await _productService.GetAllAsync();
             return View(products);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadDropdownData();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
-                product.ProductId = products.Count > 0 ? products.Max(p => p.ProductId) + 1 : 1;
-                products.Add(product);
-                return RedirectToAction("Index");
+                try
+                {
+                    product.CreatedAt = DateTime.Now;
+                    await _productService.AddAsync(product);
+                    TempData["Success"] = "Thêm sản phẩm thành công!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi thêm sản phẩm: " + ex.Message);
+                }
             }
+            await LoadDropdownData();
             return View(product);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var product = products.FirstOrDefault(p => p.ProductId == id);
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            await LoadDropdownData();
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Product product)
+        {
+            if (id != product.ProductId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _productService.UpdateAsync(product);
+                    TempData["Success"] = "Cập nhật sản phẩm thành công!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi cập nhật sản phẩm: " + ex.Message);
+                }
+            }
+            await LoadDropdownData();
+            return View(product);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var product = await _productService.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -53,33 +114,37 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(product);
         }
 
-        [HttpPost]
-        public IActionResult Edit(Product product)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var existingProduct = products.FirstOrDefault(p => p.ProductId == product.ProductId);
-                if (existingProduct != null)
+                var product = await _productService.GetByIdAsync(id);
+                if (product == null)
                 {
-                    existingProduct.ProductName = product.ProductName;
-                    existingProduct.CategoryId = product.CategoryId;
-                    existingProduct.Price = product.Price;
-                    existingProduct.Unit = product.Unit;
-                    existingProduct.Barcode = product.Barcode;
+                    TempData["Error"] = "Không tìm thấy sản phẩm";
+                    return RedirectToAction("Index");
                 }
+
+                await _productService.DeleteAsync(id);
+                TempData["Success"] = "Xóa sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
-            return View(product);
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi khi xóa sản phẩm: " + ex.Message;
+                return RedirectToAction("Index");
+            }
         }
 
-        public IActionResult Delete(int id)
+        private async Task LoadDropdownData()
         {
-            var product = products.FirstOrDefault(p => p.ProductId == id);
-            if (product != null)
-            {
-                products.Remove(product);
-            }
-            return RedirectToAction("Index");
+            var categories = await _categoryRepository.GetAllAsync();
+            var suppliers = await _supplierRepository.GetAllAsync();
+
+            ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName");
+            ViewBag.Suppliers = new SelectList(suppliers, "SupplierId", "Name");
         }
     }
 }

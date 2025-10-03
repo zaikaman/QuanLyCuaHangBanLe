@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyCuaHangBanLe.Models
@@ -9,5 +10,8 @@ namespace QuanLyCuaHangBanLe.Models
         [Required]
         [StringLength(100)]
         public string CategoryName { get; set; } = null!;
+
+        // Navigation properties
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

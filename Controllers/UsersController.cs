@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyCuaHangBanLe.Models;
+using QuanLyCuaHangBanLe.Services;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
     public class UsersController : Controller
     {
-        private static List<User> users = new List<User>
-        {
-            new User { UserId = 1, Username = "admin", Password = "123456", FullName = "Quản trị viên", Role = "admin", CreatedAt = DateTime.Now.AddMonths(-6) },
-            new User { UserId = 2, Username = "staff01", Password = "123456", FullName = "Nguyễn Văn A", Role = "staff", CreatedAt = DateTime.Now.AddMonths(-3) },
-            new User { UserId = 3, Username = "staff02", Password = "123456", FullName = "Lê Thị B", Role = "staff", CreatedAt = DateTime.Now.AddMonths(-2) },
-            new User { UserId = 4, Username = "staff03", Password = "123456", FullName = "Trần Văn C", Role = "staff", CreatedAt = DateTime.Now.AddMonths(-1) },
-        };
+        private readonly IGenericRepository<User> _userRepository;
 
-        public IActionResult Index()
+        public UsersController(IGenericRepository<User> userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -21,6 +21,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            var users = await _userRepository.GetAllAsync();
             return View(users);
         }
 
@@ -35,7 +36,8 @@ namespace QuanLyCuaHangBanLe.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(User user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(User user)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -45,15 +47,22 @@ namespace QuanLyCuaHangBanLe.Controllers
 
             if (ModelState.IsValid)
             {
-                user.UserId = users.Any() ? users.Max(u => u.UserId) + 1 : 1;
-                user.CreatedAt = DateTime.Now;
-                users.Add(user);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    user.CreatedAt = DateTime.Now;
+                    await _userRepository.AddAsync(user);
+                    TempData["Success"] = "Thêm người dùng thành công!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi thêm người dùng: " + ex.Message);
+                }
             }
             return View(user);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -61,7 +70,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = await _userRepository.GetByIdAsync(id);
             
             if (user == null)
             {
@@ -72,7 +81,8 @@ namespace QuanLyCuaHangBanLe.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, User user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, User user)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -87,20 +97,21 @@ namespace QuanLyCuaHangBanLe.Controllers
 
             if (ModelState.IsValid)
             {
-                var existingUser = users.FirstOrDefault(u => u.UserId == id);
-                if (existingUser != null)
+                try
                 {
-                    existingUser.Username = user.Username;
-                    existingUser.FullName = user.FullName;
-                    existingUser.Role = user.Role;
+                    await _userRepository.UpdateAsync(user);
+                    TempData["Success"] = "Cập nhật người dùng thành công!";
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi cập nhật người dùng: " + ex.Message);
+                }
             }
             return View(user);
         }
 
-        [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -108,13 +119,42 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var user = users.FirstOrDefault(u => u.UserId == id);
-            if (user != null)
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
             {
-                users.Remove(user);
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
             }
 
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id);
+                if (user == null)
+                {
+                    TempData["Error"] = "Không tìm thấy người dùng";
+                    return RedirectToAction("Index");
+                }
+
+                await _userRepository.DeleteAsync(id);
+                TempData["Success"] = "Xóa người dùng thành công!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi khi xóa người dùng: " + ex.Message;
+                return RedirectToAction("Index");
+            }
         }
     }
 }

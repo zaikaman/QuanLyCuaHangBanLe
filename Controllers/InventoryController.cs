@@ -1,20 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyCuaHangBanLe.Models;
+using QuanLyCuaHangBanLe.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
     public class InventoryController : Controller
     {
-        private static List<Inventory> inventories = new List<Inventory>
-        {
-            new Inventory { InventoryId = 1, ProductId = 1, Quantity = 25, UpdatedAt = DateTime.Now },
-            new Inventory { InventoryId = 2, ProductId = 2, Quantity = 169, UpdatedAt = DateTime.Now },
-            new Inventory { InventoryId = 3, ProductId = 3, Quantity = 77, UpdatedAt = DateTime.Now },
-            new Inventory { InventoryId = 4, ProductId = 4, Quantity = 169, UpdatedAt = DateTime.Now },
-            new Inventory { InventoryId = 5, ProductId = 5, Quantity = 90, UpdatedAt = DateTime.Now },
-        };
+        private readonly IGenericRepository<Inventory> _inventoryRepository;
+        private readonly ProductService _productService;
 
-        public IActionResult Index()
+        public InventoryController(
+            IGenericRepository<Inventory> inventoryRepository,
+            ProductService productService)
+        {
+            _inventoryRepository = inventoryRepository;
+            _productService = productService;
+        }
+
+        public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -22,19 +26,36 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            var inventories = await _inventoryRepository.GetAllAsync();
+            // Load products cho mỗi inventory item
+            var products = await _productService.GetAllAsync();
+            
+            ViewBag.Products = products;
             return View(inventories);
         }
 
         [HttpPost]
-        public IActionResult UpdateQuantity(int id, int quantity)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateQuantity(int inventoryId, int quantity)
         {
-            var inventory = inventories.FirstOrDefault(i => i.InventoryId == id);
-            if (inventory != null)
+            try
             {
+                var inventory = await _inventoryRepository.GetByIdAsync(inventoryId);
+                if (inventory == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin tồn kho" });
+                }
+
                 inventory.Quantity = quantity;
                 inventory.UpdatedAt = DateTime.Now;
+                await _inventoryRepository.UpdateAsync(inventory);
+                
+                return Json(new { success = true, message = "Cập nhật số lượng thành công!" });
             }
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
         }
     }
 }

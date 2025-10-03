@@ -26,6 +26,7 @@ namespace QuanLyCuaHangBanLe.Models
         public Customer? Customer { get; set; }
         public User? User { get; set; }
         public Promotion? Promotion { get; set; }
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

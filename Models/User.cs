@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyCuaHangBanLe.Models
@@ -21,5 +22,8 @@ namespace QuanLyCuaHangBanLe.Models
         public string Role { get; set; } = "staff"; // admin or staff
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // Navigation properties
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

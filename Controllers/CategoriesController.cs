@@ -1,20 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyCuaHangBanLe.Models;
+using QuanLyCuaHangBanLe.Services;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
     public class CategoriesController : Controller
     {
-        private static List<Category> categories = new List<Category>
-        {
-            new Category { CategoryId = 1, CategoryName = "Đồ uống" },
-            new Category { CategoryId = 2, CategoryName = "Bánh kẹo" },
-            new Category { CategoryId = 3, CategoryName = "Gia vị" },
-            new Category { CategoryId = 4, CategoryName = "Đồ gia dụng" },
-            new Category { CategoryId = 5, CategoryName = "Mỹ phẩm" },
-        };
+        private readonly IGenericRepository<Category> _categoryRepository;
 
-        public IActionResult Index()
+        public CategoriesController(IGenericRepository<Category> categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
+
+        public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -22,59 +21,66 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            var categories = await _categoryRepository.GetAllAsync();
             return View(categories);
         }
 
-        public IActionResult Create()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string categoryName)
         {
-            return View();
+            try
+            {
+                var category = new Category { CategoryName = categoryName };
+                await _categoryRepository.AddAsync(category);
+                return Json(new { success = true, message = "Thêm loại sản phẩm thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int categoryId, string categoryName)
         {
-            if (ModelState.IsValid)
+            try
             {
-                category.CategoryId = categories.Count > 0 ? categories.Max(c => c.CategoryId) + 1 : 1;
-                categories.Add(category);
-                return RedirectToAction("Index");
-            }
-            return View(category);
-        }
-
-        public IActionResult Edit(int id)
-        {
-            var category = categories.FirstOrDefault(c => c.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                var existingCategory = categories.FirstOrDefault(c => c.CategoryId == category.CategoryId);
-                if (existingCategory != null)
+                var category = await _categoryRepository.GetByIdAsync(categoryId);
+                if (category == null)
                 {
-                    existingCategory.CategoryName = category.CategoryName;
+                    return Json(new { success = false, message = "Không tìm thấy loại sản phẩm" });
                 }
-                return RedirectToAction("Index");
+
+                category.CategoryName = categoryName;
+                await _categoryRepository.UpdateAsync(category);
+                return Json(new { success = true, message = "Cập nhật thành công!" });
             }
-            return View(category);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
         }
 
-        public IActionResult Delete(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
-            var category = categories.FirstOrDefault(c => c.CategoryId == id);
-            if (category != null)
+            try
             {
-                categories.Remove(category);
+                var category = await _categoryRepository.GetByIdAsync(id);
+                if (category == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy loại sản phẩm" });
+                }
+
+                await _categoryRepository.DeleteAsync(id);
+                return Json(new { success = true, message = "Xóa loại sản phẩm thành công!" });
             }
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
         }
     }
 }

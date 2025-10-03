@@ -1,20 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyCuaHangBanLe.Models;
+using QuanLyCuaHangBanLe.Services;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
     public class CustomersController : Controller
     {
-        private static List<Customer> customers = new List<Customer>
-        {
-            new Customer { CustomerId = 1, Name = "Nguyễn Văn A", Phone = "0909000001", Email = "kh1@mail.com", Address = "Địa chỉ 1" },
-            new Customer { CustomerId = 2, Name = "Trần Thị B", Phone = "0909000002", Email = "kh2@mail.com", Address = "Địa chỉ 2" },
-            new Customer { CustomerId = 3, Name = "Lê Văn C", Phone = "0909000003", Email = "kh3@mail.com", Address = "Địa chỉ 3" },
-            new Customer { CustomerId = 4, Name = "Phạm Thị D", Phone = "0909000004", Email = "kh4@mail.com", Address = "Địa chỉ 4" },
-            new Customer { CustomerId = 5, Name = "Hoàng Văn E", Phone = "0909000005", Email = "kh5@mail.com", Address = "Địa chỉ 5" },
-        };
+        private readonly IGenericRepository<Customer> _customerRepository;
 
-        public IActionResult Index()
+        public CustomersController(IGenericRepository<Customer> customerRepository)
+        {
+            _customerRepository = customerRepository;
+        }
+
+        public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -22,6 +21,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            var customers = await _customerRepository.GetAllAsync();
             return View(customers);
         }
 
@@ -31,20 +31,29 @@ namespace QuanLyCuaHangBanLe.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Customer customer)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Customer customer)
         {
             if (ModelState.IsValid)
             {
-                customer.CustomerId = customers.Count > 0 ? customers.Max(c => c.CustomerId) + 1 : 1;
-                customers.Add(customer);
-                return RedirectToAction("Index");
+                try
+                {
+                    customer.CreatedAt = DateTime.Now;
+                    await _customerRepository.AddAsync(customer);
+                    TempData["Success"] = "Thêm khách hàng thành công!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi thêm khách hàng: " + ex.Message);
+                }
             }
             return View(customer);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var customer = customers.FirstOrDefault(c => c.CustomerId == id);
+            var customer = await _customerRepository.GetByIdAsync(id);
             if (customer == null)
             {
                 return NotFound();
@@ -53,31 +62,68 @@ namespace QuanLyCuaHangBanLe.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Customer customer)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Customer customer)
         {
+            if (id != customer.CustomerId)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                var existingCustomer = customers.FirstOrDefault(c => c.CustomerId == customer.CustomerId);
-                if (existingCustomer != null)
+                try
                 {
-                    existingCustomer.Name = customer.Name;
-                    existingCustomer.Phone = customer.Phone;
-                    existingCustomer.Email = customer.Email;
-                    existingCustomer.Address = customer.Address;
+                    await _customerRepository.UpdateAsync(customer);
+                    TempData["Success"] = "Cập nhật khách hàng thành công!";
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi khi cập nhật khách hàng: " + ex.Message);
+                }
             }
             return View(customer);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var customer = customers.FirstOrDefault(c => c.CustomerId == id);
-            if (customer != null)
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
             {
-                customers.Remove(customer);
+                return RedirectToAction("Login", "Auth");
             }
-            return RedirectToAction("Index");
+
+            var customer = await _customerRepository.GetByIdAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                var customer = await _customerRepository.GetByIdAsync(id);
+                if (customer == null)
+                {
+                    TempData["Error"] = "Không tìm thấy khách hàng";
+                    return RedirectToAction("Index");
+                }
+
+                await _customerRepository.DeleteAsync(id);
+                TempData["Success"] = "Xóa khách hàng thành công!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi khi xóa khách hàng: " + ex.Message;
+                return RedirectToAction("Index");
+            }
         }
     }
 }

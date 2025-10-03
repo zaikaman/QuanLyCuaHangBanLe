@@ -95,3 +95,10 @@ C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\re
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\25wxi6zo0g-btb0m24ud9.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\7jlggxzi8e-t9m4jgydjb.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\p0r5l8d088-t9m4jgydjb.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\MySqlConnector.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\QuanLyCuaHangBanLe.csproj.AssemblyReference.cache
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\QuanLyCu.C342788F.Up2Date

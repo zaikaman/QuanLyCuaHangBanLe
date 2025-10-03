@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyCuaHangBanLe.Models
@@ -18,5 +19,8 @@ namespace QuanLyCuaHangBanLe.Models
         public string? Email { get; set; }
 
         public string? Address { get; set; }
+
+        // Navigation properties
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

@@ -29,5 +29,6 @@ namespace QuanLyCuaHangBanLe.Models
         // Navigation properties
         public Category? Category { get; set; }
         public Supplier? Supplier { get; set; }
+        public Inventory? Inventory { get; set; }
     }
 }

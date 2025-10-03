@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyCuaHangBanLe.Models
@@ -33,5 +34,8 @@ namespace QuanLyCuaHangBanLe.Models
         public int UsedCount { get; set; } = 0;
 
         public string Status { get; set; } = "active"; // active or inactive
+
+        // Navigation properties
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
