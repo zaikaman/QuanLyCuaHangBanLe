@@ -1,0 +1,229 @@
+@model QuanLyCuaHangBanLe.Models.Product
+
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+}
+
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 40px;
+    }
+
+    .form-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f7fafc;
+    }
+
+    .form-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+    }
+
+    .form-header p {
+        color: #718096;
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2d3748;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .form-label .required {
+        color: #e53e3e;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f7fafc;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 2px solid #f7fafc;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-cancel {
+        background: #e2e8f0;
+        color: #4a5568;
+    }
+
+    .btn-cancel:hover {
+        background: #cbd5e0;
+    }
+
+    .form-hint {
+        font-size: 0.85rem;
+        color: #a0aec0;
+        margin-top: 5px;
+    }
+
+    .validation-error {
+        color: #e53e3e;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    @@media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2>✏️ Chỉnh sửa sản phẩm</h2>
+            <p>Cập nhật thông tin cho sản phẩm</p>
+        </div>
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="ProductId" />
+            
+            <div class="form-group">
+                <label class="form-label">
+                    Tên sản phẩm <span class="required">*</span>
+                </label>
+                <input asp-for="ProductName" class="form-control" placeholder="Nhập tên sản phẩm" required />
+                <span asp-validation-for="ProductName" class="validation-error"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        Mã vạch
+                    </label>
+                    <input asp-for="Barcode" class="form-control" placeholder="Nhập mã vạch" />
+                    <div class="form-hint">Mã vạch để quét sản phẩm</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Danh mục
+                    </label>
+                    <select asp-for="CategoryId" class="form-control">
+                        <option value="">Chọn danh mục</option>
+                        <option value="1">Đồ uống</option>
+                        <option value="2">Bánh kẹo</option>
+                        <option value="3">Gia vị</option>
+                        <option value="4">Đồ gia dụng</option>
+                        <option value="5">Mỹ phẩm</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        Giá bán <span class="required">*</span>
+                    </label>
+                    <input asp-for="Price" class="form-control" type="number" step="0.01" placeholder="0" required />
+                    <div class="form-hint">Giá bán cho khách hàng (VNĐ)</div>
+                    <span asp-validation-for="Price" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Đơn vị tính
+                    </label>
+                    <select asp-for="Unit" class="form-control">
+                        <option value="pcs">Cái</option>
+                        <option value="hộp">Hộp</option>
+                        <option value="lon">Lon</option>
+                        <option value="chai">Chai</option>
+                        <option value="gói">Gói</option>
+                        <option value="tuýp">Tuýp</option>
+                        <option value="kg">Kg</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Nhà cung cấp
+                </label>
+                <select asp-for="SupplierId" class="form-control">
+                    <option value="">Chọn nhà cung cấp</option>
+                    <option value="1">Công ty ABC</option>
+                    <option value="2">Công ty XYZ</option>
+                    <option value="3">Công ty 123</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-submit">
+                    💾 Cập nhật sản phẩm
+                </button>
+                <a asp-action="Index" class="btn btn-cancel">
+                    ❌ Hủy bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

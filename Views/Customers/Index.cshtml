@@ -1,0 +1,220 @@
+@model IEnumerable<QuanLyCuaHangBanLe.Models.Customer>
+
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .customers-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .customers-header {
+        padding: 20px 25px;
+        border-bottom: 2px solid #f7fafc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 10px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        width: 300px;
+        font-size: 0.9rem;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    .customers-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .customers-table thead {
+        background: #f7fafc;
+    }
+
+    .customers-table th {
+        padding: 15px 20px;
+        text-align: left;
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .customers-table td {
+        padding: 18px 20px;
+        border-bottom: 1px solid #f7fafc;
+        color: #2d3748;
+        font-size: 0.95rem;
+    }
+
+    .customers-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .customers-table tbody tr:hover {
+        background: #f7fafc;
+    }
+
+    .customer-name {
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .customer-email {
+        color: #718096;
+        font-size: 0.85rem;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-edit {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+
+    .btn-edit:hover {
+        background: #90cdf4;
+    }
+
+    .btn-delete {
+        background: #fed7d7;
+        color: #c53030;
+    }
+
+    .btn-delete:hover {
+        background: #fc8181;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #a0aec0;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <h1>👥 Quản lý khách hàng</h1>
+        <p style="color: #718096; margin-top: 5px;">Quản lý thông tin khách hàng</p>
+    </div>
+    <a asp-action="Create" class="btn-primary">
+        <span>➕</span>
+        Thêm khách hàng mới
+    </a>
+</div>
+
+<div class="customers-card">
+    <div class="customers-header">
+        <input type="text" class="search-input" placeholder="🔍 Tìm kiếm khách hàng..." />
+        <div style="color: #718096; font-size: 0.9rem;">
+            Tổng: <strong style="color: #2d3748;">@Model.Count()</strong> khách hàng
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="customers-table">
+            <thead>
+                <tr>
+                    <th>Mã KH</th>
+                    <th>Tên khách hàng</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th>Địa chỉ</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in Model)
+                {
+                    <tr>
+                        <td>KH@customer.CustomerId.ToString("D3")</td>
+                        <td>
+                            <div class="customer-name">@customer.Name</div>
+                        </td>
+                        <td>@customer.Phone</td>
+                        <td>
+                            <div class="customer-email">@customer.Email</div>
+                        </td>
+                        <td>@customer.Address</td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@customer.CustomerId" class="btn-action btn-edit">✏️ Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@customer.CustomerId" 
+                                   class="btn-action btn-delete" 
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">🗑️ Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <div>Chưa có khách hàng nào</div>
+        </div>
+    }
+</div>

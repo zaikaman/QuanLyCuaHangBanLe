@@ -8,6 +8,15 @@ namespace QuanLyCuaHangBanLe
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            
+            // Add session support
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(2);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -21,13 +30,16 @@ namespace QuanLyCuaHangBanLe
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            
+            // Enable session
+            app.UseSession();
 
             app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Auth}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

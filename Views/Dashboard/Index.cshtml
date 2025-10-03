@@ -1,0 +1,458 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #718096;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .stat-change {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .stat-change.positive {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .stat-change.negative {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .content-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f7fafc;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .card-action {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .card-action:hover {
+        text-decoration: underline;
+    }
+
+    .recent-orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .recent-orders-table th {
+        text-align: left;
+        padding: 12px;
+        background: #f7fafc;
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .recent-orders-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #f7fafc;
+        color: #2d3748;
+        font-size: 0.9rem;
+    }
+
+    .recent-orders-table tr:hover {
+        background: #f7fafc;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-badge.paid {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .status-badge.pending {
+        background: #feebc8;
+        color: #7c2d12;
+    }
+
+    .status-badge.canceled {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .activity-item {
+        display: flex;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f7fafc;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .activity-icon.order {
+        background: #e6fffa;
+    }
+
+    .activity-icon.product {
+        background: #fef5e7;
+    }
+
+    .activity-icon.customer {
+        background: #e0e7ff;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+
+    .activity-time {
+        color: #a0aec0;
+        font-size: 0.8rem;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .quick-action-btn {
+        padding: 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        text-align: center;
+        text-decoration: none;
+        color: #2d3748;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .quick-action-btn:hover {
+        border-color: #667eea;
+        background: #f7fafc;
+        transform: translateY(-2px);
+    }
+
+    .quick-action-icon {
+        font-size: 1.5rem;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .content-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">45.2M</div>
+        <div class="stat-label">Doanh thu hôm nay</div>
+        <span class="stat-change positive">↑ 12.5%</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🛍️</div>
+        <div class="stat-value">156</div>
+        <div class="stat-label">Đơn hàng</div>
+        <span class="stat-change positive">↑ 8.3%</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">50</div>
+        <div class="stat-label">Sản phẩm</div>
+        <span class="stat-change">Tổng số</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">20</div>
+        <div class="stat-label">Khách hàng</div>
+        <span class="stat-change positive">↑ 3 mới</span>
+    </div>
+</div>
+
+<div class="content-row">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Đơn hàng gần đây</h3>
+            <a href="/Orders" class="card-action">Xem tất cả →</a>
+        </div>
+        <table class="recent-orders-table">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#ORD-001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>1,192,330đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>03/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-002</td>
+                    <td>Trần Thị B</td>
+                    <td>1,731,608đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>03/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-003</td>
+                    <td>Lê Văn C</td>
+                    <td>720,782đ</td>
+                    <td><span class="status-badge pending">Chờ xử lý</span></td>
+                    <td>02/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-004</td>
+                    <td>Phạm Thị D</td>
+                    <td>21,686đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>02/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-005</td>
+                    <td>Hoàng Văn E</td>
+                    <td>94,180đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>01/10/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Hoạt động gần đây</h3>
+        </div>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon order">🛍️</div>
+                <div class="activity-content">
+                    <div class="activity-title">Đơn hàng mới #ORD-156</div>
+                    <div class="activity-time">5 phút trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon product">📦</div>
+                <div class="activity-content">
+                    <div class="activity-title">Cập nhật sản phẩm "Coca Cola"</div>
+                    <div class="activity-time">15 phút trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon customer">👤</div>
+                <div class="activity-content">
+                    <div class="activity-title">Khách hàng mới đăng ký</div>
+                    <div class="activity-time">30 phút trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon order">🛍️</div>
+                <div class="activity-content">
+                    <div class="activity-title">Đơn hàng #ORD-155 hoàn thành</div>
+                    <div class="activity-time">1 giờ trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon product">📦</div>
+                <div class="activity-content">
+                    <div class="activity-title">Nhập kho 50 sản phẩm</div>
+                    <div class="activity-time">2 giờ trước</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="/Orders/Create" class="quick-action-btn">
+                <span class="quick-action-icon">➕</span>
+                Tạo đơn hàng
+            </a>
+            <a href="/Products/Create" class="quick-action-btn">
+                <span class="quick-action-icon">📦</span>
+                Thêm sản phẩm
+            </a>
+            <a href="/Customers/Create" class="quick-action-btn">
+                <span class="quick-action-icon">👥</span>
+                Thêm khách hàng
+            </a>
+            <a href="/Promotions/Create" class="quick-action-btn">
+                <span class="quick-action-icon">🎁</span>
+                Tạo khuyến mãi
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sản phẩm bán chạy</h3>
+        <a href="/Products" class="card-action">Xem tất cả →</a>
+    </div>
+    <table class="recent-orders-table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Đã bán</th>
+                <th>Tồn kho</th>
+                <th>Doanh thu</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Coca Cola lon</td>
+                <td>Đồ uống</td>
+                <td>245 sp</td>
+                <td>25</td>
+                <td>77.1M đ</td>
+            </tr>
+            <tr>
+                <td>Pepsi lon</td>
+                <td>Đồ uống</td>
+                <td>198 sp</td>
+                <td>169</td>
+                <td>22.7M đ</td>
+            </tr>
+            <tr>
+                <td>Trà Xanh 0 độ</td>
+                <td>Đồ uống</td>
+                <td>176 sp</td>
+                <td>77</td>
+                <td>73.2M đ</td>
+            </tr>
+            <tr>
+                <td>Sting dâu</td>
+                <td>Đồ uống</td>
+                <td>165 sp</td>
+                <td>169</td>
+                <td>58.0M đ</td>
+            </tr>
+            <tr>
+                <td>Red Bull</td>
+                <td>Đồ uống</td>
+                <td>142 sp</td>
+                <td>90</td>
+                <td>57.1M đ</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
