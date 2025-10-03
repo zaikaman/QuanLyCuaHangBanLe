@@ -515,3 +515,23 @@ hr {
     color: var(--text-primary) !important;
     margin-bottom: 15px;
 }
+
+/* ==================== FORM CONTAINER (Users/Edit specific) ==================== */
+.form-container {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-container .form-header h1 {
+    color: var(--text-primary) !important;
+}
+
+.form-container .form-header p {
+    color: var(--text-secondary) !important;
+}
+
+.form-container .form-control:disabled {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-tertiary) !important;
+}

@@ -222,7 +222,6 @@
     <table class="data-table">
         <thead>
             <tr>
-                <th><input type="checkbox" id="selectAllOrders"></th>
                 <th>Mã đơn</th>
                 <th>Khách hàng</th>
                 <th>Sản phẩm</th>
@@ -238,7 +237,6 @@
                 @foreach (QuanLyCuaHangBanLe.Models.Order order in ViewBag.RecentOrders)
                 {
                     <tr>
-                        <td><input type="checkbox" class="order-checkbox" data-id="@order.OrderId"></td>
                         <td><strong>#@order.OrderId</strong></td>
                         <td>@(order.Customer?.Name ?? "Khách lẻ")</td>
                         <td>
@@ -352,7 +350,7 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: 'rgba(0, 0, 0, 0.8)',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--border-secondary').trim() || 'rgba(0, 0, 0, 0.1)',
                             drawBorder: false
                         },
                         ticks: {
@@ -446,12 +444,6 @@
             }, 500);
         });
         
-        // Select all checkboxes
-        document.getElementById('selectAllOrders')?.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.order-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
-        
         // Load orders by status
         function loadOrdersByStatus(status) {
             fetch(`@Url.Action("GetOrdersByStatus", "Dashboard")?status=${status}`)
@@ -495,7 +487,6 @@
             
             tbody.innerHTML = orders.map(order => `
                 <tr>
-                    <td><input type="checkbox" class="order-checkbox" data-id="${order.orderId}"></td>
                     <td><strong>#${order.orderId}</strong></td>
                     <td>${order.customerName}</td>
                     <td>${order.products}</td>
