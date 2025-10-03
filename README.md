@@ -146,7 +146,7 @@ Hệ thống quản lý cửa hàng bán lẻ toàn diện được xây dựng 
 git clone https://github.com/zaikaman/QuanLyCuaHangBanLe.git
 
 # Di chuyển vào thư mục dự án
-cd QuanLyCuaHangBanLe
+cd QuanLyCuaHangBanLe/QuanLyCuaHangBanLe
 ```
 
 ### Bước 2: Cài Đặt XAMPP và Khởi Động MySQL
