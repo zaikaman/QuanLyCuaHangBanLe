@@ -493,14 +493,14 @@
             </div>
             <div class="topbar-right">
                 <div class="topbar-actions">
-                    <button class="topbar-action" title="Tìm kiếm">
+                    <button class="topbar-action" title="Tìm kiếm" id="globalSearchBtn">
                         <i class="fas fa-search"></i>
                     </button>
-                    <button class="topbar-action" title="Thông báo">
+                    <button class="topbar-action" title="Thông báo" id="notificationBtn">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <button class="topbar-action" title="Cài đặt">
+                    <button class="topbar-action" title="Cài đặt" id="settingsBtn">
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
@@ -520,6 +520,442 @@
             @RenderBody()
         </main>
     </div>
+
+    <!-- Global Search Modal -->
+    <div id="globalSearchModal" class="modal-overlay" style="display: none;">
+        <div class="modal-container" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Tìm kiếm</h3>
+                <button class="modal-close" onclick="closeGlobalSearch()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearchInput" placeholder="Tìm kiếm sản phẩm, đơn hàng, khách hàng..." autofocus>
+                </div>
+                <div id="globalSearchResults" class="search-results" style="margin-top: 20px; max-height: 400px; overflow-y: auto;">
+                    <p style="color: #94a3b8; text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-container" style="max-width: 400px; max-height: 600px;">
+            <div class="modal-header">
+                <h3>Thông báo</h3>
+                <button class="modal-close" onclick="closeNotifications()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <div class="notification-list">
+                    <div class="notification-item unread">
+                        <div class="notification-icon" style="background: #4E5FFF;">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Đơn hàng mới</div>
+                            <div class="notification-text">Bạn có 3 đơn hàng mới cần xử lý</div>
+                            <div class="notification-time">5 phút trước</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon" style="background: #10b981;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Đơn hàng hoàn thành</div>
+                            <div class="notification-text">Đơn hàng #001234 đã được giao thành công</div>
+                            <div class="notification-time">1 giờ trước</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon" style="background: #f59e0b;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Sản phẩm sắp hết</div>
+                            <div class="notification-text">Có 5 sản phẩm sắp hết hàng trong kho</div>
+                            <div class="notification-time">2 giờ trước</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-container" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Cài đặt</h3>
+                <button class="modal-close" onclick="closeSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Giao diện</h4>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" checked> Chế độ tối
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" checked> Hiển thị thông báo
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-section" style="margin-top: 20px;">
+                    <h4>Ngôn ngữ</h4>
+                    <select class="form-control">
+                        <option selected>Tiếng Việt</option>
+                        <option>English</option>
+                    </select>
+                </div>
+                <div class="settings-section" style="margin-top: 20px;">
+                    <h4>Tài khoản</h4>
+                    <button class="btn btn-outline" style="width: 100%; margin-bottom: 10px;">Đổi mật khẩu</button>
+                    <a asp-controller="Auth" asp-action="Logout" class="btn btn-danger" style="width: 100%; text-decoration: none; display: inline-block; text-align: center;">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.2s;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            animation: slideUp 0.3s;
+            overflow: hidden;
+        }
+
+        @@keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #f0f0f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input-wrapper input:focus {
+            outline: none;
+            border-color: #4E5FFF;
+        }
+
+        .notification-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f5;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        .notification-item.unread {
+            background: #f0f4ff;
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .notification-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .settings-section h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .setting-item {
+            padding: 12px 0;
+        }
+
+        .setting-item label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: #475569;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: #4E5FFF;
+            color: #4E5FFF;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Toast Styles */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            min-width: 300px;
+            border-left: 4px solid;
+        }
+
+        @@keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.removing {
+            animation: slideOutRight 0.3s ease-out forwards;
+        }
+
+        @@keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+            color: #1e293b;
+        }
+
+        .toast-message {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            color: #1e293b;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.success .toast-icon {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast.error .toast-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast.warning .toast-icon {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .toast.info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast.info .toast-icon {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+    </style>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
@@ -548,6 +984,152 @@
                 }
             }
         });
+
+        // Global Search
+        document.getElementById('globalSearchBtn')?.addEventListener('click', function() {
+            document.getElementById('globalSearchModal').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('globalSearchInput')?.focus();
+            }, 100);
+        });
+
+        function closeGlobalSearch() {
+            document.getElementById('globalSearchModal').style.display = 'none';
+            document.getElementById('globalSearchInput').value = '';
+            document.getElementById('globalSearchResults').innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>';
+        }
+
+        // Global search functionality
+        let globalSearchTimeout;
+        document.getElementById('globalSearchInput')?.addEventListener('input', function(e) {
+            clearTimeout(globalSearchTimeout);
+            const searchTerm = e.target.value;
+            
+            if (searchTerm.length < 2) {
+                document.getElementById('globalSearchResults').innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>';
+                return;
+            }
+
+            globalSearchTimeout = setTimeout(() => {
+                document.getElementById('globalSearchResults').innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...</p>';
+                
+                // Simulate search results
+                setTimeout(() => {
+                    const results = `
+                        <div style="margin-bottom: 16px;">
+                            <h4 style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Sản phẩm</h4>
+                            <a href="/Products" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: #1e293b; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <div style="font-weight: 600;">Coca Cola 330ml</div>
+                                <div style="font-size: 0.9rem; color: #64748b;">SKU: CC001 - 15,000₫</div>
+                            </a>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h4 style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Đơn hàng</h4>
+                            <a href="/Orders" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: #1e293b; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <div style="font-weight: 600;">Đơn hàng #001234</div>
+                                <div style="font-size: 0.9rem; color: #64748b;">Nguyễn Văn A - 250,000₫</div>
+                            </a>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Khách hàng</h4>
+                            <a href="/Customers" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: #1e293b; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                <div style="font-weight: 600;">Nguyễn Văn A</div>
+                                <div style="font-size: 0.9rem; color: #64748b;">nguyenvana@email.com - 0901234567</div>
+                            </a>
+                        </div>
+                    `;
+                    document.getElementById('globalSearchResults').innerHTML = results;
+                }, 500);
+            }, 500);
+        });
+
+        // Notifications
+        document.getElementById('notificationBtn')?.addEventListener('click', function() {
+            document.getElementById('notificationsModal').style.display = 'flex';
+        });
+
+        function closeNotifications() {
+            document.getElementById('notificationsModal').style.display = 'none';
+        }
+
+        // Settings
+        document.getElementById('settingsBtn')?.addEventListener('click', function() {
+            document.getElementById('settingsModal').style.display = 'flex';
+        });
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        // Close modals when clicking overlay
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+
+        // Toast notification system
+        window.showToast = function(message, type = 'success', title = '') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-times-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+
+            const titles = {
+                success: title || 'Thành công',
+                error: title || 'Lỗi',
+                warning: title || 'Cảnh báo',
+                info: title || 'Thông tin'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas ${icons[type] || icons.success}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        };
+
+        // Wrapper functions for convenience
+        window.toast = {
+            success: (message, title) => showToast(message, 'success', title),
+            error: (message, title) => showToast(message, 'error', title),
+            warning: (message, title) => showToast(message, 'warning', title),
+            info: (message, title) => showToast(message, 'info', title)
+        };
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

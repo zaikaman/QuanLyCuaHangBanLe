@@ -125,3 +125,10 @@ C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\re
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\QuanLyCuaHangBanLe.pdb
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\QuanLyCuaHangBanLe.genruntimeconfig.cache
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\ref\QuanLyCuaHangBanLe.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\ClosedXML.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\DocumentFormat.OpenXml.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\ExcelNumberFormat.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\Irony.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\SixLabors.Fonts.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\System.IO.Packaging.dll
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\XLParser.dll

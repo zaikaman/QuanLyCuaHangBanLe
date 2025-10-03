@@ -10,10 +10,12 @@
         <p style="color: #94a3b8; margin-top: 8px;">Đây là tổng quan về cửa hàng của bạn</p>
     </div>
     <div class="date-range-selector">
-        <button class="date-btn">Hôm nay</button>
-        <button class="date-btn active">Tuần này</button>
-        <button class="date-btn">Tháng này</button>
-        <button class="date-btn"><i class="fas fa-calendar"></i></button>
+        <button class="date-btn @(ViewBag.DateRange == "today" ? "active" : "")" data-range="today">Hôm nay</button>
+        <button class="date-btn @(ViewBag.DateRange == "week" ? "active" : "")" data-range="week">Tuần này</button>
+        <button class="date-btn @(ViewBag.DateRange == "month" ? "active" : "")" data-range="month">Tháng này</button>
+        <button class="date-btn" id="customDateBtn"><i class="fas fa-calendar"></i></button>
+        <input type="date" id="startDate" style="display: none;">
+        <input type="date" id="endDate" style="display: none;">
     </div>
 </div>
 
@@ -181,19 +183,19 @@
 
 <!-- Order Status Tabs -->
 <div class="order-tabs">
-    <div class="order-tab pending active">
+    <div class="order-tab pending active" data-status="pending">
         <div class="order-tab-count">@(ViewBag.PendingOrders ?? 0)</div>
         <div class="order-tab-label">Chờ xử lý</div>
     </div>
-    <div class="order-tab processing">
+    <div class="order-tab processing" data-status="processing">
         <div class="order-tab-count">@(ViewBag.ProcessingOrders ?? 0)</div>
         <div class="order-tab-label">Đang xử lý</div>
     </div>
-    <div class="order-tab shipped">
+    <div class="order-tab shipped" data-status="shipped">
         <div class="order-tab-count">@(ViewBag.ShippedOrders ?? 0)</div>
         <div class="order-tab-label">Đã giao</div>
     </div>
-    <div class="order-tab delivered">
+    <div class="order-tab delivered" data-status="paid">
         <div class="order-tab-count">@(ViewBag.PaidOrders ?? 0)</div>
         <div class="order-tab-label">Hoàn thành</div>
     </div>
@@ -209,7 +211,7 @@
         <div class="d-flex gap-2 align-items-center">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Tìm kiếm đơn hàng...">
+                <input type="text" placeholder="Tìm kiếm đơn hàng..." id="dashboardOrderSearch">
             </div>
             <a href="@Url.Action("Create", "Orders")" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Tạo đơn hàng
@@ -220,7 +222,7 @@
     <table class="data-table">
         <thead>
             <tr>
-                <th><input type="checkbox"></th>
+                <th><input type="checkbox" id="selectAllOrders"></th>
                 <th>Mã đơn</th>
                 <th>Khách hàng</th>
                 <th>Sản phẩm</th>
@@ -230,13 +232,13 @@
                 <th>Thao tác</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="ordersTableBody">
             @if (ViewBag.RecentOrders != null && ((IEnumerable<QuanLyCuaHangBanLe.Models.Order>)ViewBag.RecentOrders).Any())
             {
                 @foreach (QuanLyCuaHangBanLe.Models.Order order in ViewBag.RecentOrders)
                 {
                     <tr>
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" class="order-checkbox" data-id="@order.OrderId"></td>
                         <td><strong>#@order.OrderId</strong></td>
                         <td>@(order.Customer?.Name ?? "Khách lẻ")</td>
                         <td>
@@ -400,22 +402,117 @@
         });
 
         // Order tabs interaction
+        let currentStatus = '';
         document.querySelectorAll('.order-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
+                
+                const status = this.getAttribute('data-status');
+                currentStatus = status;
+                loadOrdersByStatus(status);
             });
         });
 
         // Date range selector
-        document.querySelectorAll('.date-btn').forEach(btn => {
+        document.querySelectorAll('.date-btn[data-range]').forEach(btn => {
             btn.addEventListener('click', function() {
-                if (!this.querySelector('i')) {
-                    const parent = this.closest('.date-range-selector');
-                    parent.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                }
+                const range = this.getAttribute('data-range');
+                window.location.href = `@Url.Action("Index", "Dashboard")?dateRange=${range}`;
             });
         });
+        
+        // Custom date picker
+        document.getElementById('customDateBtn')?.addEventListener('click', function() {
+            const startDate = prompt('Nhập ngày bắt đầu (yyyy-mm-dd):');
+            const endDate = prompt('Nhập ngày kết thúc (yyyy-mm-dd):');
+            if (startDate && endDate) {
+                window.location.href = `@Url.Action("Index", "Dashboard")?startDate=${startDate}&endDate=${endDate}`;
+            }
+        });
+        
+        // Search functionality
+        let searchTimeout;
+        document.getElementById('dashboardOrderSearch')?.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const searchTerm = e.target.value;
+            
+            searchTimeout = setTimeout(() => {
+                if (searchTerm.length > 0) {
+                    searchOrders(searchTerm);
+                } else {
+                    loadOrdersByStatus(currentStatus);
+                }
+            }, 500);
+        });
+        
+        // Select all checkboxes
+        document.getElementById('selectAllOrders')?.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.order-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+        
+        // Load orders by status
+        function loadOrdersByStatus(status) {
+            fetch(`@Url.Action("GetOrdersByStatus", "Dashboard")?status=${status}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateOrdersTable(data.orders);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        // Search orders
+        function searchOrders(searchTerm) {
+            fetch(`@Url.Action("SearchOrders", "Dashboard")?searchTerm=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateOrdersTable(data.orders);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        // Update orders table
+        function updateOrdersTable(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            if (!tbody) return;
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #94a3b8;">
+                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 16px; display: block;"></i>
+                            Không tìm thấy đơn hàng nào
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = orders.map(order => `
+                <tr>
+                    <td><input type="checkbox" class="order-checkbox" data-id="${order.orderId}"></td>
+                    <td><strong>#${order.orderId}</strong></td>
+                    <td>${order.customerName}</td>
+                    <td>${order.products}</td>
+                    <td>${order.orderDate}</td>
+                    <td><strong>${order.totalAmount.toLocaleString()}₫</strong></td>
+                    <td>
+                        <span class="status-badge ${order.status}">${order.statusText}</span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="@Url.Action("Details", "Orders")?id=${order.orderId}" class="action-btn" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
     </script>
 }

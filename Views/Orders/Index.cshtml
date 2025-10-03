@@ -6,6 +6,8 @@
 
 <link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
 
+@Html.AntiForgeryToken()
+
 <!-- Order Status Tabs -->
 <div class="order-status-tabs">
     <div class="status-tab new-orders active">
@@ -47,6 +49,27 @@
 
 <!-- Main Order List Card -->
 <div class="order-list-card">
+    <!-- Bulk Actions Toolbar -->
+    <div id="bulkActionsToolbar" class="bulk-actions-toolbar" style="display: none;">
+        <div class="bulk-info">
+            <span id="selectedCount">0</span> đơn hàng được chọn
+        </div>
+        <div class="bulk-actions">
+            <button class="bulk-btn" onclick="bulkUpdateStatus('processing')">
+                <i class="fas fa-spinner"></i> Đang xử lý
+            </button>
+            <button class="bulk-btn" onclick="bulkUpdateStatus('shipped')">
+                <i class="fas fa-truck"></i> Đã giao
+            </button>
+            <button class="bulk-btn" onclick="bulkUpdateStatus('paid')">
+                <i class="fas fa-check"></i> Hoàn thành
+            </button>
+            <button class="bulk-btn btn-danger" onclick="bulkDelete()">
+                <i class="fas fa-trash"></i> Xóa
+            </button>
+        </div>
+    </div>
+    
     <!-- Header -->
     <div class="order-list-header">
         <div class="order-count-info">
@@ -62,10 +85,10 @@
             
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="export-btn">
+                <a href="@Url.Action("ExportToExcel", "Orders")" class="export-btn">
                     <i class="fas fa-download"></i>
                     Xuất file
-                </button>
+                </a>
                 <a asp-action="Create" class="add-order-btn">
                     <i class="fas fa-plus"></i>
                     Tạo đơn hàng
@@ -95,7 +118,7 @@
                 @foreach (var order in Model.OrderByDescending(o => o.OrderDate).Take(12))
                 {
                     <tr>
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" class="order-checkbox" data-order-id="@order.OrderId"></td>
                         <td><strong>#@order.OrderId.ToString("D6")</strong></td>
                         <td>
                             <div class="customer-cell">
@@ -147,7 +170,30 @@
                                 <span class="status-tag await">Chờ xử lý</span>
                             }
                         </td>
-                        <td><button class="more-btn"><i class="fas fa-ellipsis-h"></i></button></td>
+                        <td>
+                            <div class="more-menu-container" style="position: relative;">
+                                <button class="more-btn" onclick="toggleMoreMenu(event, @order.OrderId)">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <div class="more-menu" id="moreMenu_@order.OrderId" style="display: none;">
+                                    <a href="@Url.Action("Details", "Orders", new { id = order.OrderId })" class="menu-item">
+                                        <i class="fas fa-eye"></i> Xem chi tiết
+                                    </a>
+                                    <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'processing')">
+                                        <i class="fas fa-spinner"></i> Đang xử lý
+                                    </button>
+                                    <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'shipped')">
+                                        <i class="fas fa-truck"></i> Đã giao
+                                    </button>
+                                    <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'paid')">
+                                        <i class="fas fa-check"></i> Hoàn thành
+                                    </button>
+                                    <button type="button" class="menu-item text-danger" onclick="cancelOrder(@order.OrderId)">
+                                        <i class="fas fa-times"></i> Hủy đơn
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 }
             }
@@ -165,7 +211,110 @@
 </div>
 
 @section Scripts {
+    <style>
+        .bulk-actions-toolbar {
+            background: #4E5FFF;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .bulk-info {
+            font-weight: 600;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .bulk-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .bulk-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .bulk-btn.btn-danger {
+            background: #ef4444;
+            border-color: #dc2626;
+        }
+        
+        .bulk-btn.btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .more-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            min-width: 180px;
+            margin-top: 4px;
+        }
+        
+        .more-menu .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            color: #475569;
+            text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .more-menu .menu-item:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .more-menu .menu-item:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .more-menu .menu-item:hover {
+            background: #f8fafc;
+            color: #4E5FFF;
+        }
+        
+        .more-menu .menu-item.text-danger {
+            color: #ef4444;
+        }
+        
+        .more-menu .menu-item.text-danger:hover {
+            background: #fef2f2;
+        }
+        
+        .more-menu-container {
+            position: relative;
+        }
+    </style>
     <script>
+        let selectedOrders = new Set();
+        
         document.querySelectorAll('.status-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
@@ -175,16 +324,296 @@
         
         document.getElementById('selectAll')?.addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('.orders-data-table tbody input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = this.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = this.checked;
+                const orderId = parseInt(cb.dataset.orderId);
+                if (this.checked) {
+                    selectedOrders.add(orderId);
+                } else {
+                    selectedOrders.delete(orderId);
+                }
+            });
+            updateBulkToolbar();
         });
         
+        // Handle individual checkbox changes
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('.order-checkbox')) {
+                const orderId = parseInt(e.target.dataset.orderId);
+                if (e.target.checked) {
+                    selectedOrders.add(orderId);
+                } else {
+                    selectedOrders.delete(orderId);
+                }
+                updateBulkToolbar();
+            }
+        });
+        
+        function updateBulkToolbar() {
+            const toolbar = document.getElementById('bulkActionsToolbar');
+            const count = document.getElementById('selectedCount');
+            
+            if (selectedOrders.size > 0) {
+                toolbar.style.display = 'flex';
+                count.textContent = selectedOrders.size;
+            } else {
+                toolbar.style.display = 'none';
+            }
+        }
+        
+        let searchTimeout;
         document.getElementById('orderSearch')?.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.orders-data-table tbody tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            clearTimeout(searchTimeout);
+            const searchTerm = e.target.value;
+            
+            searchTimeout = setTimeout(() => {
+                if (searchTerm.length > 0) {
+                    searchOrders(searchTerm);
+                } else {
+                    location.reload();
+                }
+            }, 500);
+        });
+        
+        function searchOrders(searchTerm) {
+            fetch(`@Url.Action("SearchOrders", "Orders")?searchTerm=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateOrdersTable(data.orders);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function updateOrdersTable(orders) {
+            const tbody = document.querySelector('.orders-data-table tbody');
+            if (!tbody) return;
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 60px;">
+                            <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                            <div style="color: #64748b;">Không tìm thấy đơn hàng nào</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = orders.map(order => `
+                <tr>
+                    <td><input type="checkbox" class="order-checkbox" data-order-id="${order.orderId}"></td>
+                    <td><strong>#${order.orderId.toString().padStart(6, '0')}</strong></td>
+                    <td>
+                        <div class="customer-cell">
+                            <div class="customer-avatar">${order.customerInitial}</div>
+                            <div>
+                                <div class="customer-name">${order.customerName}</div>
+                                <div class="customer-email">${order.customerEmail}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${order.products}${order.productCount > 1 ? ', +' + (order.productCount - 1) + ' khác' : ''}</td>
+                    <td><strong>${order.totalAmount.toLocaleString('vi-VN')}</strong></td>
+                    <td>${order.orderDate}</td>
+                    <td><span class="payment-badge">Paypal</span></td>
+                    <td><span class="status-tag ${order.status == 'paid' ? 'delivered' : (order.status == 'pending' ? 'on-way' : 'await')}">${order.statusText}</span></td>
+                    <td>
+                        <div class="more-menu-container" style="position: relative;">
+                            <button class="more-btn" onclick="toggleMoreMenu(event, ${order.orderId})">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <div class="more-menu" id="moreMenu_${order.orderId}" style="display: none;">
+                                <a href="@Url.Action("Details", "Orders")?id=${order.orderId}" class="menu-item">
+                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                </a>
+                                <button type="button" class="menu-item" onclick="updateOrderStatus(${order.orderId}, 'processing')">
+                                    <i class="fas fa-spinner"></i> Đang xử lý
+                                </button>
+                                <button type="button" class="menu-item" onclick="updateOrderStatus(${order.orderId}, 'shipped')">
+                                    <i class="fas fa-truck"></i> Đã giao
+                                </button>
+                                <button type="button" class="menu-item" onclick="updateOrderStatus(${order.orderId}, 'paid')">
+                                    <i class="fas fa-check"></i> Hoàn thành
+                                </button>
+                                <button type="button" class="menu-item text-danger" onclick="cancelOrder(${order.orderId})">
+                                    <i class="fas fa-times"></i> Hủy đơn
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function toggleMoreMenu(event, orderId) {
+            event.stopPropagation();
+            const menu = document.getElementById(`moreMenu_${orderId}`);
+            
+            // Close all other menus
+            document.querySelectorAll('.more-menu').forEach(m => {
+                if (m.id !== `moreMenu_${orderId}`) {
+                    m.style.display = 'none';
+                }
+            });
+            
+            // Toggle current menu
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Close menus when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.more-menu').forEach(m => {
+                m.style.display = 'none';
             });
         });
+        
+        function updateOrderStatus(orderId, status) {
+            if (!confirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng này?')) {
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('id', orderId);
+            formData.append('status', status);
+            
+            // Get anti-forgery token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
+            
+            fetch('@Url.Action("UpdateStatus", "Orders")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toast.success(data.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    toast.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Có lỗi xảy ra khi cập nhật trạng thái');
+            });
+        }
+        
+        function cancelOrder(orderId) {
+            if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('id', orderId);
+            
+            // Get anti-forgery token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
+            
+            fetch('@Url.Action("CancelOrder", "Orders")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toast.success(data.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    toast.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Có lỗi xảy ra khi hủy đơn hàng');
+            });
+        }
+        
+        function bulkUpdateStatus(status) {
+            if (selectedOrders.size === 0) {
+                toast.warning('Vui lòng chọn ít nhất một đơn hàng');
+                return;
+            }
+            
+            if (!confirm(`Bạn có chắc muốn cập nhật trạng thái cho ${selectedOrders.size} đơn hàng?`)) {
+                return;
+            }
+            
+            const formData = new FormData();
+            selectedOrders.forEach(id => {
+                formData.append('orderIds', id);
+            });
+            formData.append('status', status);
+            
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
+            
+            fetch('@Url.Action("BulkUpdateStatus", "Orders")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toast.success(data.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    toast.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Có lỗi xảy ra khi cập nhật trạng thái');
+            });
+        }
+        
+        function bulkDelete() {
+            if (selectedOrders.size === 0) {
+                toast.warning('Vui lòng chọn ít nhất một đơn hàng');
+                return;
+            }
+            
+            if (!confirm(`Bạn có chắc muốn xóa ${selectedOrders.size} đơn hàng? Hành động này không thể hoàn tác!`)) {
+                return;
+            }
+            
+            const formData = new FormData();
+            selectedOrders.forEach(id => {
+                formData.append('orderIds', id);
+            });
+            
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
+            
+            fetch('@Url.Action("BulkDelete", "Orders")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toast.success(data.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    toast.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Có lỗi xảy ra khi xóa đơn hàng');
+            });
+        }
     </script>
 }
