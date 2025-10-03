@@ -41,25 +41,51 @@ namespace QuanLyCuaHangBanLe.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int categoryId, string categoryName)
+        public async Task<IActionResult> Edit(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
+
             try
             {
-                var category = await _categoryRepository.GetByIdAsync(categoryId);
-                if (category == null)
+                var existingCategory = await _categoryRepository.GetByIdAsync(category.CategoryId);
+                if (existingCategory == null)
                 {
-                    return Json(new { success = false, message = "Không tìm thấy loại sản phẩm" });
+                    TempData["ErrorMessage"] = "Không tìm thấy loại sản phẩm";
+                    return RedirectToAction(nameof(Index));
                 }
 
-                category.CategoryName = categoryName;
-                await _categoryRepository.UpdateAsync(category);
-                return Json(new { success = true, message = "Cập nhật thành công!" });
+                existingCategory.CategoryName = category.CategoryName;
+                await _categoryRepository.UpdateAsync(existingCategory);
+                TempData["SuccessMessage"] = "Cập nhật loại sản phẩm thành công!";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return View(category);
             }
         }
 

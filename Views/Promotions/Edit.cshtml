@@ -1,0 +1,296 @@
+@model QuanLyCuaHangBanLe.Models.Promotion
+
+@{
+    ViewData["Title"] = "Sửa khuyến mãi";
+}
+
+<style>
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        border: 1px solid #e5e5e5;
+    }
+
+    .form-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f5f5f5;
+    }
+
+    .form-header h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #1a1a1a;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background: #fafafa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: #1a1a1a;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-submit {
+        background: #1a1a1a;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: #000000;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-cancel {
+        background: #e5e5e5;
+        color: #1a1a1a;
+    }
+
+    .btn-cancel:hover {
+        background: #d4d4d4;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 2px solid #f5f5f5;
+    }
+
+    .required {
+        color: #dc3545;
+        margin-left: 3px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .info-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        background: #e3f2fd;
+        color: #1976d2;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 8px;
+    }
+
+    .info-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2>📝 Sửa khuyến mãi</h2>
+        </div>
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="PromoId" />
+            <input type="hidden" asp-for="UsedCount" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="PromoCode" class="form-label">
+                        Mã khuyến mãi<span class="required">*</span>
+                        <span class="info-badge">VD: SUMMER2024</span>
+                    </label>
+                    <input asp-for="PromoCode" class="form-control" placeholder="Nhập mã khuyến mãi" required />
+                    <span asp-validation-for="PromoCode" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="form-label">Trạng thái</label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Tạm dừng</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label asp-for="Description" class="form-label">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả về khuyến mãi..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="DiscountType" class="form-label">
+                        Loại giảm giá<span class="required">*</span>
+                    </label>
+                    <select asp-for="DiscountType" class="form-select" required onchange="updateDiscountLabel()">
+                        <option value="">Chọn loại giảm giá</option>
+                        <option value="percent">Phần trăm (%)</option>
+                        <option value="fixed">Số tiền cố định (đ)</option>
+                    </select>
+                    <span asp-validation-for="DiscountType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DiscountValue" class="form-label">
+                        Giá trị giảm<span class="required">*</span>
+                        <span id="discountUnit" class="info-badge"></span>
+                    </label>
+                    <input asp-for="DiscountValue" type="number" step="0.01" class="form-control" placeholder="0" required />
+                    <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="StartDate" class="form-label">
+                        Ngày bắt đầu<span class="required">*</span>
+                    </label>
+                    <input asp-for="StartDate" type="datetime-local" class="form-control" required />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EndDate" class="form-label">
+                        Ngày kết thúc<span class="required">*</span>
+                    </label>
+                    <input asp-for="EndDate" type="datetime-local" class="form-control" required />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="MinOrderAmount" class="form-label">
+                        Giá trị đơn hàng tối thiểu (đ)
+                        <span class="info-badge">0 = không giới hạn</span>
+                    </label>
+                    <input asp-for="MinOrderAmount" type="number" step="1000" class="form-control" />
+                    <span asp-validation-for="MinOrderAmount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UsageLimit" class="form-label">
+                        Giới hạn sử dụng
+                        <span class="info-badge">0 = không giới hạn</span>
+                    </label>
+                    <input asp-for="UsageLimit" type="number" class="form-control" />
+                    <span asp-validation-for="UsageLimit" class="text-danger"></span>
+                    <div class="info-text">
+                        Đã sử dụng: @Model.UsedCount lần
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-submit">
+                    ✅ Lưu thay đổi
+                </button>
+                <a asp-action="Index" class="btn btn-cancel">
+                    ❌ Hủy bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function updateDiscountLabel() {
+        const discountType = document.querySelector('select[name="DiscountType"]').value;
+        const unitBadge = document.getElementById('discountUnit');
+        
+        if (discountType === 'percent') {
+            unitBadge.textContent = 'VD: 10 = 10%';
+        } else if (discountType === 'fixed') {
+            unitBadge.textContent = 'VD: 50000 = 50,000đ';
+        } else {
+            unitBadge.textContent = '';
+        }
+    }
+
+    // Khởi tạo
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format datetime inputs
+        const startDate = document.querySelector('input[name="StartDate"]');
+        const endDate = document.querySelector('input[name="EndDate"]');
+        
+        if (startDate && startDate.value) {
+            const start = new Date(startDate.value);
+            startDate.value = start.toISOString().slice(0, 16);
+        }
+        
+        if (endDate && endDate.value) {
+            const end = new Date(endDate.value);
+            endDate.value = end.toISOString().slice(0, 16);
+        }
+
+        updateDiscountLabel();
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -59,6 +59,63 @@ namespace QuanLyCuaHangBanLe.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var promotion = await _promotionRepository.GetByIdAsync(id);
+            if (promotion == null)
+            {
+                return NotFound();
+            }
+
+            return View(promotion);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Promotion promotion)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(promotion);
+            }
+
+            try
+            {
+                var existingPromotion = await _promotionRepository.GetByIdAsync(promotion.PromoId);
+                if (existingPromotion == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy khuyến mãi";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                existingPromotion.PromoCode = promotion.PromoCode;
+                existingPromotion.Description = promotion.Description;
+                existingPromotion.DiscountType = promotion.DiscountType;
+                existingPromotion.DiscountValue = promotion.DiscountValue;
+                existingPromotion.StartDate = promotion.StartDate;
+                existingPromotion.EndDate = promotion.EndDate;
+                existingPromotion.MinOrderAmount = promotion.MinOrderAmount;
+                existingPromotion.UsageLimit = promotion.UsageLimit;
+                existingPromotion.Status = promotion.Status;
+
+                await _promotionRepository.UpdateAsync(existingPromotion);
+                TempData["SuccessMessage"] = "Cập nhật khuyến mãi thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return View(promotion);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {

@@ -40,18 +40,55 @@ namespace QuanLyCuaHangBanLe.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var supplier = await _supplierRepository.GetByIdAsync(id);
+            if (supplier == null)
+            {
+                return NotFound();
+            }
+
+            return View(supplier);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Supplier supplier)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(supplier);
+            }
+
             try
             {
-                await _supplierRepository.UpdateAsync(supplier);
-                return Json(new { success = true, message = "Cập nhật thành công!" });
+                var existingSupplier = await _supplierRepository.GetByIdAsync(supplier.SupplierId);
+                if (existingSupplier == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy nhà cung cấp";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                existingSupplier.Name = supplier.Name;
+                existingSupplier.Phone = supplier.Phone;
+                existingSupplier.Email = supplier.Email;
+                existingSupplier.Address = supplier.Address;
+
+                await _supplierRepository.UpdateAsync(existingSupplier);
+                TempData["SuccessMessage"] = "Cập nhật nhà cung cấp thành công!";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return View(supplier);
             }
         }
 
