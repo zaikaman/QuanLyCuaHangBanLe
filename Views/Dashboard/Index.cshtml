@@ -12,12 +12,13 @@
 
     .stat-card {
         background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
+        padding: 28px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        border: 1px solid #e5e5e5;
     }
 
     .stat-card::before {
@@ -27,12 +28,13 @@
         left: 0;
         width: 4px;
         height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1a1a1a;
     }
 
     .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        border-color: #1a1a1a;
     }
 
     .stat-icon {
@@ -43,12 +45,13 @@
     .stat-value {
         font-size: 2rem;
         font-weight: 700;
-        color: #2d3748;
+        color: #1a1a1a;
         margin-bottom: 5px;
+        letter-spacing: -0.02em;
     }
 
     .stat-label {
-        color: #718096;
+        color: #666666;
         font-size: 0.9rem;
         font-weight: 500;
     }
@@ -57,19 +60,19 @@
         display: inline-block;
         margin-top: 10px;
         padding: 4px 10px;
-        border-radius: 20px;
+        border-radius: 6px;
         font-size: 0.8rem;
         font-weight: 600;
     }
 
     .stat-change.positive {
-        background: #c6f6d5;
-        color: #22543d;
+        background: #e8f5e9;
+        color: #2e7d32;
     }
 
     .stat-change.negative {
-        background: #fed7d7;
-        color: #742a2a;
+        background: #ffebee;
+        color: #c62828;
     }
 
     .content-row {
@@ -81,35 +84,38 @@
 
     .card {
         background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 28px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e5e5;
     }
 
     .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f7fafc;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e5e5e5;
     }
 
     .card-title {
         font-size: 1.2rem;
-        font-weight: 600;
-        color: #2d3748;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: -0.02em;
     }
 
     .card-action {
-        color: #667eea;
+        color: #1a1a1a;
         text-decoration: none;
         font-size: 0.9rem;
-        font-weight: 500;
+        font-weight: 600;
+        transition: all 0.2s;
     }
 
     .card-action:hover {
-        text-decoration: underline;
+        color: #666666;
     }
 
     .recent-orders-table {
@@ -120,53 +126,54 @@
     .recent-orders-table th {
         text-align: left;
         padding: 12px;
-        background: #f7fafc;
-        color: #4a5568;
+        background: #fafafa;
+        color: #666666;
         font-weight: 600;
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e5e5;
     }
 
     .recent-orders-table td {
         padding: 15px 12px;
-        border-bottom: 1px solid #f7fafc;
-        color: #2d3748;
+        border-bottom: 1px solid #f5f5f5;
+        color: #1a1a1a;
         font-size: 0.9rem;
     }
 
     .recent-orders-table tr:hover {
-        background: #f7fafc;
+        background: #fafafa;
     }
 
     .status-badge {
         display: inline-block;
         padding: 5px 12px;
-        border-radius: 20px;
+        border-radius: 6px;
         font-size: 0.8rem;
         font-weight: 600;
     }
 
     .status-badge.paid {
-        background: #c6f6d5;
-        color: #22543d;
+        background: #e8f5e9;
+        color: #2e7d32;
     }
 
     .status-badge.pending {
-        background: #feebc8;
-        color: #7c2d12;
+        background: #fff3e0;
+        color: #e65100;
     }
 
     .status-badge.canceled {
-        background: #fed7d7;
-        color: #742a2a;
+        background: #ffebee;
+        color: #c62828;
     }
 
     .activity-item {
         display: flex;
         gap: 15px;
         padding: 15px 0;
-        border-bottom: 1px solid #f7fafc;
+        border-bottom: 1px solid #f5f5f5;
     }
 
     .activity-item:last-child {
@@ -182,18 +189,20 @@
         justify-content: center;
         font-size: 1.2rem;
         flex-shrink: 0;
+        background: #fafafa;
+        border: 1px solid #e5e5e5;
     }
 
     .activity-icon.order {
-        background: #e6fffa;
+        background: #fafafa;
     }
 
     .activity-icon.product {
-        background: #fef5e7;
+        background: #fafafa;
     }
 
     .activity-icon.customer {
-        background: #e0e7ff;
+        background: #fafafa;
     }
 
     .activity-content {
@@ -202,13 +211,13 @@
 
     .activity-title {
         font-weight: 600;
-        color: #2d3748;
+        color: #1a1a1a;
         font-size: 0.9rem;
         margin-bottom: 3px;
     }
 
     .activity-time {
-        color: #a0aec0;
+        color: #999999;
         font-size: 0.8rem;
     }
 
@@ -221,19 +230,21 @@
 
     .quick-action-btn {
         padding: 15px;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
         text-align: center;
         text-decoration: none;
-        color: #2d3748;
-        transition: all 0.2s ease;
-        font-weight: 500;
+        color: #1a1a1a;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 600;
+        background: white;
     }
 
     .quick-action-btn:hover {
-        border-color: #667eea;
-        background: #f7fafc;
-        transform: translateY(-2px);
+        border-color: #1a1a1a;
+        background: #fafafa;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .quick-action-icon {

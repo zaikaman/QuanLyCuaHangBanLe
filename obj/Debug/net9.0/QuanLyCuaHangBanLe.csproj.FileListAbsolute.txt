@@ -83,8 +83,6 @@ C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\co
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\gzwcbmvsph-muycvpuwrr.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\99a2tz72kp-87fc7y1x7t.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\k0jrupt7zz-mlv21k5csn.gz
-C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\7jlggxzi8e-wf1tahoier.gz
-C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\p0r5l8d088-wf1tahoier.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\staticwebassets.development.json
@@ -94,4 +92,6 @@ C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\re
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\QuanLyCuaHangBanLe.pdb
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\QuanLyCuaHangBanLe.genruntimeconfig.cache
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\ref\QuanLyCuaHangBanLe.dll
-C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\25wxi6zo0g-9l1kjfuy8d.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\25wxi6zo0g-btb0m24ud9.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\7jlggxzi8e-t9m4jgydjb.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\p0r5l8d088-t9m4jgydjb.gz
