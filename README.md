@@ -146,10 +146,8 @@ Hệ thống quản lý cửa hàng bán lẻ toàn diện được xây dựng 
 git clone https://github.com/zaikaman/QuanLyCuaHangBanLe.git
 
 # Di chuyển vào thư mục dự án
-cd QuanLyCuaHangBanLe/QuanLyCuaHangBanLe
+cd QuanLyCuaHangBanLe
 ```
-
-Hoặc tải file ZIP và giải nén.
 
 ### Bước 2: Cài Đặt XAMPP và Khởi Động MySQL
 
@@ -163,46 +161,17 @@ Hoặc tải file ZIP và giải nén.
    - Click nút **Start** ở dòng MySQL
    - Đợi đến khi status hiển thị màu xanh
 
-   ![XAMPP Control Panel](https://i.imgur.com/xampp-example.png)
-
 3. **Kiểm tra MySQL đã chạy:**
    - Mở trình duyệt và truy cập: `http://localhost/phpmyadmin`
    - Bạn sẽ thấy giao diện phpMyAdmin
 
 ### Bước 3: Tạo Database
 
-#### Cách 1: Sử dụng phpMyAdmin (Khuyến nghị cho người mới)
-
 1. Truy cập `http://localhost/phpmyadmin`
 2. Click tab **SQL** ở phía trên
-3. Copy toàn bộ nội dung file `sql.sql` trong project
-4. Paste vào khung SQL và click **Go**
-5. Database `db_cuahangbanle` sẽ được tạo với dữ liệu mẫu
-
-#### Cách 2: Sử dụng MySQL Command Line
-
-```bash
-# Mở Command Prompt/PowerShell trong thư mục project
-cd C:\xampp\mysql\bin
-
-# Login vào MySQL (password mặc định để trống)
-mysql -u root -p
-
-# Tạo database
-CREATE DATABASE db_cuahangbanle;
-
-# Chọn database
-USE db_cuahangbanle;
-
-# Import file SQL (thay đổi đường dẫn phù hợp)
-SOURCE C:/Users/ADMIN/Desktop/QuanLyCuaHangBanLe/QuanLyCuaHangBanLe/sql.sql;
-
-# Kiểm tra tables đã được tạo
-SHOW TABLES;
-
-# Thoát
-EXIT;
-```
+3. Import file `sql.sql` trong project
+4. Click **Go**
+5. Database `store_management` sẽ được tạo với dữ liệu mẫu
 
 ### Bước 4: Cấu Hình Connection String
 
@@ -213,7 +182,7 @@ EXIT;
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=db_cuahangbanle;User=root;Password=;"
+    "DefaultConnection": "Server=localhost;Database=store_management;User=root;Password=;"
   }
 }
 ```
@@ -224,7 +193,7 @@ EXIT;
 
 4. Nếu MySQL chạy trên port khác 3306:
    ```json
-   "Server=localhost;Port=3307;Database=db_cuahangbanle;User=root;Password=;"
+   "Server=localhost;Port=3307;Database=store_management;User=root;Password=;"
    ```
 
 ### Bước 5: Restore Dependencies
@@ -248,7 +217,7 @@ dotnet build
 Database bao gồm các bảng chính:
 
 ```
-📊 Database: db_cuahangbanle
+📊 Database: store_management
 ├── 👤 users (Người dùng)
 ├── 👥 customers (Khách hàng)
 ├── 📦 products (Sản phẩm)
@@ -569,7 +538,7 @@ Tương tự pattern trên với CRUD đầy đủ.
    ```
 3. Restart ứng dụng
 
-### Lỗi: "Unknown database 'db_cuahangbanle'"
+### Lỗi: "Unknown database 'store_management'"
 
 **Nguyên nhân:** Database chưa được tạo.
 
