@@ -143,36 +143,6 @@
             gap: 20px;
         }
 
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding: 10px 16px 10px 42px;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            width: 320px;
-            font-size: 0.9rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #fafafa;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: #1a1a1a;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666666;
-            font-size: 1.1rem;
-        }
-
         .user-menu {
             display: flex;
             align-items: center;
@@ -235,10 +205,6 @@
 
             .main-wrapper {
                 margin-left: 0;
-            }
-
-            .search-box input {
-                width: 200px;
             }
 
             .page-title {
@@ -337,10 +303,6 @@
                 <h2 class="page-title">@ViewData["Title"]</h2>
             </div>
             <div class="topbar-right">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" placeholder="Tìm kiếm..." />
-                </div>
                 <div class="user-menu">
                     <div class="user-avatar">A</div>
                     <div class="user-info">

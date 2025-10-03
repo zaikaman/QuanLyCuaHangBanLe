@@ -153,7 +153,7 @@
 </div>
 
 <div class="stats-row">
-    <div class="stat-box" style="border-left-color: #667eea;">
+    <div class="stat-box" style="border-left-color: #1a1a1a;">
         <h3>Tổng sản phẩm</h3>
         <div class="value">@Model.Count()</div>
     </div>
@@ -228,6 +228,49 @@
 </div>
 
 <script>
+    // Real-time search cho tồn kho
+    document.querySelector('.search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.inventory-table tbody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const productName = row.querySelector('td:first-child')?.textContent.toLowerCase() || '';
+            
+            if (productName.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Hiển thị thông báo nếu không tìm thấy
+        const table = document.querySelector('.inventory-table');
+        
+        if (visibleCount === 0 && searchTerm !== '') {
+            if (table) table.style.display = 'none';
+            
+            let emptyState = document.querySelector('.empty-search-state');
+            if (!emptyState) {
+                emptyState = document.createElement('div');
+                emptyState.className = 'empty-search-state';
+                emptyState.style.cssText = 'text-align: center; padding: 60px 20px;';
+                emptyState.innerHTML = `
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a1a; margin-bottom: 10px;">Không tìm thấy sản phẩm</div>
+                    <p style="color: #666;">Không có sản phẩm nào khớp với từ khóa "${searchTerm}"</p>
+                `;
+                document.querySelector('.inventory-card').appendChild(emptyState);
+            }
+        } else {
+            if (table) table.style.display = '';
+            
+            const emptyState = document.querySelector('.empty-search-state');
+            if (emptyState) emptyState.remove();
+        }
+    });
+
     function updateInventory(id) {
         const quantity = prompt('Nhập số lượng mới:');
         if (quantity !== null && quantity !== '') {

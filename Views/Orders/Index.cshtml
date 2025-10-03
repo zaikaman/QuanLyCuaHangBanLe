@@ -14,7 +14,7 @@
 
     .btn-primary {
         padding: 12px 24px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1a1a1a;
         color: white;
         border: none;
         border-radius: 10px;
@@ -29,7 +29,8 @@
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        background: #000000;
         color: white;
     }
 
@@ -66,9 +67,9 @@
 
     .filter-tab:hover,
     .filter-tab.active {
-        border-color: #667eea;
+        border-color: #1a1a1a;
         background: #f7fafc;
-        color: #667eea;
+        color: #1a1a1a;
     }
 
     .orders-table {
@@ -107,7 +108,7 @@
 
     .order-id {
         font-weight: 600;
-        color: #667eea;
+        color: #1a1a1a;
     }
 
     .total-amount {
@@ -178,14 +179,17 @@
 
 <div class="orders-card">
     <div class="orders-header">
-        <div class="filter-tabs">
-            <button class="filter-tab active">Tất cả</button>
-            <button class="filter-tab">Đã thanh toán</button>
-            <button class="filter-tab">Chờ xử lý</button>
-            <button class="filter-tab">Đã hủy</button>
+        <div style="display: flex; gap: 20px; align-items: center; flex: 1;">
+            <input type="text" class="search-input" placeholder="🔍 Tìm kiếm đơn hàng..." style="flex: 1; max-width: 400px; padding: 10px 14px; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 0.95rem;" />
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">Tất cả</button>
+                <button class="filter-tab" data-filter="paid">Đã thanh toán</button>
+                <button class="filter-tab" data-filter="pending">Chờ xử lý</button>
+                <button class="filter-tab" data-filter="canceled">Đã hủy</button>
+            </div>
         </div>
         <div style="color: #718096; font-size: 0.9rem;">
-            Tổng: <strong style="color: #2d3748;">@Model.Count()</strong> đơn hàng
+            Tổng: <strong style="color: #2d3748;" id="orderCount">@Model.Count()</strong> đơn hàng
         </div>
     </div>
 
@@ -246,3 +250,83 @@
         </div>
     }
 </div>
+
+<script>
+    let currentFilter = 'all';
+
+    // Real-time search cho đơn hàng
+    const searchInput = document.querySelector('.search-input');
+    searchInput.addEventListener('input', function(e) {
+        filterOrders();
+    });
+
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.getAttribute('data-filter');
+            filterOrders();
+        });
+    });
+
+    function filterOrders() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.orders-table tbody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const orderId = row.querySelector('.order-id')?.textContent.toLowerCase() || '';
+            const customer = row.querySelectorAll('td')[1]?.textContent.toLowerCase() || '';
+            const date = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
+            const statusBadge = row.querySelector('.status-badge');
+            const status = statusBadge?.classList.contains('paid') ? 'paid' : 
+                          statusBadge?.classList.contains('pending') ? 'pending' : 
+                          statusBadge?.classList.contains('canceled') ? 'canceled' : '';
+
+            // Kiểm tra filter status
+            const matchesFilter = currentFilter === 'all' || status === currentFilter;
+            
+            // Kiểm tra search term
+            const matchesSearch = searchTerm === '' || 
+                                 orderId.includes(searchTerm) || 
+                                 customer.includes(searchTerm) || 
+                                 date.includes(searchTerm);
+
+            if (matchesFilter && matchesSearch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Cập nhật số lượng
+        document.getElementById('orderCount').textContent = visibleCount;
+
+        // Hiển thị thông báo nếu không tìm thấy
+        const table = document.querySelector('.orders-table');
+        
+        if (visibleCount === 0) {
+            if (table) table.style.display = 'none';
+            
+            let emptyState = document.querySelector('.empty-search-state');
+            if (!emptyState) {
+                emptyState = document.createElement('div');
+                emptyState.className = 'empty-search-state';
+                emptyState.style.cssText = 'text-align: center; padding: 60px 20px;';
+                emptyState.innerHTML = `
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a1a; margin-bottom: 10px;">Không tìm thấy đơn hàng</div>
+                    <p style="color: #666;">Không có đơn hàng nào khớp với bộ lọc</p>
+                `;
+                document.querySelector('.orders-card').appendChild(emptyState);
+            }
+        } else {
+            if (table) table.style.display = '';
+            
+            const emptyState = document.querySelector('.empty-search-state');
+            if (emptyState) emptyState.remove();
+        }
+    }
+</script>

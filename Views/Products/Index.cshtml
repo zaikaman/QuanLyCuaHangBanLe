@@ -349,3 +349,49 @@
         </div>
     }
 </div>
+
+<script>
+    // Real-time search cho sản phẩm
+    document.querySelector('.search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.products-table tbody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const productName = row.querySelector('.product-name')?.textContent.toLowerCase() || '';
+            const barcode = row.querySelector('.product-barcode')?.textContent.toLowerCase() || '';
+            const category = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+            
+            if (productName.includes(searchTerm) || barcode.includes(searchTerm) || category.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Hiển thị thông báo nếu không tìm thấy
+        const emptyState = document.querySelector('.empty-state');
+        const table = document.querySelector('.products-table');
+        const pagination = document.querySelector('.pagination-container');
+        
+        if (visibleCount === 0 && searchTerm !== '') {
+            if (table) table.style.display = 'none';
+            if (pagination) pagination.style.display = 'none';
+            if (!emptyState) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-state';
+                emptyDiv.innerHTML = `
+                    <div class="empty-state-icon">🔍</div>
+                    <div class="empty-state-title">Không tìm thấy sản phẩm</div>
+                    <p>Không có sản phẩm nào khớp với từ khóa "${searchTerm}"</p>
+                `;
+                document.querySelector('.products-card').appendChild(emptyDiv);
+            }
+        } else {
+            if (table) table.style.display = '';
+            if (pagination) pagination.style.display = searchTerm === '' ? '' : 'none';
+            if (emptyState && searchTerm !== '') emptyState.remove();
+        }
+    });
+</script>

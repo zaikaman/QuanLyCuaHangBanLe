@@ -310,3 +310,56 @@
         </div>
     }
 </div>
+
+<script>
+    // Real-time search cho khách hàng
+    document.querySelector('.search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.customers-table tbody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const name = cells[0]?.textContent.toLowerCase() || '';
+            const phone = cells[1]?.textContent.toLowerCase() || '';
+            const email = cells[2]?.textContent.toLowerCase() || '';
+            const address = cells[3]?.textContent.toLowerCase() || '';
+            
+            if (name.includes(searchTerm) || phone.includes(searchTerm) || 
+                email.includes(searchTerm) || address.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Hiển thị thông báo nếu không tìm thấy
+        const table = document.querySelector('.customers-table');
+        const pagination = document.querySelector('.pagination-container');
+        
+        if (visibleCount === 0 && searchTerm !== '') {
+            if (table) table.style.display = 'none';
+            if (pagination) pagination.style.display = 'none';
+            
+            let emptyState = document.querySelector('.empty-search-state');
+            if (!emptyState) {
+                emptyState = document.createElement('div');
+                emptyState.className = 'empty-search-state';
+                emptyState.style.cssText = 'text-align: center; padding: 60px 20px;';
+                emptyState.innerHTML = `
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a1a; margin-bottom: 10px;">Không tìm thấy khách hàng</div>
+                    <p style="color: #666;">Không có khách hàng nào khớp với từ khóa "${searchTerm}"</p>
+                `;
+                document.querySelector('.customers-card').appendChild(emptyState);
+            }
+        } else {
+            if (table) table.style.display = '';
+            if (pagination) pagination.style.display = searchTerm === '' ? '' : 'none';
+            
+            const emptyState = document.querySelector('.empty-search-state');
+            if (emptyState) emptyState.remove();
+        }
+    });
+</script>
