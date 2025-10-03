@@ -1,0 +1,1 @@
+Always answer in Vietnamese and write code and content in Vietnamese.
