@@ -2,468 +2,420 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<style>
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 25px;
-        margin-bottom: 30px;
-    }
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 
-    .stat-card {
-        background: white;
-        padding: 28px;
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        border: 1px solid #e5e5e5;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: #1a1a1a;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        border-color: #1a1a1a;
-    }
-
-    .stat-icon {
-        font-size: 2.5rem;
-        margin-bottom: 15px;
-    }
-
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 5px;
-        letter-spacing: -0.02em;
-    }
-
-    .stat-label {
-        color: #666666;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    .stat-change {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-
-    .stat-change.positive {
-        background: #e8f5e9;
-        color: #2e7d32;
-    }
-
-    .stat-change.negative {
-        background: #ffebee;
-        color: #c62828;
-    }
-
-    .content-row {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 25px;
-        margin-bottom: 30px;
-    }
-
-    .card {
-        background: white;
-        padding: 28px;
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e5e5e5;
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .card-title {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        letter-spacing: -0.02em;
-    }
-
-    .card-action {
-        color: #1a1a1a;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-
-    .card-action:hover {
-        color: #666666;
-    }
-
-    .recent-orders-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .recent-orders-table th {
-        text-align: left;
-        padding: 12px;
-        background: #fafafa;
-        color: #666666;
-        font-weight: 600;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .recent-orders-table td {
-        padding: 15px 12px;
-        border-bottom: 1px solid #f5f5f5;
-        color: #1a1a1a;
-        font-size: 0.9rem;
-    }
-
-    .recent-orders-table tr:hover {
-        background: #fafafa;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 5px 12px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-
-    .status-badge.paid {
-        background: #e8f5e9;
-        color: #2e7d32;
-    }
-
-    .status-badge.pending {
-        background: #fff3e0;
-        color: #e65100;
-    }
-
-    .status-badge.canceled {
-        background: #ffebee;
-        color: #c62828;
-    }
-
-    .activity-item {
-        display: flex;
-        gap: 15px;
-        padding: 15px 0;
-        border-bottom: 1px solid #f5f5f5;
-    }
-
-    .activity-item:last-child {
-        border-bottom: none;
-    }
-
-    .activity-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        flex-shrink: 0;
-        background: #fafafa;
-        border: 1px solid #e5e5e5;
-    }
-
-    .activity-icon.order {
-        background: #fafafa;
-    }
-
-    .activity-icon.product {
-        background: #fafafa;
-    }
-
-    .activity-icon.customer {
-        background: #fafafa;
-    }
-
-    .activity-content {
-        flex: 1;
-    }
-
-    .activity-title {
-        font-weight: 600;
-        color: #1a1a1a;
-        font-size: 0.9rem;
-        margin-bottom: 3px;
-    }
-
-    .activity-time {
-        color: #999999;
-        font-size: 0.8rem;
-    }
-
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .quick-action-btn {
-        padding: 15px;
-        border: 1px solid #e5e5e5;
-        border-radius: 8px;
-        text-align: center;
-        text-decoration: none;
-        color: #1a1a1a;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        font-weight: 600;
-        background: white;
-    }
-
-    .quick-action-btn:hover {
-        border-color: #1a1a1a;
-        background: #fafafa;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .quick-action-icon {
-        font-size: 1.5rem;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    @@media (max-width: 768px) {
-        .content-row {
-            grid-template-columns: 1fr;
-        }
-        
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
-<div class="dashboard-grid">
-    <div class="stat-card">
-        <div class="stat-icon">💰</div>
-        <div class="stat-value">45.2M</div>
-        <div class="stat-label">Doanh thu hôm nay</div>
-        <span class="stat-change positive">↑ 12.5%</span>
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">Chào mừng trở lại! </h1>
+        <p style="color: #94a3b8; margin-top: 8px;">Đây là tổng quan về cửa hàng của bạn</p>
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon">🛍️</div>
-        <div class="stat-value">156</div>
-        <div class="stat-label">Đơn hàng</div>
-        <span class="stat-change positive">↑ 8.3%</span>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-icon">📦</div>
-        <div class="stat-value">50</div>
-        <div class="stat-label">Sản phẩm</div>
-        <span class="stat-change">Tổng số</span>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-value">20</div>
-        <div class="stat-label">Khách hàng</div>
-        <span class="stat-change positive">↑ 3 mới</span>
+    <div class="date-range-selector">
+        <button class="date-btn">Hôm nay</button>
+        <button class="date-btn active">Tuần này</button>
+        <button class="date-btn">Tháng này</button>
+        <button class="date-btn"><i class="fas fa-calendar"></i></button>
     </div>
 </div>
 
-<div class="content-row">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Đơn hàng gần đây</h3>
-            <a href="/Orders/Index" class="card-action">Xem tất cả →</a>
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Tổng doanh thu</div>
+                <div class="stat-value">
+                    @{
+                        decimal totalRevenue = (decimal)ViewBag.TotalRevenue;
+                        if (totalRevenue >= 1000000000) // >= 1 tỷ
+                        {
+                            <text>@((totalRevenue / 1000000000).ToString("0.##"))B₫</text>
+                        }
+                        else if (totalRevenue >= 1000000) // >= 1 triệu
+                        {
+                            <text>@((totalRevenue / 1000000).ToString("0.##"))M₫</text>
+                        }
+                        else
+                        {
+                            <text>@totalRevenue.ToString("#,##0")₫</text>
+                        }
+                    }
+                </div>
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 
+                    @{
+                        var revenueChange = ViewBag.MonthRevenue > 0 && ViewBag.TotalRevenue > 0 
+                            ? ((decimal)ViewBag.MonthRevenue / (decimal)ViewBag.TotalRevenue * 100).ToString("0.#") 
+                            : "0";
+                    }
+                    @revenueChange%
+                </span>
+            </div>
+            <div class="stat-icon purple">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
         </div>
-        <table class="recent-orders-table">
-            <thead>
-                <tr>
-                    <th>Mã đơn</th>
-                    <th>Khách hàng</th>
-                    <th>Tổng tiền</th>
-                    <th>Trạng thái</th>
-                    <th>Ngày</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>#ORD-001</td>
-                    <td>Nguyễn Văn A</td>
-                    <td>1,192,330đ</td>
-                    <td><span class="status-badge paid">Đã thanh toán</span></td>
-                    <td>03/10/2025</td>
-                </tr>
-                <tr>
-                    <td>#ORD-002</td>
-                    <td>Trần Thị B</td>
-                    <td>1,731,608đ</td>
-                    <td><span class="status-badge paid">Đã thanh toán</span></td>
-                    <td>03/10/2025</td>
-                </tr>
-                <tr>
-                    <td>#ORD-003</td>
-                    <td>Lê Văn C</td>
-                    <td>720,782đ</td>
-                    <td><span class="status-badge pending">Chờ xử lý</span></td>
-                    <td>02/10/2025</td>
-                </tr>
-                <tr>
-                    <td>#ORD-004</td>
-                    <td>Phạm Thị D</td>
-                    <td>21,686đ</td>
-                    <td><span class="status-badge paid">Đã thanh toán</span></td>
-                    <td>02/10/2025</td>
-                </tr>
-                <tr>
-                    <td>#ORD-005</td>
-                    <td>Hoàng Văn E</td>
-                    <td>94,180đ</td>
-                    <td><span class="status-badge paid">Đã thanh toán</span></td>
-                    <td>01/10/2025</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Hoạt động gần đây</h3>
-        </div>
-        <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon order">🛍️</div>
-                <div class="activity-content">
-                    <div class="activity-title">Đơn hàng mới #ORD-156</div>
-                    <div class="activity-time">5 phút trước</div>
-                </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Tổng đơn hàng</div>
+                <div class="stat-value">@ViewBag.TotalOrders</div>
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 0%
+                </span>
             </div>
-            <div class="activity-item">
-                <div class="activity-icon product">📦</div>
-                <div class="activity-content">
-                    <div class="activity-title">Cập nhật sản phẩm "Coca Cola"</div>
-                    <div class="activity-time">15 phút trước</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon customer">👤</div>
-                <div class="activity-content">
-                    <div class="activity-title">Khách hàng mới đăng ký</div>
-                    <div class="activity-time">30 phút trước</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon order">🛍️</div>
-                <div class="activity-content">
-                    <div class="activity-title">Đơn hàng #ORD-155 hoàn thành</div>
-                    <div class="activity-time">1 giờ trước</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon product">📦</div>
-                <div class="activity-content">
-                    <div class="activity-title">Nhập kho 50 sản phẩm</div>
-                    <div class="activity-time">2 giờ trước</div>
-                </div>
+            <div class="stat-icon orange">
+                <i class="fas fa-shopping-cart"></i>
             </div>
         </div>
+    </div>
 
-        <div class="quick-actions">
-            <a href="/Orders/Create" class="quick-action-btn">
-                <span class="quick-action-icon">➕</span>
-                Tạo đơn hàng
-            </a>
-            <a href="/Products/Create" class="quick-action-btn">
-                <span class="quick-action-icon">📦</span>
-                Thêm sản phẩm
-            </a>
-            <a href="/Customers/Create" class="quick-action-btn">
-                <span class="quick-action-icon">👥</span>
-                Thêm khách hàng
-            </a>
-            <a href="/Promotions/Create" class="quick-action-btn">
-                <span class="quick-action-icon">🎁</span>
-                Tạo khuyến mãi
-            </a>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Tổng sản phẩm</div>
+                <div class="stat-value">
+                    @{
+                        int totalProducts = (int)ViewBag.TotalProducts;
+                        if (totalProducts >= 1000000) // >= 1 triệu
+                        {
+                            <text>@((totalProducts / 1000000.0).ToString("0.##"))M</text>
+                        }
+                        else if (totalProducts >= 1000) // >= 1 nghìn
+                        {
+                            <text>@((totalProducts / 1000.0).ToString("0.##"))K</text>
+                        }
+                        else
+                        {
+                            <text>@totalProducts</text>
+                        }
+                    }
+                </div>
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 0%
+                </span>
+            </div>
+            <div class="stat-icon green">
+                <i class="fas fa-box"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Tổng khách hàng</div>
+                <div class="stat-value">@ViewBag.TotalCustomers</div>
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 0%
+                </span>
+            </div>
+            <div class="stat-icon blue">
+                <i class="fas fa-users"></i>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Sản phẩm bán chạy</h3>
-        <a href="/Products/Index" class="card-action">Xem tất cả →</a>
+<!-- Main Grid: Revenue Chart + Sales by Category -->
+<div class="main-grid">
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <h3 class="chart-title">Doanh thu</h3>
+                <p class="chart-subtitle">Biểu đồ doanh thu theo tháng</p>
+            </div>
+            <div class="date-range-selector">
+                <button class="date-btn active">6 tháng</button>
+                <button class="date-btn">1 năm</button>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+        </div>
     </div>
-    <table class="recent-orders-table">
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <h3 class="chart-title">Doanh số theo danh mục</h3>
+                <p class="chart-subtitle">Phân bố doanh số</p>
+            </div>
+        </div>
+        <div class="category-chart-container">
+            <canvas id="categoryChart"></canvas>
+        </div>
+        <div class="category-legend">
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #4E5FFF;"></div>
+                    <div class="legend-name">Đồ uống</div>
+                </div>
+                <div class="legend-value">42%</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #f59e0b;"></div>
+                    <div class="legend-name">Thực phẩm</div>
+                </div>
+                <div class="legend-value">28%</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #10b981;"></div>
+                    <div class="legend-name">Snack</div>
+                </div>
+                <div class="legend-value">18%</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #ef4444;"></div>
+                    <div class="legend-name">Khác</div>
+                </div>
+                <div class="legend-value">12%</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Status Tabs -->
+<div class="order-tabs">
+    <div class="order-tab pending active">
+        <div class="order-tab-count">@(ViewBag.PendingOrders ?? 0)</div>
+        <div class="order-tab-label">Chờ xử lý</div>
+    </div>
+    <div class="order-tab processing">
+        <div class="order-tab-count">@(ViewBag.ProcessingOrders ?? 0)</div>
+        <div class="order-tab-label">Đang xử lý</div>
+    </div>
+    <div class="order-tab shipped">
+        <div class="order-tab-count">@(ViewBag.ShippedOrders ?? 0)</div>
+        <div class="order-tab-label">Đã giao</div>
+    </div>
+    <div class="order-tab delivered">
+        <div class="order-tab-count">@(ViewBag.PaidOrders ?? 0)</div>
+        <div class="order-tab-label">Hoàn thành</div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="orders-table-container">
+    <div class="table-header">
+        <div>
+            <h3 class="chart-title">Đơn hàng gần đây</h3>
+            <p class="chart-subtitle">Danh sách đơn hàng mới nhất</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tìm kiếm đơn hàng...">
+            </div>
+            <a href="@Url.Action("Create", "Orders")" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tạo đơn hàng
+            </a>
+        </div>
+    </div>
+
+    <table class="data-table">
         <thead>
             <tr>
+                <th><input type="checkbox"></th>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
                 <th>Sản phẩm</th>
-                <th>Danh mục</th>
-                <th>Đã bán</th>
-                <th>Tồn kho</th>
-                <th>Doanh thu</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Coca Cola lon</td>
-                <td>Đồ uống</td>
-                <td>245 sp</td>
-                <td>25</td>
-                <td>77.1M đ</td>
-            </tr>
-            <tr>
-                <td>Pepsi lon</td>
-                <td>Đồ uống</td>
-                <td>198 sp</td>
-                <td>169</td>
-                <td>22.7M đ</td>
-            </tr>
-            <tr>
-                <td>Trà Xanh 0 độ</td>
-                <td>Đồ uống</td>
-                <td>176 sp</td>
-                <td>77</td>
-                <td>73.2M đ</td>
-            </tr>
-            <tr>
-                <td>Sting dâu</td>
-                <td>Đồ uống</td>
-                <td>165 sp</td>
-                <td>169</td>
-                <td>58.0M đ</td>
-            </tr>
-            <tr>
-                <td>Red Bull</td>
-                <td>Đồ uống</td>
-                <td>142 sp</td>
-                <td>90</td>
-                <td>57.1M đ</td>
-            </tr>
+            @if (ViewBag.RecentOrders != null && ((IEnumerable<QuanLyCuaHangBanLe.Models.Order>)ViewBag.RecentOrders).Any())
+            {
+                @foreach (QuanLyCuaHangBanLe.Models.Order order in ViewBag.RecentOrders)
+                {
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td><strong>#@order.OrderId</strong></td>
+                        <td>@(order.Customer?.Name ?? "Khách lẻ")</td>
+                        <td>
+                            @if (order.OrderItems != null && order.OrderItems.Any())
+                            {
+                                var productNames = new List<string>();
+                                foreach (var item in order.OrderItems.Take(2))
+                                {
+                                    if (item.Product != null && !string.IsNullOrEmpty(item.Product.ProductName))
+                                    {
+                                        productNames.Add(item.Product.ProductName);
+                                    }
+                                }
+                                
+                                if (productNames.Any())
+                                {
+                                    @string.Join(", ", productNames)
+                                    if (order.OrderItems.Count > 2)
+                                    {
+                                        <text>, ...</text>
+                                    }
+                                }
+                                else
+                                {
+                                    <text>-</text>
+                                }
+                            }
+                            else
+                            {
+                                <text>-</text>
+                            }
+                        </td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                        <td><strong>@order.TotalAmount.ToString("#,##0")₫</strong></td>
+                        <td>
+                            @{
+                                var statusClass = order.Status switch
+                                {
+                                    "paid" => "paid",
+                                    "pending" => "pending",
+                                    "cancelled" => "cancelled",
+                                    _ => "pending"
+                                };
+                                var statusText = order.Status switch
+                                {
+                                    "paid" => "Đã thanh toán",
+                                    "pending" => "Chờ xử lý",
+                                    "cancelled" => "Đã hủy",
+                                    _ => "Chờ xử lý"
+                                };
+                            }
+                            <span class="status-badge @statusClass">@statusText</span>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a href="@Url.Action("Details", "Orders", new { id = order.OrderId })" class="action-btn" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: #94a3b8;">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 16px; display: block;"></i>
+                        Chưa có đơn hàng nào
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: [45000, 52000, 48000, 65000, 70000, 85000],
+                    backgroundColor: function(context) {
+                        const chart = context.chart;
+                        const {ctx, chartArea} = chart;
+                        if (!chartArea) return;
+                        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                        gradient.addColorStop(0, 'rgba(78, 95, 255, 0.5)');
+                        gradient.addColorStop(1, 'rgba(118, 75, 162, 0.8)');
+                        return gradient;
+                    },
+                    borderRadius: 10,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Chart (Donut)
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Đồ uống', 'Thực phẩm', 'Snack', 'Khác'],
+                datasets: [{
+                    data: [42, 28, 18, 12],
+                    backgroundColor: [
+                        '#4E5FFF',
+                        '#f59e0b',
+                        '#10b981',
+                        '#ef4444'
+                    ],
+                    borderWidth: 0,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Order tabs interaction
+        document.querySelectorAll('.order-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Date range selector
+        document.querySelectorAll('.date-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.querySelector('i')) {
+                    const parent = this.closest('.date-range-selector');
+                    parent.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
+}

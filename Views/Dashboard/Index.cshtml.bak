@@ -1,0 +1,1328 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .dashboard-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .date-range-selector {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .date-btn {
+        padding: 8px 16px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #64748b;
+        transition: all 0.2s;
+    }
+
+    .date-btn:hover, .date-btn.active {
+        background: #667eea;
+        color: #ffffff;
+        border-color: #667eea;
+    }
+
+    /* Stats Cards Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #ffffff;
+    }
+
+    .stat-icon.purple {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-icon.green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .stat-icon.orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .stat-icon.blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 4px;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .stat-change {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 12px;
+    }
+
+    .stat-change.positive {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .stat-change.negative {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .stat-change.neutral {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    /* Main Content Grid */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    /* Chart Card */
+    .chart-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .chart-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .chart-subtitle {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 320px;
+    }
+
+    /* Sales by Category */
+    .category-chart-container {
+        height: 280px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .category-legend {
+        margin-top: 24px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .legend-item:last-child {
+        border-bottom: none;
+    }
+
+    .legend-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .legend-name {
+        font-size: 0.9rem;
+        color: #334155;
+        font-weight: 500;
+    }
+
+    .legend-value {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    /* Order Tabs */
+    .order-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .order-tab {
+        flex: 1;
+        min-width: 120px;
+        padding: 16px 20px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .order-tab:hover {
+        background: #f1f5f9;
+    }
+
+    .order-tab.active {
+        background: #ffffff;
+        border-color: #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .order-tab-count {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .order-tab-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .order-tab.pending {
+        border-left: 4px solid #f59e0b;
+    }
+
+    .order-tab.pending .order-tab-count {
+        color: #f59e0b;
+    }
+
+    .order-tab.processing {
+        border-left: 4px solid #3b82f6;
+    }
+
+    .order-tab.processing .order-tab-count {
+        color: #3b82f6;
+    }
+
+    .order-tab.shipped {
+        border-left: 4px solid #8b5cf6;
+    }
+
+    .order-tab.shipped .order-tab-count {
+        color: #8b5cf6;
+    }
+
+    .order-tab.delivered {
+        border-left: 4px solid #10b981;
+    }
+
+    .order-tab.delivered .order-tab-count {
+        color: #10b981;
+    }
+
+    /* Orders Table */
+    .orders-table-container {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        width: 300px;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        outline: none;
+        flex: 1;
+        color: #1e293b;
+        font-size: 0.9rem;
+    }
+
+    .search-box input::placeholder {
+        color: #94a3b8;
+    }
+
+    .search-box i {
+        color: #94a3b8;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table thead {
+        background: #f8fafc;
+    }
+
+    .data-table th {
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .data-table td {
+        padding: 16px;
+        color: #334155;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .data-table tbody tr {
+        transition: all 0.2s;
+    }
+
+    .data-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-badge.paid {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-badge.canceled {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        background: #f1f5f9;
+        color: #667eea;
+        border-color: #cbd5e1;
+    }
+
+    @@media (max-width: 1200px) {
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+
+        .order-tabs {
+            flex-direction: column;
+        }
+
+        .order-tab {
+            min-width: 100%;
+        }
+    }
+</style>
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="dashboard-title">Chào mừng trở lại! 👋</h1>
+        <p style="color: #94a3b8; margin-top: 8px;">Đây là tổng quan về cửa hàng của bạn</p>
+    </div>
+    <div class="date-range-selector">
+        <button class="date-btn">Hôm nay</button>
+        <button class="date-btn active">Tuần này</button>
+        <button class="date-btn">Tháng này</button>
+        <button class="date-btn"><i class="fas fa-calendar"></i></button>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Tổng doanh thu</div>
+                <div class="stat-value">$ 99,560</div>
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 12.5%
+                </span>
+            </div>
+            <div class="stat-icon purple">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Tổng đơn hàng</div>
+                <div class="stat-value">35</div>
+                <span class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i> 2.4%
+                </span>
+            </div>
+            <div class="stat-icon orange">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Sản phẩm bán ra</div>
+                <div class="stat-value">45,600</div>
+                <span class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i> 0.8%
+                </span>
+            </div>
+            <div class="stat-icon green">
+                <i class="fas fa-box"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-label">Lợi nhuận ròng</div>
+                <div class="stat-value">$ 60,650</div>
+                <span class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> 8.2%
+                </span>
+            </div>
+            <div class="stat-icon blue">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Grid: Revenue Chart + Sales by Category -->
+<div class="main-grid">
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <h3 class="chart-title">Doanh thu</h3>
+                <p class="chart-subtitle">Biểu đồ doanh thu theo tháng</p>
+            </div>
+            <div class="date-range-selector">
+                <button class="date-btn active">6 tháng</button>
+                <button class="date-btn">1 năm</button>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <h3 class="chart-title">Doanh số theo danh mục</h3>
+                <p class="chart-subtitle">Phân bố doanh số</p>
+            </div>
+        </div>
+        <div class="category-chart-container">
+            <canvas id="categoryChart"></canvas>
+        </div>
+        <div class="category-legend">
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #667eea;"></div>
+                    <div class="legend-name">Đồ uống</div>
+                </div>
+                <div class="legend-value">42%</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #f59e0b;"></div>
+                    <div class="legend-name">Thực phẩm</div>
+                </div>
+                <div class="legend-value">28%</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #10b981;"></div>
+                    <div class="legend-name">Snack</div>
+                </div>
+                <div class="legend-value">18%</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <div class="legend-dot" style="background: #ef4444;"></div>
+                    <div class="legend-name">Khác</div>
+                </div>
+                <div class="legend-value">12%</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Status Tabs -->
+<div class="order-tabs">
+    <div class="order-tab pending active">
+        <div class="order-tab-count">12</div>
+        <div class="order-tab-label">Chờ xử lý</div>
+    </div>
+    <div class="order-tab processing">
+        <div class="order-tab-count">20</div>
+        <div class="order-tab-label">Đang xử lý</div>
+    </div>
+    <div class="order-tab shipped">
+        <div class="order-tab-count">57</div>
+        <div class="order-tab-label">Đã giao</div>
+    </div>
+    <div class="order-tab delivered">
+        <div class="order-tab-count">98</div>
+        <div class="order-tab-label">Hoàn thành</div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="orders-table-container">
+    <div class="table-header">
+        <div>
+            <h3 class="chart-title">Đơn hàng gần đây</h3>
+            <p class="chart-subtitle">Danh sách đơn hàng mới nhất</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tìm kiếm đơn hàng...">
+            </div>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tạo đơn hàng
+            </button>
+        </div>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox"></th>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Sản phẩm</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#ORD-001</strong></td>
+                <td>Nguyễn Văn A</td>
+                <td>Coca Cola, Pepsi</td>
+                <td>03/10/2025</td>
+                <td><strong>1,192,330đ</strong></td>
+                <td><span class="status-badge paid">Đã thanh toán</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#ORD-002</strong></td>
+                <td>Trần Thị B</td>
+                <td>Trà xanh, Red Bull</td>
+                <td>03/10/2025</td>
+                <td><strong>1,731,608đ</strong></td>
+                <td><span class="status-badge paid">Đã thanh toán</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#ORD-003</strong></td>
+                <td>Lê Văn C</td>
+                <td>Sting, Number 1</td>
+                <td>02/10/2025</td>
+                <td><strong>720,782đ</strong></td>
+                <td><span class="status-badge pending">Chờ xử lý</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#ORD-004</strong></td>
+                <td>Phạm Thị D</td>
+                <td>C2, Aquafina</td>
+                <td>02/10/2025</td>
+                <td><strong>421,686đ</strong></td>
+                <td><span class="status-badge paid">Đã thanh toán</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#ORD-005</strong></td>
+                <td>Hoàng Văn E</td>
+                <td>7Up, Mirinda</td>
+                <td>01/10/2025</td>
+                <td><strong>894,180đ</strong></td>
+                <td><span class="status-badge paid">Đã thanh toán</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: [45000, 52000, 48000, 65000, 70000, 85000],
+                    backgroundColor: function(context) {
+                        const chart = context.chart;
+                        const {ctx, chartArea} = chart;
+                        if (!chartArea) return;
+                        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                        gradient.addColorStop(0, 'rgba(102, 126, 234, 0.5)');
+                        gradient.addColorStop(1, 'rgba(118, 75, 162, 0.8)');
+                        return gradient;
+                    },
+                    borderRadius: 10,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Chart (Donut)
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Đồ uống', 'Thực phẩm', 'Snack', 'Khác'],
+                datasets: [{
+                    data: [42, 28, 18, 12],
+                    backgroundColor: [
+                        '#667eea',
+                        '#f59e0b',
+                        '#10b981',
+                        '#ef4444'
+                    ],
+                    borderWidth: 0,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Order tabs interaction
+        document.querySelectorAll('.order-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Date range selector
+        document.querySelectorAll('.date-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.querySelector('i')) {
+                    const parent = this.closest('.date-range-selector');
+                    parent.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
+}
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 28px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: #1a1a1a;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        border-color: #1a1a1a;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+        letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+        color: #666666;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .stat-change {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .stat-change.positive {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .stat-change.negative {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .content-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background: white;
+        padding: 28px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e5e5;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: -0.02em;
+    }
+
+    .card-action {
+        color: #1a1a1a;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .card-action:hover {
+        color: #666666;
+    }
+
+    .recent-orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .recent-orders-table th {
+        text-align: left;
+        padding: 12px;
+        background: #fafafa;
+        color: #666666;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .recent-orders-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #f5f5f5;
+        color: #1a1a1a;
+        font-size: 0.9rem;
+    }
+
+    .recent-orders-table tr:hover {
+        background: #fafafa;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-badge.paid {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-badge.pending {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .status-badge.canceled {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .activity-item {
+        display: flex;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        background: #fafafa;
+        border: 1px solid #e5e5e5;
+    }
+
+    .activity-icon.order {
+        background: #fafafa;
+    }
+
+    .activity-icon.product {
+        background: #fafafa;
+    }
+
+    .activity-icon.customer {
+        background: #fafafa;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+
+    .activity-time {
+        color: #999999;
+        font-size: 0.8rem;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .quick-action-btn {
+        padding: 15px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+        color: #1a1a1a;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 600;
+        background: white;
+    }
+
+    .quick-action-btn:hover {
+        border-color: #1a1a1a;
+        background: #fafafa;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .quick-action-icon {
+        font-size: 1.5rem;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .content-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">45.2M</div>
+        <div class="stat-label">Doanh thu hôm nay</div>
+        <span class="stat-change positive">↑ 12.5%</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">🛍️</div>
+        <div class="stat-value">156</div>
+        <div class="stat-label">Đơn hàng</div>
+        <span class="stat-change positive">↑ 8.3%</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">50</div>
+        <div class="stat-label">Sản phẩm</div>
+        <span class="stat-change">Tổng số</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">20</div>
+        <div class="stat-label">Khách hàng</div>
+        <span class="stat-change positive">↑ 3 mới</span>
+    </div>
+</div>
+
+<div class="content-row">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Đơn hàng gần đây</h3>
+            <a href="/Orders/Index" class="card-action">Xem tất cả →</a>
+        </div>
+        <table class="recent-orders-table">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#ORD-001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>1,192,330đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>03/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-002</td>
+                    <td>Trần Thị B</td>
+                    <td>1,731,608đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>03/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-003</td>
+                    <td>Lê Văn C</td>
+                    <td>720,782đ</td>
+                    <td><span class="status-badge pending">Chờ xử lý</span></td>
+                    <td>02/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-004</td>
+                    <td>Phạm Thị D</td>
+                    <td>21,686đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>02/10/2025</td>
+                </tr>
+                <tr>
+                    <td>#ORD-005</td>
+                    <td>Hoàng Văn E</td>
+                    <td>94,180đ</td>
+                    <td><span class="status-badge paid">Đã thanh toán</span></td>
+                    <td>01/10/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Hoạt động gần đây</h3>
+        </div>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon order">🛍️</div>
+                <div class="activity-content">
+                    <div class="activity-title">Đơn hàng mới #ORD-156</div>
+                    <div class="activity-time">5 phút trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon product">📦</div>
+                <div class="activity-content">
+                    <div class="activity-title">Cập nhật sản phẩm "Coca Cola"</div>
+                    <div class="activity-time">15 phút trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon customer">👤</div>
+                <div class="activity-content">
+                    <div class="activity-title">Khách hàng mới đăng ký</div>
+                    <div class="activity-time">30 phút trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon order">🛍️</div>
+                <div class="activity-content">
+                    <div class="activity-title">Đơn hàng #ORD-155 hoàn thành</div>
+                    <div class="activity-time">1 giờ trước</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon product">📦</div>
+                <div class="activity-content">
+                    <div class="activity-title">Nhập kho 50 sản phẩm</div>
+                    <div class="activity-time">2 giờ trước</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="/Orders/Create" class="quick-action-btn">
+                <span class="quick-action-icon">➕</span>
+                Tạo đơn hàng
+            </a>
+            <a href="/Products/Create" class="quick-action-btn">
+                <span class="quick-action-icon">📦</span>
+                Thêm sản phẩm
+            </a>
+            <a href="/Customers/Create" class="quick-action-btn">
+                <span class="quick-action-icon">👥</span>
+                Thêm khách hàng
+            </a>
+            <a href="/Promotions/Create" class="quick-action-btn">
+                <span class="quick-action-icon">🎁</span>
+                Tạo khuyến mãi
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sản phẩm bán chạy</h3>
+        <a href="/Products/Index" class="card-action">Xem tất cả →</a>
+    </div>
+    <table class="recent-orders-table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Đã bán</th>
+                <th>Tồn kho</th>
+                <th>Doanh thu</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Coca Cola lon</td>
+                <td>Đồ uống</td>
+                <td>245 sp</td>
+                <td>25</td>
+                <td>77.1M đ</td>
+            </tr>
+            <tr>
+                <td>Pepsi lon</td>
+                <td>Đồ uống</td>
+                <td>198 sp</td>
+                <td>169</td>
+                <td>22.7M đ</td>
+            </tr>
+            <tr>
+                <td>Trà Xanh 0 độ</td>
+                <td>Đồ uống</td>
+                <td>176 sp</td>
+                <td>77</td>
+                <td>73.2M đ</td>
+            </tr>
+            <tr>
+                <td>Sting dâu</td>
+                <td>Đồ uống</td>
+                <td>165 sp</td>
+                <td>169</td>
+                <td>58.0M đ</td>
+            </tr>
+            <tr>
+                <td>Red Bull</td>
+                <td>Đồ uống</td>
+                <td>142 sp</td>
+                <td>90</td>
+                <td>57.1M đ</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

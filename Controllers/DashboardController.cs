@@ -48,8 +48,14 @@ namespace QuanLyCuaHangBanLe.Controllers
             ViewBag.TotalProducts = await _productService.CountAsync();
 
             // Đơn hàng gần đây
-            var recentOrders = await _orderService.GetAllAsync();
-            ViewBag.RecentOrders = recentOrders.Take(5);
+            var allOrders = await _orderService.GetAllAsync();
+            ViewBag.RecentOrders = allOrders.OrderByDescending(o => o.OrderDate).Take(5);
+            
+            // Thống kê đơn hàng theo trạng thái
+            ViewBag.PendingOrders = allOrders.Count(o => o.Status == "pending");
+            ViewBag.ProcessingOrders = allOrders.Count(o => o.Status == "processing");
+            ViewBag.ShippedOrders = allOrders.Count(o => o.Status == "shipped");
+            ViewBag.PaidOrders = allOrders.Count(o => o.Status == "paid");
 
             return View();
         }

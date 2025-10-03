@@ -14,7 +14,7 @@
 
     .btn-primary {
         padding: 12px 24px;
-        background: #1a1a1a;
+        background: #4E5FFF;
         color: white;
         border: none;
         border-radius: 10px;
@@ -30,7 +30,7 @@
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        background: #000000;
+        background: #4E5FFF;
         color: white;
     }
 
@@ -139,7 +139,7 @@
 
     .progress-fill {
         height: 100%;
-        background: #1a1a1a;
+        background: #4E5FFF;
         border-radius: 10px;
         transition: width 0.3s ease;
     }
@@ -266,7 +266,7 @@ else
     <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 30px; padding: 20px;">
         @if (ViewBag.CurrentPage > 1)
         {
-            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" class="pagination-btn" style="padding: 10px 16px; background: #1a1a1a; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">← Trước</a>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">← Trước</a>
         }
         
         <div style="display: flex; gap: 5px;">
@@ -274,7 +274,7 @@ else
             {
                 if (i == ViewBag.CurrentPage)
                 {
-                    <span class="pagination-current" style="padding: 10px 16px; background: #1a1a1a; color: white; border-radius: 8px; font-weight: 600;">@i</span>
+                    <span class="pagination-current" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; font-weight: 600;">@i</span>
                 }
                 else if (i == 1 || i == ViewBag.TotalPages || (i >= ViewBag.CurrentPage - 2 && i <= ViewBag.CurrentPage + 2))
                 {
@@ -289,7 +289,7 @@ else
         
         @if (ViewBag.CurrentPage < ViewBag.TotalPages)
         {
-            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="pagination-btn" style="padding: 10px 16px; background: #1a1a1a; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">Sau →</a>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">Sau →</a>
         }
     </div>
 }

@@ -1,9 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Quản lý cửa hàng</title>
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
         * {
@@ -13,10 +15,13 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #ffffff;
-            color: #1a1a1a;
-            line-height: 1.6;
+            font-family: 'Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fc;
+            color: #1e293b;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 15px;
         }
 
         /* Sidebar */
@@ -26,81 +31,121 @@
             top: 0;
             height: 100vh;
             width: 260px;
-            background: #1a1a1a;
-            border-right: 1px solid #2a2a2a;
+            background: #ffffff;
+            border-right: 1px solid #f0f0f5;
             z-index: 100;
             overflow-y: auto;
+            overflow-x: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.01);
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-header {
-            padding: 30px 24px;
-            border-bottom: 1px solid #2a2a2a;
-            background: #1a1a1a;
+            padding: 28px 20px;
+            border-bottom: 1px solid #f0f0f5;
+            flex-shrink: 0;
         }
 
         .sidebar-header h1 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            color: #1e293b;
+            letter-spacing: -0.03em;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: #4E5FFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
             color: #ffffff;
-            letter-spacing: -0.02em;
+            box-shadow: 0 2px 8px rgba(78, 95, 255, 0.25);
         }
 
         .sidebar-nav {
-            padding: 24px 0;
+            padding: 20px 10px;
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .nav-section {
-            margin-bottom: 32px;
+            margin-bottom: 6px;
         }
 
         .nav-section-title {
-            padding: 0 24px;
-            margin-bottom: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            padding: 10px 14px 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
-            color: #666666;
-            letter-spacing: 1px;
+            color: #94a3b8;
+            letter-spacing: 0.8px;
         }
 
         .nav-item {
             margin: 0;
-            padding: 0 12px;
+            padding: 0;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            color: #999999;
+            padding: 11px 14px;
+            color: #64748b;
             text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            transition: all 0.2s ease;
             font-size: 0.9rem;
             gap: 12px;
             font-weight: 500;
+            margin: 2px 0;
+            letter-spacing: -0.01em;
         }
 
         .nav-link:hover {
-            background: #2a2a2a;
-            color: #ffffff;
-            transform: translateX(2px);
+            background: #f8fafc;
+            color: #4E5FFF;
         }
 
         .nav-link.active {
-            background: #ffffff;
-            color: #1a1a1a;
+            background: #4E5FFF;
+            color: #ffffff;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(78, 95, 255, 0.25);
         }
 
         .nav-icon {
-            font-size: 1.3rem;
-            width: 24px;
+            font-size: 1.1rem;
+            width: 20px;
             text-align: center;
+        }
+
+        .sidebar-footer {
+            position: relative;
+            bottom: auto;
+            left: auto;
+            right: auto;
+            padding: 16px 10px;
+            border-top: 1px solid #f0f0f5;
+            background: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .logout-link {
+            color: #ef4444 !important;
+        }
+
+        .logout-link:hover {
+            background: #fef2f2 !important;
         }
 
         /* Main Content */
@@ -108,17 +153,17 @@
             margin-left: 260px;
             min-height: 100vh;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #fafafa;
+            background: #f8f9fc;
         }
 
         .topbar {
             background: #ffffff;
-            height: 72px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 32px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #f0f0f5;
             position: sticky;
             top: 0;
             z-index: 90;
@@ -130,76 +175,175 @@
             gap: 24px;
         }
 
-        .page-title {
-            font-size: 1.75rem;
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .menu-toggle:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .greeting {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .greeting-text {
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #1a1a1a;
-            letter-spacing: -0.02em;
+            color: #1e293b;
+            letter-spacing: -0.03em;
+        }
+
+        .greeting-subtext {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin: 0;
+            font-weight: 500;
         }
 
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-action {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .topbar-action:hover {
+            background: #f1f5f9;
+            color: #4E5FFF;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .topbar-action .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            display: block;
+        }
+        
+        .topbar-action .notification-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            min-width: 18px;
+            height: 18px;
+            background: #ef4444;
+            border-radius: 10px;
+            border: 2px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0 4px;
         }
 
         .user-menu {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 6px 12px 6px 6px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent;
+            transition: all 0.2s;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
         }
 
         .user-menu:hover {
-            background: #fafafa;
-            border-color: #e5e5e5;
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #1a1a1a;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #4E5FFF;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #ffffff;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .user-info {
-            text-align: right;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
         }
 
         .user-name {
             font-weight: 600;
             font-size: 0.9rem;
-            color: #1a1a1a;
+            color: #1e293b;
+            line-height: 1.2;
         }
 
         .user-role {
             font-size: 0.8rem;
-            color: #666666;
+            color: #94a3b8;
         }
 
         .content-area {
-            padding: 32px;
+            padding: 28px 32px;
         }
 
         /* Responsive */
         @@media (max-width: 768px) {
             .sidebar {
-                width: 0;
                 transform: translateX(-100%);
             }
 
             .sidebar.active {
-                width: 260px;
                 transform: translateX(0);
             }
 
@@ -207,23 +351,59 @@
                 margin-left: 0;
             }
 
-            .page-title {
-                font-size: 1.2rem;
+            .menu-toggle {
+                display: block;
             }
+
+            .greeting-text {
+                font-size: 1.3rem;
+            }
+
+            .topbar-actions {
+                gap: 4px;
+            }
+
+            .user-info {
+                display: none;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>🛒 Store Manager</h1>
+            <h1>
+                <div class="logo-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                Quản lý cửa hàng
+            </h1>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section">
                 <div class="nav-section-title">Tổng quan</div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
-                        <span class="nav-icon">📊</span>
+                        <i class="nav-icon fas fa-chart-line"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
@@ -233,25 +413,25 @@
                 <div class="nav-section-title">Quản lý</div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Products" asp-action="Index">
-                        <span class="nav-icon">📦</span>
+                        <i class="nav-icon fas fa-box"></i>
                         <span>Sản phẩm</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Customers" asp-action="Index">
-                        <span class="nav-icon">👥</span>
+                        <i class="nav-icon fas fa-users"></i>
                         <span>Khách hàng</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Orders" asp-action="Index">
-                        <span class="nav-icon">🛍️</span>
+                        <i class="nav-icon fas fa-shopping-cart"></i>
                         <span>Đơn hàng</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Inventory" asp-action="Index">
-                        <span class="nav-icon">📋</span>
+                        <i class="nav-icon fas fa-warehouse"></i>
                         <span>Tồn kho</span>
                     </a>
                 </div>
@@ -261,19 +441,19 @@
                 <div class="nav-section-title">Kinh doanh</div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Promotions" asp-action="Index">
-                        <span class="nav-icon">🎁</span>
+                        <i class="nav-icon fas fa-gift"></i>
                         <span>Khuyến mãi</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Categories" asp-action="Index">
-                        <span class="nav-icon">📑</span>
+                        <i class="nav-icon fas fa-tags"></i>
                         <span>Danh mục</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Suppliers" asp-action="Index">
-                        <span class="nav-icon">🏭</span>
+                        <i class="nav-icon fas fa-truck"></i>
                         <span>Nhà cung cấp</span>
                     </a>
                 </div>
@@ -283,28 +463,51 @@
                 <div class="nav-section-title">Hệ thống</div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Users" asp-action="Index">
-                        <span class="nav-icon">👤</span>
+                        <i class="nav-icon fas fa-user-cog"></i>
                         <span>Người dùng</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" asp-controller="Auth" asp-action="Logout">
-                        <span class="nav-icon">🚪</span>
-                        <span>Đăng xuất</span>
                     </a>
                 </div>
             </div>
         </nav>
+
+        <div class="sidebar-footer">
+            <div class="nav-item">
+                <a class="nav-link logout-link" asp-controller="Auth" asp-action="Logout">
+                    <i class="nav-icon fas fa-sign-out-alt"></i>
+                    <span>Đăng xuất</span>
+                </a>
+            </div>
+        </div>
     </div>
 
     <div class="main-wrapper">
         <header class="topbar">
             <div class="topbar-left">
-                <h2 class="page-title">@ViewData["Title"]</h2>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="greeting">
+                    <h2 class="greeting-text">@ViewData["Title"]</h2>
+                    <p class="greeting-subtext">Chào mừng trở lại với hệ thống</p>
+                </div>
             </div>
             <div class="topbar-right">
+                <div class="topbar-actions">
+                    <button class="topbar-action" title="Tìm kiếm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="topbar-action" title="Thông báo">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="topbar-action" title="Cài đặt">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
                 <div class="user-menu">
-                    <div class="user-avatar">A</div>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=667eea&color=fff" alt="Admin" />
+                    </div>
                     <div class="user-info">
                         <div class="user-name">Admin</div>
                         <div class="user-role">Quản trị viên</div>
@@ -319,6 +522,33 @@
     </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Menu toggle for mobile
+        document.getElementById('menuToggle')?.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Active nav link based on current controller
+        const currentPath = window.location.pathname.toLowerCase();
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const href = link.getAttribute('href')?.toLowerCase();
+            if (href && currentPath.includes(href)) {
+                link.classList.add('active');
+            }
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                if (!sidebar.contains(event.target) && event.target !== menuToggle) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

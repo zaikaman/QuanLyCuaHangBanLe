@@ -8,7 +8,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập - Quản lý cửa hàng</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -17,31 +18,32 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #fafafa;
+            font-family: 'Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8f9fc;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            font-size: 15px;
         }
 
         .login-container {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             overflow: hidden;
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
             display: flex;
-            min-height: 600px;
-            border: 1px solid #e5e5e5;
+            min-height: 580px;
+            border: 1px solid #f0f0f5;
         }
 
         .login-left {
             flex: 1;
-            background: #1a1a1a;
-            padding: 60px 40px;
+            background: #4E5FFF;
+            padding: 50px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -56,13 +58,13 @@
             position: absolute;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-            animation: pulse 15s infinite;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+            animation: pulse 12s infinite ease-in-out;
         }
 
         @@keyframes pulse {
             0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
         }
 
         .login-left-content {
@@ -71,127 +73,155 @@
             text-align: center;
         }
 
-        .login-left h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
-        }
-
-        .login-left p {
-            font-size: 1.05rem;
-            opacity: 0.85;
-            line-height: 1.6;
-            color: #cccccc;
-        }
-
-        .login-illustration {
-            margin-top: 40px;
-            width: 250px;
-            height: 250px;
-            background: rgba(255, 255, 255, 0.05);
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 120px;
+            margin: 0 auto 24px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-circle i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .login-left h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            letter-spacing: -0.02em;
+        }
+
+        .login-left p {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            max-width: 340px;
+        }
+
+        .login-illustration {
+            margin-top: 40px;
+            opacity: 0.1;
+        }
+
+        .login-illustration i {
+            font-size: 140px;
         }
 
         .login-right {
             flex: 1;
-            padding: 60px 50px;
+            padding: 50px 44px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
         .login-header {
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .login-header h2 {
-            font-size: 2rem;
-            color: #1a1a1a;
-            margin-bottom: 10px;
+            font-size: 1.7rem;
+            color: #1e293b;
+            margin-bottom: 8px;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
 
         .login-header p {
-            color: #666666;
+            color: #64748b;
             font-size: 0.95rem;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #1a1a1a;
+            color: #1e293b;
             font-weight: 600;
             font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.95rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 13px 16px;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
+            padding: 12px 14px 12px 40px;
+            border: 1px solid #f0f0f5;
+            border-radius: 12px;
             font-size: 0.95rem;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #fafafa;
+            background: #f8f9fc;
+            font-family: 'Gilroy', sans-serif;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #1a1a1a;
+            border-color: #4E5FFF;
             background: white;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 0 3px rgba(78, 95, 255, 0.08);
         }
 
         .btn-login {
             width: 100%;
-            padding: 14px;
-            background: #1a1a1a;
+            padding: 13px;
+            background: #4E5FFF;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: 10px;
+            font-family: 'Gilroy', sans-serif;
+            box-shadow: 0 4px 14px rgba(78, 95, 255, 0.3);
         }
 
         .btn-login:hover {
-            background: #000000;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(78, 95, 255, 0.4);
         }
 
         .btn-login:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .error-message {
-            background: #fee;
-            color: #c00;
+            background: #fef2f2;
+            color: #dc2626;
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 20px;
             font-size: 0.9rem;
-            border-left: 4px solid #c00;
+            border: 1px solid #fee2e2;
         }
 
         .remember-forgot {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
+            margin-top: 14px;
             font-size: 0.9rem;
         }
 
@@ -199,31 +229,32 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #666666;
+            color: #64748b;
+            cursor: pointer;
         }
 
         .remember-me input[type="checkbox"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #1a1a1a;
+            accent-color: #4E5FFF;
         }
 
         .forgot-password {
-            color: #1a1a1a;
+            color: #4E5FFF;
             text-decoration: none;
             font-weight: 600;
         }
 
         .forgot-password:hover {
-            text-decoration: underline;
+            color: #3b4acc;
         }
 
         .divider {
             display: flex;
             align-items: center;
-            margin: 30px 0;
-            color: #999999;
+            margin: 28px 0;
+            color: #94a3b8;
             font-size: 0.85rem;
         }
 
@@ -232,7 +263,7 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: #e5e5e5;
+            background: #f0f0f5;
         }
 
         .divider span {
@@ -240,24 +271,26 @@
         }
 
         .demo-accounts {
-            background: #fafafa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #e5e5e5;
+            background: #f8f9fc;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #f0f0f5;
         }
 
         .demo-accounts h4 {
-            color: #1a1a1a;
+            color: #1e293b;
             font-size: 0.9rem;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .demo-accounts p {
             font-size: 0.85rem;
-            color: #666666;
-            margin: 5px 0;
+            color: #64748b;
+            margin: 6px 0;
             font-family: 'Courier New', monospace;
         }
 
@@ -268,25 +301,32 @@
 
             .login-left {
                 padding: 40px 30px;
-                min-height: 300px;
+                min-height: 280px;
+            }
+
+            .logo-circle {
+                width: 60px;
+                height: 60px;
+            }
+
+            .logo-circle i {
+                font-size: 28px;
             }
 
             .login-left h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
 
             .login-illustration {
-                width: 150px;
-                height: 150px;
-                font-size: 70px;
+                display: none;
             }
 
             .login-right {
-                padding: 40px 30px;
+                padding: 40px 28px;
             }
 
             .login-header h2 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
         }
     </style>
@@ -295,36 +335,45 @@
     <div class="login-container">
         <div class="login-left">
             <div class="login-left-content">
-                <h1>🛒 Store Manager</h1>
+                <div class="logo-circle">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <h1>Store Manager</h1>
                 <p>Hệ thống quản lý cửa hàng bán lẻ hiện đại, thông minh và dễ sử dụng</p>
                 <div class="login-illustration">
-                    📊
+                    <i class="fa-solid fa-chart-line"></i>
                 </div>
             </div>
         </div>
 
         <div class="login-right">
             <div class="login-header">
-                <h2>Chào mừng trở lại! 👋</h2>
+                <h2>Chào mừng trở lại!</h2>
                 <p>Đăng nhập để tiếp tục quản lý cửa hàng của bạn</p>
             </div>
 
             @if (ViewBag.Error != null)
             {
                 <div class="error-message">
-                    @ViewBag.Error
+                    <i class="fa-solid fa-circle-exclamation"></i> @ViewBag.Error
                 </div>
             }
 
             <form method="post" asp-action="Login" asp-controller="Auth">
                 <div class="form-group">
                     <label for="username">Tên đăng nhập</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                    </div>
                 </div>
 
                 <div class="remember-forgot">
@@ -343,7 +392,7 @@
             </div>
 
             <div class="demo-accounts">
-                <h4>🔑 Thông tin đăng nhập thử nghiệm:</h4>
+                <h4><i class="fa-solid fa-key"></i> Thông tin đăng nhập thử nghiệm:</h4>
                 <p><strong>Admin:</strong> admin / 123456</p>
                 <p><strong>Nhân viên:</strong> staff01 / 123456</p>
             </div>
