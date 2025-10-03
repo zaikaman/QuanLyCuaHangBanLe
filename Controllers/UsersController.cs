@@ -13,7 +13,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _userRepository = userRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -21,7 +21,20 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var users = await _userRepository.GetAllAsync();
+            const int pageSize = 10;
+            var allUsers = await _userRepository.GetAllAsync();
+            var totalItems = allUsers.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var users = allUsers
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalItems = totalItems;
+
             return View(users);
         }
 

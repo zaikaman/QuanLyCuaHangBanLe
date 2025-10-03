@@ -25,18 +25,37 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(promotions);
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Promotion promotion)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(promotion);
+            }
+
             try
             {
                 await _promotionRepository.AddAsync(promotion);
-                return Json(new { success = true, message = "Thêm khuyến mãi thành công!" });
+                TempData["SuccessMessage"] = "Thêm khuyến mãi thành công!";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return View(promotion);
             }
         }
 

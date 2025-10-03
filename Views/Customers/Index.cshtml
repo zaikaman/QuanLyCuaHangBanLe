@@ -156,6 +156,68 @@
         font-size: 4rem;
         margin-bottom: 20px;
     }
+
+    /* Pagination Styles */
+    .pagination-container {
+        padding: 20px 25px;
+        border-top: 1px solid #e5e5e5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .pagination-info {
+        color: #666666;
+        font-size: 0.9rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 8px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .page-item {
+        display: inline-block;
+    }
+
+    .page-link {
+        padding: 8px 14px;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        color: #1a1a1a;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        background: white;
+        display: inline-block;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .page-link:hover {
+        background: #fafafa;
+        border-color: #1a1a1a;
+    }
+
+    .page-item.active .page-link {
+        background: #1a1a1a;
+        color: white;
+        border-color: #1a1a1a;
+    }
+
+    .page-item.disabled .page-link {
+        color: #cccccc;
+        cursor: not-allowed;
+        background: #fafafa;
+    }
+
+    .page-item.disabled .page-link:hover {
+        background: #fafafa;
+        border-color: #e5e5e5;
+    }
 </style>
 
 <div class="page-header">
@@ -173,7 +235,7 @@
     <div class="customers-header">
         <input type="text" class="search-input" placeholder="🔍 Tìm kiếm khách hàng..." />
         <div style="color: #718096; font-size: 0.9rem;">
-            Tổng: <strong style="color: #2d3748;">@Model.Count()</strong> khách hàng
+            Tổng: <strong style="color: #2d3748;">@ViewBag.TotalItems</strong> khách hàng
         </div>
     </div>
 
@@ -207,8 +269,7 @@
                             <div class="actions">
                                 <a asp-action="Edit" asp-route-id="@customer.CustomerId" class="btn-action btn-edit">✏️ Sửa</a>
                                 <a asp-action="Delete" asp-route-id="@customer.CustomerId" 
-                                   class="btn-action btn-delete" 
-                                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">🗑️ Xóa</a>
+                                   class="btn-action btn-delete">🗑️ Xóa</a>
                             </div>
                         </td>
                     </tr>
@@ -221,6 +282,31 @@
         <div class="empty-state">
             <div class="empty-state-icon">👥</div>
             <div>Chưa có khách hàng nào</div>
+        </div>
+    }
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Hiển thị @((ViewBag.CurrentPage - 1) * 10 + 1) - @(Math.Min(ViewBag.CurrentPage * 10, ViewBag.TotalItems)) trong tổng số @ViewBag.TotalItems khách hàng
+            </div>
+            <ul class="pagination">
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">‹ Trước</a>
+                </li>
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">Sau ›</a>
+                </li>
+            </ul>
         </div>
     }
 </div>
