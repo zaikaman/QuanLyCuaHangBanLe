@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Quản lý cửa hàng</title>
     <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/list-pages.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/form-pages.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
@@ -16,8 +19,8 @@
 
         body {
             font-family: 'Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f8f9fc;
-            color: #1e293b;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -31,20 +34,20 @@
             top: 0;
             height: 100vh;
             width: 260px;
-            background: #ffffff;
-            border-right: 1px solid #f0f0f5;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
             z-index: 100;
             overflow-y: auto;
             overflow-x: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.01);
+            box-shadow: var(--shadow-sm);
             display: flex;
             flex-direction: column;
         }
 
         .sidebar-header {
             padding: 28px 20px;
-            border-bottom: 1px solid #f0f0f5;
+            border-bottom: 1px solid var(--border-primary);
             flex-shrink: 0;
         }
 
@@ -54,21 +57,21 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #1e293b;
+            color: var(--text-primary);
             letter-spacing: -0.03em;
         }
 
         .logo-icon {
             width: 44px;
             height: 44px;
-            background: #4E5FFF;
+            background: var(--color-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
             color: #ffffff;
-            box-shadow: 0 2px 8px rgba(78, 95, 255, 0.25);
+            box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25);
         }
 
         .sidebar-nav {
@@ -87,7 +90,7 @@
             font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: #94a3b8;
+            color: var(--text-tertiary);
             letter-spacing: 0.8px;
         }
 
@@ -100,7 +103,7 @@
             display: flex;
             align-items: center;
             padding: 11px 14px;
-            color: #64748b;
+            color: var(--sidebar-text);
             text-decoration: none;
             border-radius: 10px;
             transition: all 0.2s ease;
@@ -112,21 +115,26 @@
         }
 
         .nav-link:hover {
-            background: #f8fafc;
-            color: #4E5FFF;
+            background: var(--bg-hover);
+            color: var(--sidebar-text-hover);
         }
 
         .nav-link.active {
-            background: #4E5FFF;
-            color: #ffffff;
+            background: var(--bg-active);
+            color: var(--text-inverse);
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(78, 95, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.25);
         }
 
         .nav-icon {
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
+            color: inherit !important;
+        }
+
+        .nav-link i {
+            color: inherit !important;
         }
 
         .sidebar-footer {
@@ -135,17 +143,17 @@
             left: auto;
             right: auto;
             padding: 16px 10px;
-            border-top: 1px solid #f0f0f5;
-            background: #ffffff;
+            border-top: 1px solid var(--border-primary);
+            background: var(--sidebar-bg);
             flex-shrink: 0;
         }
 
         .logout-link {
-            color: #ef4444 !important;
+            color: var(--color-error) !important;
         }
 
         .logout-link:hover {
-            background: #fef2f2 !important;
+            background: var(--color-error-bg) !important;
         }
 
         /* Main Content */
@@ -153,17 +161,17 @@
             margin-left: 260px;
             min-height: 100vh;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #f8f9fc;
+            background: var(--bg-primary);
         }
 
         .topbar {
-            background: #ffffff;
+            background: var(--topbar-bg);
             height: 70px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 32px;
-            border-bottom: 1px solid #f0f0f5;
+            border-bottom: 1px solid var(--topbar-border);
             position: sticky;
             top: 0;
             z-index: 90;
@@ -179,7 +187,7 @@
             display: none;
             background: transparent;
             border: none;
-            color: #64748b;
+            color: var(--text-secondary);
             font-size: 1.5rem;
             cursor: pointer;
             padding: 8px;
@@ -188,8 +196,8 @@
         }
 
         .menu-toggle:hover {
-            background: #f1f5f9;
-            color: #1e293b;
+            background: var(--bg-hover);
+            color: var(--text-primary);
         }
 
         .greeting {
@@ -201,13 +209,13 @@
         .greeting-text {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--text-primary);
             letter-spacing: -0.03em;
         }
 
         .greeting-subtext {
             font-size: 0.85rem;
-            color: #94a3b8;
+            color: var(--text-tertiary);
             margin: 0;
             font-weight: 500;
         }
@@ -230,21 +238,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
             border-radius: 12px;
-            color: #64748b;
+            color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
         }
 
         .topbar-action:hover {
-            background: #f1f5f9;
-            color: #4E5FFF;
-            border-color: #cbd5e1;
+            background: var(--bg-hover);
+            color: var(--color-primary);
+            border-color: var(--border-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-md);
         }
 
         .topbar-action .badge {
@@ -253,9 +261,9 @@
             right: 8px;
             width: 8px;
             height: 8px;
-            background: #ef4444;
+            background: var(--color-error);
             border-radius: 50%;
-            border: 2px solid #ffffff;
+            border: 2px solid var(--sidebar-bg);
             display: block;
         }
         
@@ -265,9 +273,9 @@
             right: 6px;
             min-width: 18px;
             height: 18px;
-            background: #ef4444;
+            background: var(--color-error);
             border-radius: 10px;
-            border: 2px solid #ffffff;
+            border: 2px solid var(--topbar-bg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -285,21 +293,21 @@
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
         }
 
         .user-menu:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-sm);
         }
 
         .user-avatar {
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: #4E5FFF;
+            background: var(--color-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -324,13 +332,13 @@
         .user-name {
             font-weight: 600;
             font-size: 0.9rem;
-            color: #1e293b;
+            color: var(--text-primary);
             line-height: 1.2;
         }
 
         .user-role {
             font-size: 0.8rem;
-            color: #94a3b8;
+            color: var(--text-tertiary);
         }
 
         .content-area {
@@ -375,16 +383,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: var(--scrollbar-track);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: var(--scrollbar-thumb);
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: var(--scrollbar-thumb-hover);
         }
     </style>
 </head>
@@ -496,6 +504,9 @@
                     <button class="topbar-action" title="Tìm kiếm" id="globalSearchBtn">
                         <i class="fas fa-search"></i>
                     </button>
+                    <button class="topbar-action" title="Chế độ giao diện" id="themeToggleBtn">
+                        <i class="fas fa-sun" id="themeIcon"></i>
+                    </button>
                     <button class="topbar-action" title="Thông báo" id="notificationBtn">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
@@ -536,7 +547,7 @@
                     <input type="text" id="globalSearchInput" placeholder="Tìm kiếm sản phẩm, đơn hàng, khách hàng..." autofocus>
                 </div>
                 <div id="globalSearchResults" class="search-results" style="margin-top: 20px; max-height: 400px; overflow-y: auto;">
-                    <p style="color: #94a3b8; text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>
+                    <p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>
                 </div>
             </div>
         </div>
@@ -554,7 +565,7 @@
             <div class="modal-body" style="padding: 0;">
                 <div class="notification-list">
                     <div class="notification-item unread">
-                        <div class="notification-icon" style="background: #4E5FFF;">
+                        <div class="notification-icon" style="background: var(--color-primary);">
                             <i class="fas fa-shopping-cart"></i>
                         </div>
                         <div class="notification-content">
@@ -564,7 +575,7 @@
                         </div>
                     </div>
                     <div class="notification-item">
-                        <div class="notification-icon" style="background: #10b981;">
+                        <div class="notification-icon" style="background: var(--color-success);">
                             <i class="fas fa-check"></i>
                         </div>
                         <div class="notification-content">
@@ -574,7 +585,7 @@
                         </div>
                     </div>
                     <div class="notification-item">
-                        <div class="notification-icon" style="background: #f59e0b;">
+                        <div class="notification-icon" style="background: var(--color-warning);">
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="notification-content">
@@ -602,7 +613,7 @@
                     <h4>Giao diện</h4>
                     <div class="setting-item">
                         <label>
-                            <input type="checkbox" checked> Chế độ tối
+                            <input type="checkbox" id="darkModeCheckbox"> Chế độ tối
                         </label>
                     </div>
                     <div class="setting-item">
@@ -637,7 +648,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--modal-overlay);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -651,9 +662,9 @@
         }
 
         .modal-container {
-            background: white;
+            background: var(--modal-bg);
             border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-xl);
             width: 90%;
             animation: slideUp 0.3s;
             overflow: hidden;
@@ -666,7 +677,7 @@
 
         .modal-header {
             padding: 24px;
-            border-bottom: 1px solid #f0f0f5;
+            border-bottom: 1px solid var(--border-primary);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -676,21 +687,21 @@
             margin: 0;
             font-size: 1.25rem;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--text-primary);
         }
 
         .modal-close {
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: #94a3b8;
+            color: var(--text-tertiary);
             cursor: pointer;
             padding: 4px;
             transition: all 0.2s;
         }
 
         .modal-close:hover {
-            color: #1e293b;
+            color: var(--text-primary);
         }
 
         .modal-body {
@@ -706,21 +717,23 @@
         .search-input-wrapper i {
             position: absolute;
             left: 16px;
-            color: #94a3b8;
+            color: var(--text-tertiary);
         }
 
         .search-input-wrapper input {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--input-border);
             border-radius: 12px;
             font-size: 1rem;
             transition: all 0.2s;
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
 
         .search-input-wrapper input:focus {
             outline: none;
-            border-color: #4E5FFF;
+            border-color: var(--color-primary);
         }
 
         .notification-list {
@@ -732,17 +745,17 @@
             display: flex;
             gap: 16px;
             padding: 16px 24px;
-            border-bottom: 1px solid #f0f0f5;
+            border-bottom: 1px solid var(--border-primary);
             transition: all 0.2s;
             cursor: pointer;
         }
 
         .notification-item:hover {
-            background: #f8fafc;
+            background: var(--bg-tertiary);
         }
 
         .notification-item.unread {
-            background: #f0f4ff;
+            background: var(--color-primary-light);
         }
 
         .notification-icon {
@@ -763,25 +776,25 @@
 
         .notification-title {
             font-weight: 600;
-            color: #1e293b;
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
 
         .notification-text {
             font-size: 0.9rem;
-            color: #64748b;
+            color: var(--text-secondary);
             margin-bottom: 4px;
         }
 
         .notification-time {
             font-size: 0.8rem;
-            color: #94a3b8;
+            color: var(--text-tertiary);
         }
 
         .settings-section h4 {
             font-size: 1rem;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--text-primary);
             margin-bottom: 12px;
         }
 
@@ -794,26 +807,27 @@
             align-items: center;
             gap: 12px;
             cursor: pointer;
-            color: #475569;
+            color: var(--text-secondary);
         }
 
         .btn-outline {
-            background: white;
-            border: 2px solid #e2e8f0;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-secondary);
             padding: 12px 24px;
             border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            color: var(--text-primary);
         }
 
         .btn-outline:hover {
-            border-color: #4E5FFF;
-            color: #4E5FFF;
+            border-color: var(--color-primary);
+            color: var(--color-primary);
         }
 
         .btn-danger {
-            background: #ef4444;
+            background: var(--color-error);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -840,10 +854,10 @@
         }
 
         .toast {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 16px 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -897,18 +911,18 @@
             font-weight: 600;
             font-size: 0.95rem;
             margin-bottom: 2px;
-            color: #1e293b;
+            color: var(--text-primary);
         }
 
         .toast-message {
             font-size: 0.85rem;
-            color: #64748b;
+            color: var(--text-secondary);
         }
 
         .toast-close {
             background: none;
             border: none;
-            color: #94a3b8;
+            color: var(--text-tertiary);
             cursor: pointer;
             padding: 4px;
             font-size: 1.2rem;
@@ -917,48 +931,90 @@
         }
 
         .toast-close:hover {
-            color: #1e293b;
+            color: var(--text-primary);
         }
 
         .toast.success {
-            border-left-color: #10b981;
+            border-left-color: var(--color-success);
         }
 
         .toast.success .toast-icon {
-            background: #d1fae5;
-            color: #10b981;
+            background: var(--color-success-bg);
+            color: var(--color-success);
         }
 
         .toast.error {
-            border-left-color: #ef4444;
+            border-left-color: var(--color-error);
         }
 
         .toast.error .toast-icon {
-            background: #fee2e2;
-            color: #ef4444;
+            background: var(--color-error-bg);
+            color: var(--color-error);
         }
 
         .toast.warning {
-            border-left-color: #f59e0b;
+            border-left-color: var(--color-warning);
         }
 
         .toast.warning .toast-icon {
-            background: #fef3c7;
-            color: #f59e0b;
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
         }
 
         .toast.info {
-            border-left-color: #3b82f6;
+            border-left-color: var(--color-info);
         }
 
         .toast.info .toast-icon {
-            background: #dbeafe;
-            color: #3b82f6;
+            background: var(--color-info-bg);
+            color: var(--color-info);
         }
     </style>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
+        // Theme Management
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Apply theme on page load (remove preload class after short delay)
+        html.classList.add('preload');
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+        setTimeout(() => html.classList.remove('preload'), 100);
+
+        // Theme toggle event
+        themeToggleBtn?.addEventListener('click', function() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Update checkbox in settings modal
+            const darkModeCheckbox = document.getElementById('darkModeCheckbox');
+            if (darkModeCheckbox) {
+                darkModeCheckbox.checked = (newTheme === 'dark');
+            }
+        });
+
+        function updateThemeIcon(theme) {
+            if (themeIcon) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'fas fa-moon';
+                    themeToggleBtn.title = 'Chuyển sang chế độ sáng';
+                } else {
+                    themeIcon.className = 'fas fa-sun';
+                    themeToggleBtn.title = 'Chuyển sang chế độ tối';
+                }
+            }
+        }
+
         // Menu toggle for mobile
         document.getElementById('menuToggle')?.addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('active');
@@ -996,7 +1052,7 @@
         function closeGlobalSearch() {
             document.getElementById('globalSearchModal').style.display = 'none';
             document.getElementById('globalSearchInput').value = '';
-            document.getElementById('globalSearchResults').innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>';
+            document.getElementById('globalSearchResults').innerHTML = '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>';
         }
 
         // Global search functionality
@@ -1006,35 +1062,35 @@
             const searchTerm = e.target.value;
             
             if (searchTerm.length < 2) {
-                document.getElementById('globalSearchResults').innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>';
+                document.getElementById('globalSearchResults').innerHTML = '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Nhập từ khóa để tìm kiếm...</p>';
                 return;
             }
 
             globalSearchTimeout = setTimeout(() => {
-                document.getElementById('globalSearchResults').innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...</p>';
+                document.getElementById('globalSearchResults').innerHTML = '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...</p>';
                 
                 // Simulate search results
                 setTimeout(() => {
                     const results = `
                         <div style="margin-bottom: 16px;">
-                            <h4 style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Sản phẩm</h4>
-                            <a href="/Products" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: #1e293b; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Sản phẩm</h4>
+                            <a href="/Products" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
                                 <div style="font-weight: 600;">Coca Cola 330ml</div>
-                                <div style="font-size: 0.9rem; color: #64748b;">SKU: CC001 - 15,000₫</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">SKU: CC001 - 15,000₫</div>
                             </a>
                         </div>
                         <div style="margin-bottom: 16px;">
-                            <h4 style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Đơn hàng</h4>
-                            <a href="/Orders" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: #1e293b; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Đơn hàng</h4>
+                            <a href="/Orders" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
                                 <div style="font-weight: 600;">Đơn hàng #001234</div>
-                                <div style="font-size: 0.9rem; color: #64748b;">Nguyễn Văn A - 250,000₫</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Nguyễn Văn A - 250,000₫</div>
                             </a>
                         </div>
                         <div>
-                            <h4 style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Khách hàng</h4>
-                            <a href="/Customers" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: #1e293b; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Khách hàng</h4>
+                            <a href="/Customers" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
                                 <div style="font-weight: 600;">Nguyễn Văn A</div>
-                                <div style="font-size: 0.9rem; color: #64748b;">nguyenvana@email.com - 0901234567</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">nguyenvana@email.com - 0901234567</div>
                             </a>
                         </div>
                     `;
@@ -1055,6 +1111,23 @@
         // Settings
         document.getElementById('settingsBtn')?.addEventListener('click', function() {
             document.getElementById('settingsModal').style.display = 'flex';
+            
+            // Update dark mode checkbox to match current theme
+            const darkModeCheckbox = document.getElementById('darkModeCheckbox');
+            if (darkModeCheckbox) {
+                darkModeCheckbox.checked = html.getAttribute('data-theme') === 'dark';
+            }
+        });
+
+        // Dark mode checkbox handler in settings
+        document.getElementById('darkModeCheckbox')?.addEventListener('change', function(e) {
+            const newTheme = e.target.checked ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            const message = newTheme === 'dark' ? 'Đã chuyển sang chế độ tối' : 'Đã chuyển sang chế độ sáng';
+            showToast(message, 'info', 'Giao diện');
         });
 
         function closeSettings() {

@@ -1,0 +1,364 @@
+/* Form Pages Dark Mode Support */
+/* File này override tất cả hard-coded colors trong các trang Create/Edit/Details/Delete */
+
+/* ==================== FORM CARD ==================== */
+.form-card,
+.details-card,
+.delete-card {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* ==================== FORM HEADER ==================== */
+.form-header,
+.details-header,
+.delete-header {
+    border-bottom: 2px solid var(--border-color) !important;
+    background: transparent !important;
+}
+
+.form-header h2,
+.form-header h3,
+.details-header h2,
+.details-header h3,
+.delete-header h2,
+.delete-header h3 {
+    color: var(--text-primary) !important;
+}
+
+.form-header p,
+.details-header p,
+.delete-header p {
+    color: var(--text-secondary) !important;
+}
+
+/* ==================== FORM SECTION ==================== */
+.form-section {
+    border-top: 2px solid var(--border-color) !important;
+}
+
+.form-section-title {
+    color: var(--text-primary) !important;
+}
+
+/* ==================== FORM GROUP ==================== */
+.form-group label,
+.form-label {
+    color: var(--text-primary) !important;
+}
+
+.form-group .text-danger,
+.text-danger,
+span[class*="text-danger"] {
+    color: var(--color-error) !important;
+}
+
+/* ==================== FORM CONTROLS ==================== */
+.form-control,
+input.form-control,
+textarea.form-control,
+select.form-control,
+.form-select {
+    background: var(--bg-secondary) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control:focus,
+input.form-control:focus,
+textarea.form-control:focus,
+select.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-primary) !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(78, 95, 255, 0.25) !important;
+}
+
+.form-control::placeholder,
+input.form-control::placeholder,
+textarea.form-control::placeholder {
+    color: var(--text-tertiary) !important;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn-primary,
+button[type="submit"],
+.btn-submit {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover,
+.btn-submit:hover {
+    background: var(--color-primary-dark) !important;
+    border-color: var(--color-primary-dark) !important;
+}
+
+.btn-secondary,
+.btn-cancel,
+.btn-back {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+.btn-secondary:hover,
+.btn-cancel:hover,
+.btn-back:hover {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-danger,
+.btn-delete {
+    background: var(--color-error) !important;
+    border-color: var(--color-error) !important;
+    color: white !important;
+}
+
+.btn-danger:hover,
+.btn-delete:hover {
+    background: var(--color-error-dark) !important;
+    border-color: var(--color-error-dark) !important;
+}
+
+.btn-edit {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.btn-edit:hover {
+    background: var(--color-primary-dark) !important;
+}
+
+/* ==================== DETAILS SECTION ==================== */
+.detail-section {
+    background: var(--bg-secondary) !important;
+    border-left: 3px solid var(--border-color) !important;
+}
+
+.detail-label {
+    color: var(--text-secondary) !important;
+}
+
+.detail-value {
+    color: var(--text-primary) !important;
+}
+
+/* ==================== INFO BOX ==================== */
+.info-box,
+.detail-card {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.info-label {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+.info-value {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ==================== BADGE & STATUS ==================== */
+.badge-success,
+.status-success {
+    background: var(--color-success) !important;
+    color: white !important;
+}
+
+.badge-warning,
+.status-warning {
+    background: var(--color-warning) !important;
+    color: white !important;
+}
+
+.badge-danger,
+.status-danger {
+    background: var(--color-error) !important;
+    color: white !important;
+}
+
+.badge-info,
+.status-info {
+    background: var(--color-primary) !important;
+    color: white !important;
+}
+
+/* ==================== VALIDATION ERRORS ==================== */
+.validation-summary-errors,
+.field-validation-error {
+    color: var(--color-error) !important;
+}
+
+.input-validation-error {
+    border-color: var(--color-error) !important;
+}
+
+/* ==================== FORM FOOTER/ACTIONS ==================== */
+.form-actions,
+.form-footer {
+    border-top: 2px solid var(--border-color) !important;
+    background: transparent !important;
+}
+
+/* ==================== ALERT & MESSAGES ==================== */
+.alert {
+    border-color: var(--border-color) !important;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: var(--color-success) !important;
+    color: var(--color-success) !important;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border-color: var(--color-warning) !important;
+    color: var(--color-warning) !important;
+}
+
+.alert-danger {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: var(--color-error) !important;
+    color: var(--color-error) !important;
+}
+
+.alert-info {
+    background: rgba(78, 95, 255, 0.1) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
+}
+
+/* ==================== SPECIFIC OVERRIDES ==================== */
+/* Override cho các element cụ thể trong Details pages */
+.product-details,
+.customer-details,
+.supplier-details,
+.order-details,
+.promotion-details {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Override cho button hover effects */
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Override cho readonly inputs */
+.form-control[readonly],
+input[readonly] {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ==================== FILE UPLOAD ==================== */
+.custom-file-input,
+input[type="file"] {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.custom-file-label {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ==================== SELECT2 / DROPDOWN ==================== */
+.select2-container--default .select2-selection--single {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--text-primary) !important;
+}
+
+.select2-dropdown {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.select2-results__option {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.select2-results__option--highlighted {
+    background: var(--bg-hover) !important;
+}
+
+/* ==================== CHECKBOX & RADIO ==================== */
+.form-check-input {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+.form-check-label {
+    color: var(--text-primary) !important;
+}
+
+/* ==================== ADDITIONAL TEXT STYLES ==================== */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+p {
+    color: var(--text-secondary) !important;
+}
+
+small,
+.small-text {
+    color: var(--text-tertiary) !important;
+}
+
+/* ==================== LINKS ==================== */
+a {
+    color: var(--color-primary) !important;
+}
+
+a:hover {
+    color: var(--color-primary-dark) !important;
+}
+
+/* ==================== DIVIDERS ==================== */
+hr {
+    border-color: var(--border-color) !important;
+}
+
+/* ==================== CARD COMPONENTS ==================== */
+.card {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.card-header {
+    background: var(--bg-secondary) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+.card-body {
+    background: var(--bg-primary) !important;
+}
+
+.card-footer {
+    background: var(--bg-secondary) !important;
+    border-top-color: var(--border-color) !important;
+}

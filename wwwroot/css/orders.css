@@ -9,10 +9,10 @@
 }
 
 .status-tab {
-    background: #ffffff;
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 24px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--border-secondary);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -21,12 +21,12 @@
 
 .status-tab:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    border-color: #cbd5e1;
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-hover);
 }
 
 .status-tab.active {
-    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-lg);
     transform: translateY(-6px);
 }
 
@@ -78,7 +78,7 @@
 
 .status-label {
     font-size: 0.9rem;
-    color: #64748b;
+    color: var(--text-secondary);
     font-weight: 600;
     flex: 1;
 }
@@ -99,17 +99,17 @@
 
 .status-subtitle {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: var(--text-tertiary);
     margin-top: 4px;
 }
 
 /* Main Order List Card */
 .order-list-card {
-    background: #ffffff;
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 32px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-secondary);
 }
 
 /* Order List Header */
@@ -124,11 +124,11 @@
 
 .order-count-info {
     font-size: 0.95rem;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .order-count-info strong {
-    color: #1e293b;
+    color: var(--text-primary);
     font-weight: 700;
 }
 
@@ -147,17 +147,17 @@
     align-items: center;
     gap: 10px;
     padding: 12px 18px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--input-border);
     border-radius: 12px;
     width: 240px;
     transition: all 0.25s;
 }
 
 .search-box-large:focus-within {
-    border-color: #4E5FFF;
-    box-shadow: 0 0 0 3px rgba(78, 95, 255, 0.1);
-    background: #ffffff;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+    background: var(--input-bg);
 }
 
 .search-box-large input {
@@ -165,17 +165,17 @@
     background: transparent;
     outline: none;
     flex: 1;
-    color: #1e293b;
+    color: var(--text-primary);
     font-size: 0.9rem;
     font-weight: 500;
 }
 
 .search-box-large input::placeholder {
-    color: #94a3b8;
+    color: var(--text-tertiary);
 }
 
 .search-box-large i {
-    color: #94a3b8;
+    color: var(--text-tertiary);
     font-size: 0.9rem;
 }
 
@@ -191,40 +191,40 @@
     align-items: center;
     gap: 8px;
     padding: 8px 14px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-secondary);
     border-radius: 10px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .filter-chip:hover {
-    background: #e2e8f0;
+    background: var(--border-secondary);
 }
 
 .filter-chip i {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--text-tertiary);
 }
 
 .clear-all-btn {
     padding: 8px 14px;
     background: transparent;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-secondary);
     border-radius: 10px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .clear-all-btn:hover {
-    background: #f8fafc;
-    color: #1e293b;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
 }
 
 /* Action Buttons */
@@ -238,19 +238,19 @@
     align-items: center;
     gap: 8px;
     padding: 11px 18px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
     border-radius: 12px;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .export-btn:hover, .sort-btn:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
 }
 
 .add-order-btn {
@@ -283,12 +283,12 @@
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border-secondary);
 }
 
 .pagination-info span {
     font-size: 0.9rem;
-    color: #64748b;
+    color: var(--text-secondary);
     font-weight: 600;
 }
 
@@ -303,18 +303,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .pagination-arrow:hover:not(:disabled) {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #1e293b;
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
 }
 
 .pagination-arrow:disabled {
@@ -329,7 +329,7 @@
 }
 
 .orders-data-table thead {
-    background: #fafbfc;
+    background: var(--bg-tertiary);
     border-radius: 12px;
 }
 
@@ -338,17 +338,17 @@
     text-align: left;
     font-weight: 700;
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid var(--border-secondary);
 }
 
 .orders-data-table td {
     padding: 18px 16px;
-    color: #334155;
+    color: var(--text-primary);
     font-size: 0.9rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border-primary);
 }
 
 .orders-data-table tbody tr {
@@ -356,7 +356,7 @@
 }
 
 .orders-data-table tbody tr:hover {
-    background: #fafbfc;
+    background: var(--bg-tertiary);
 }
 
 .orders-data-table tbody tr:last-child td {
@@ -385,13 +385,13 @@
 
 .customer-name {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     font-size: 0.9rem;
 }
 
 .customer-email {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: var(--text-tertiary);
     margin-top: 2px;
 }
 
@@ -400,12 +400,12 @@
     display: inline-flex;
     align-items: center;
     padding: 6px 12px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
     border-radius: 8px;
     font-size: 0.8rem;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-secondary);
 }
 
 /* Status Tags */
@@ -441,17 +441,17 @@
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-secondary);
     border-radius: 8px;
-    color: #94a3b8;
+    color: var(--text-tertiary);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .more-btn:hover {
-    background: #f8fafc;
-    border-color: #cbd5e1;
-    color: #475569;
+    background: var(--bg-tertiary);
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
 }
 
 /* Responsive */
