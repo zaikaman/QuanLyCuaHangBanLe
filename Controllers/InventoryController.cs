@@ -18,7 +18,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _productService = productService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -26,11 +26,24 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var inventories = await _inventoryRepository.GetAllAsync();
+            const int pageSize = 10;
+            var allInventories = await _inventoryRepository.GetAllAsync();
+            var totalItems = allInventories.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var inventories = allInventories
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             // Load products cho mỗi inventory item
             var products = await _productService.GetAllAsync();
             
             ViewBag.Products = products;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalItems = totalItems;
+
             return View(inventories);
         }
 

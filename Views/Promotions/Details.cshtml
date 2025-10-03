@@ -1,0 +1,394 @@
+@model QuanLyCuaHangBanLe.Models.Promotion
+
+@{
+    ViewData["Title"] = "Chi Tiết Khuyến Mãi";
+    var now = DateTime.Now;
+    var isActive = Model.Status == "active" && Model.StartDate <= now && Model.EndDate >= now;
+    var isExpired = Model.EndDate < now;
+    var isUpcoming = Model.StartDate > now;
+    var usagePercent = Model.UsageLimit > 0 ? (Model.UsedCount * 100.0 / Model.UsageLimit) : 0;
+}
+
+<style>
+    .details-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 0;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+    
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+        background: #e5e5e5;
+        color: #1a1a1a;
+    }
+    
+    .details-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: #1a1a1a;
+        color: white;
+        padding: 25px 30px;
+    }
+    
+    .promo-code-display {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+    
+    .card-header h2 {
+        font-size: 18px;
+        font-weight: 400;
+        margin: 0;
+        opacity: 0.9;
+    }
+    
+    .status-banner {
+        padding: 15px 30px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-expired {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-upcoming {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-inactive {
+        background: #e2e3e5;
+        color: #383d41;
+    }
+    
+    .card-body {
+        padding: 30px;
+    }
+    
+    .info-section {
+        margin-bottom: 30px;
+    }
+    
+    .info-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .info-item {
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 3px solid #1a1a1a;
+    }
+    
+    .info-label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .info-value {
+        font-size: 16px;
+        color: #1a1a1a;
+        font-weight: 500;
+    }
+    
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .discount-highlight {
+        background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .discount-value {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    .usage-stats {
+        background: #fafafa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .usage-bar {
+        width: 100%;
+        height: 30px;
+        background: #e5e5e5;
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+    
+    .usage-fill {
+        height: 100%;
+        background: #1a1a1a;
+        transition: width 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .usage-text {
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .actions-section {
+        display: flex;
+        gap: 12px;
+        padding: 20px 30px;
+        background: #fafafa;
+        border-top: 1px solid #e5e5e5;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary {
+        background: #1a1a1a;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #000000;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 26, 26, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #ffffff;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
+    }
+    
+    .btn-secondary:hover {
+        background: #f5f5f5;
+    }
+</style>
+
+<div class="details-container">
+    <div class="page-header">
+        <h1>🎁 Chi Tiết Khuyến Mãi</h1>
+        <a asp-action="Index" class="btn-back">
+            ← Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="details-card">
+        <div class="card-header">
+            <div class="promo-code-display">@Model.PromoCode</div>
+            <h2>@Model.Description</h2>
+        </div>
+        
+        @if (isActive)
+        {
+            <div class="status-banner status-active">
+                ✓ Đang hoạt động - Có thể sử dụng ngay
+            </div>
+        }
+        else if (isExpired)
+        {
+            <div class="status-banner status-expired">
+                ✗ Đã hết hạn
+            </div>
+        }
+        else if (isUpcoming)
+        {
+            <div class="status-banner status-upcoming">
+                ⏰ Sắp diễn ra
+            </div>
+        }
+        else
+        {
+            <div class="status-banner status-inactive">
+                ⊗ Tạm ngưng
+            </div>
+        }
+        
+        <div class="card-body">
+            <div class="info-section">
+                <h3 class="section-title">💰 Giá Trị Giảm Giá</h3>
+                <div class="discount-highlight">
+                    <div class="discount-value">
+                        @if (Model.DiscountType == "percent")
+                        {
+                            <span>@Model.DiscountValue%</span>
+                        }
+                        else
+                        {
+                            <span>@Model.DiscountValue.ToString("N0") ₫</span>
+                        }
+                    </div>
+                    <div style="color: #666; font-size: 14px; margin-top: 5px;">
+                        @(Model.DiscountType == "percent" ? "Giảm theo phần trăm" : "Giảm số tiền cố định")
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">📋 Thông Tin Chi Tiết</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Ngày bắt đầu</div>
+                        <div class="info-value">
+                            📅 @Model.StartDate.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Ngày kết thúc</div>
+                        <div class="info-value">
+                            📅 @Model.EndDate.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Đơn hàng tối thiểu</div>
+                        <div class="info-value">
+                            @if (Model.MinOrderAmount > 0)
+                            {
+                                <span>@Model.MinOrderAmount.ToString("N0") ₫</span>
+                            }
+                            else
+                            {
+                                <span>Không yêu cầu</span>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Trạng thái hệ thống</div>
+                        <div class="info-value">
+                            @(Model.Status == "active" ? "✓ Active" : "✗ Inactive")
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">📊 Thống Kê Sử Dụng</h3>
+                <div class="usage-stats">
+                    @if (Model.UsageLimit > 0)
+                    {
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: @usagePercent%">
+                                @if (usagePercent > 15)
+                                {
+                                    <span>@usagePercent.ToString("F1")%</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="usage-text">
+                            Đã sử dụng: <strong>@Model.UsedCount</strong> / <strong>@Model.UsageLimit</strong> lần
+                            (@(Model.UsageLimit - Model.UsedCount) lần còn lại)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="usage-text">
+                            Không giới hạn số lần sử dụng<br/>
+                            Đã sử dụng: <strong>@Model.UsedCount</strong> lần
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <a asp-action="Edit" asp-route-id="@Model.PromoId" class="btn btn-primary">
+                ✏️ Chỉnh sửa
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                📋 Danh sách khuyến mãi
+            </a>
+        </div>
+    </div>
+</div>

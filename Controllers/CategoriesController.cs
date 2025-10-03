@@ -13,7 +13,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -21,13 +21,60 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var categories = await _categoryRepository.GetAllAsync();
+            const int pageSize = 10;
+            var allCategories = await _categoryRepository.GetAllAsync();
+            var totalItems = allCategories.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var categories = allCategories
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalItems = totalItems;
+
             return View(categories);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string categoryName)
+        public async Task<IActionResult> Create(Category category)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
+
+            try
+            {
+                await _categoryRepository.AddAsync(category);
+                TempData["SuccessMessage"] = "Thêm loại sản phẩm thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return View(category);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAjax(string categoryName)
         {
             try
             {

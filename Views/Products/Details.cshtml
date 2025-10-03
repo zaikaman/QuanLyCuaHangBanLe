@@ -1,0 +1,297 @@
+@model QuanLyCuaHangBanLe.Models.Product
+
+@{
+    ViewData["Title"] = "Chi Tiết Sản Phẩm";
+}
+
+<style>
+    .details-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 0;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+    
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+        background: #e5e5e5;
+        color: #1a1a1a;
+    }
+    
+    .details-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: #1a1a1a;
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-header h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .product-barcode {
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        background: rgba(255,255,255,0.2);
+        padding: 6px 12px;
+        border-radius: 6px;
+    }
+    
+    .card-body {
+        padding: 30px;
+    }
+    
+    .info-section {
+        margin-bottom: 30px;
+    }
+    
+    .info-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .info-item {
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 3px solid #1a1a1a;
+    }
+    
+    .info-label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .info-value {
+        font-size: 16px;
+        color: #1a1a1a;
+        font-weight: 500;
+    }
+    
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .price-section {
+        background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .price-label {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    
+    .price-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    .actions-section {
+        display: flex;
+        gap: 12px;
+        padding: 20px 30px;
+        background: #fafafa;
+        border-top: 1px solid #e5e5e5;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary {
+        background: #1a1a1a;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #000000;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 26, 26, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #ffffff;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
+    }
+    
+    .btn-secondary:hover {
+        background: #f5f5f5;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .badge-success {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .badge-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .badge-danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+</style>
+
+<div class="details-container">
+    <div class="page-header">
+        <h1>📦 Chi Tiết Sản Phẩm</h1>
+        <a asp-action="Index" class="btn-back">
+            ← Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="details-card">
+        <div class="card-header">
+            <h2>@Model.ProductName</h2>
+            @if (!string.IsNullOrEmpty(Model.Barcode))
+            {
+                <div class="product-barcode">📊 @Model.Barcode</div>
+            }
+        </div>
+        
+        <div class="card-body">
+            <div class="info-section">
+                <h3 class="section-title">💰 Thông Tin Giá</h3>
+                <div class="price-section">
+                    <div class="price-label">Giá bán</div>
+                    <div class="price-value">@Model.Price.ToString("N0") ₫</div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">📋 Thông Tin Cơ Bản</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Loại sản phẩm</div>
+                        <div class="info-value">
+                            @(Model.Category != null ? Model.Category.CategoryName : "Chưa phân loại")
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Nhà cung cấp</div>
+                        <div class="info-value">
+                            @(Model.Supplier != null ? Model.Supplier.Name : "Chưa có")
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Đơn vị</div>
+                        <div class="info-value">@Model.Unit</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">⏰ Thông Tin Khác</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Ngày tạo</div>
+                        <div class="info-value">
+                            @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Mã sản phẩm</div>
+                        <div class="info-value">#@Model.ProductId</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-primary">
+                ✏️ Chỉnh sửa
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                📋 Danh sách sản phẩm
+            </a>
+        </div>
+    </div>
+</div>

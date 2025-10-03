@@ -46,6 +46,22 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(products);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+
         public async Task<IActionResult> Create()
         {
             await LoadDropdownData();

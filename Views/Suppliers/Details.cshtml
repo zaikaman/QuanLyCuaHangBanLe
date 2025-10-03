@@ -1,0 +1,275 @@
+@model QuanLyCuaHangBanLe.Models.Supplier
+
+@{
+    ViewData["Title"] = "Chi Tiết Nhà Cung Cấp";
+}
+
+<style>
+    .details-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 0;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .page-header h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+    
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+        background: #e5e5e5;
+        color: #1a1a1a;
+    }
+    
+    .details-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: #1a1a1a;
+        color: white;
+        padding: 25px 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .supplier-icon {
+        width: 70px;
+        height: 70px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+    
+    .supplier-info h2 {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+    }
+    
+    .supplier-id {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    
+    .card-body {
+        padding: 30px;
+    }
+    
+    .info-section {
+        margin-bottom: 30px;
+    }
+    
+    .info-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .info-item {
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 3px solid #1a1a1a;
+    }
+    
+    .info-label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .info-value {
+        font-size: 16px;
+        color: #1a1a1a;
+        font-weight: 500;
+    }
+    
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .actions-section {
+        display: flex;
+        gap: 12px;
+        padding: 20px 30px;
+        background: #fafafa;
+        border-top: 1px solid #e5e5e5;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary {
+        background: #1a1a1a;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #000000;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 26, 26, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #ffffff;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
+    }
+    
+    .btn-secondary:hover {
+        background: #f5f5f5;
+    }
+</style>
+
+<div class="details-container">
+    <div class="page-header">
+        <h1>🏢 Chi Tiết Nhà Cung Cấp</h1>
+        <a asp-action="Index" class="btn-back">
+            ← Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="details-card">
+        <div class="card-header">
+            <div class="supplier-icon">
+                🏢
+            </div>
+            <div class="supplier-info">
+                <h2>@Model.Name</h2>
+                <div class="supplier-id">Mã NCC: #@Model.SupplierId</div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="info-section">
+                <h3 class="section-title">📞 Thông Tin Liên Hệ</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Số điện thoại</div>
+                        <div class="info-value">
+                            @if (!string.IsNullOrEmpty(Model.Phone))
+                            {
+                                <span>📱 @Model.Phone</span>
+                            }
+                            else
+                            {
+                                <span style="color: #999;">Chưa cập nhật</span>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">
+                            @if (!string.IsNullOrEmpty(Model.Email))
+                            {
+                                <span>📧 @Model.Email</span>
+                            }
+                            else
+                            {
+                                <span style="color: #999;">Chưa cập nhật</span>
+                            }
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Address))
+                    {
+                        <div class="info-item full-width">
+                            <div class="info-label">Địa chỉ</div>
+                            <div class="info-value">
+                                📍 @Model.Address
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">📊 Thống Kê</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Số lượng sản phẩm</div>
+                        <div class="info-value">
+                            @(Model.Products != null ? Model.Products.Count : 0) sản phẩm
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Mã nhà cung cấp</div>
+                        <div class="info-value">#@Model.SupplierId</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <a asp-action="Edit" asp-route-id="@Model.SupplierId" class="btn btn-primary">
+                ✏️ Chỉnh sửa
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                📋 Danh sách nhà cung cấp
+            </a>
+        </div>
+    </div>
+</div>

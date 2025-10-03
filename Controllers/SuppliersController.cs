@@ -13,7 +13,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _supplierRepository = supplierRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -21,22 +21,70 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var suppliers = await _supplierRepository.GetAllAsync();
+            const int pageSize = 10;
+            var allSuppliers = await _supplierRepository.GetAllAsync();
+            var totalItems = allSuppliers.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var suppliers = allSuppliers
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalItems = totalItems;
+
             return View(suppliers);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var supplier = await _supplierRepository.GetByIdAsync(id);
+            if (supplier == null)
+            {
+                return NotFound();
+            }
+            return View(supplier);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Supplier supplier)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(supplier);
+            }
+
             try
             {
                 await _supplierRepository.AddAsync(supplier);
-                return Json(new { success = true, message = "Thêm nhà cung cấp thành công!" });
+                TempData["SuccessMessage"] = "Thêm nhà cung cấp thành công!";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+                TempData["ErrorMessage"] = "Lỗi: " + ex.Message;
+                return View(supplier);
             }
         }
 

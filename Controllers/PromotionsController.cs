@@ -13,7 +13,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _promotionRepository = promotionRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -21,8 +21,37 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var promotions = await _promotionRepository.GetAllAsync();
+            const int pageSize = 10;
+            var allPromotions = await _promotionRepository.GetAllAsync();
+            var totalItems = allPromotions.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var promotions = allPromotions
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalItems = totalItems;
+
             return View(promotions);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var promotion = await _promotionRepository.GetByIdAsync(id);
+            if (promotion == null)
+            {
+                return NotFound();
+            }
+            return View(promotion);
         }
 
         [HttpGet]

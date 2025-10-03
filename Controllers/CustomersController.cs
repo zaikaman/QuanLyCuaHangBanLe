@@ -38,6 +38,22 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(customers);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var customer = await _customerRepository.GetByIdAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
+        }
+
         public IActionResult Create()
         {
             return View();
