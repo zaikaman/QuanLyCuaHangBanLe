@@ -13,11 +13,11 @@ namespace QuanLyCuaHangBanLe.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            // TODO: Implement authentication logic with database
-            // For now, just redirect to dashboard
+            // TODO: Triển khai logic xác thực với cơ sở dữ liệu
+            // Tạm thời chỉ chuyển hướng đến dashboard
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
-                // Store user info in session
+                // Lưu thông tin người dùng vào session
                 HttpContext.Session.SetString("Username", username);
                 return RedirectToAction("Index", "Dashboard");
             }

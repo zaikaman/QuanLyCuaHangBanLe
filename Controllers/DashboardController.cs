@@ -6,7 +6,7 @@ namespace QuanLyCuaHangBanLe.Controllers
     {
         public IActionResult Index()
         {
-            // Check if user is logged in
+            // Kiểm tra người dùng đã đăng nhập chưa
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
             {

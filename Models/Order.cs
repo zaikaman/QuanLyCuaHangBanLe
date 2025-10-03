@@ -22,7 +22,7 @@ namespace QuanLyCuaHangBanLe.Models
 
         public decimal DiscountAmount { get; set; } = 0;
 
-        // Navigation properties
+        // Các thuộc tính điều hướng
         public Customer? Customer { get; set; }
         public User? User { get; set; }
         public Promotion? Promotion { get; set; }

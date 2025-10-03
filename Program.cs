@@ -6,10 +6,10 @@ namespace QuanLyCuaHangBanLe
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Thêm các dịch vụ vào container
             builder.Services.AddControllersWithViews();
             
-            // Add session support
+            // Thêm hỗ trợ session
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
@@ -20,18 +20,18 @@ namespace QuanLyCuaHangBanLe
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Cấu hình HTTP request pipeline
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // Giá trị HSTS mặc định là 30 ngày. Bạn có thể muốn thay đổi điều này cho các kịch bản production, xem https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseRouting();
             
-            // Enable session
+            // Kích hoạt session
             app.UseSession();
 
             app.UseAuthorization();
