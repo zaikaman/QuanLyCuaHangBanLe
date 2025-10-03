@@ -1,0 +1,142 @@
+@model IEnumerable<QuanLyCuaHangBanLe.Models.Category>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .category-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .category-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .category-actions {
+        display: flex;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-edit {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+
+    .btn-edit:hover {
+        background: #90cdf4;
+    }
+
+    .btn-delete {
+        background: #fed7d7;
+        color: #c53030;
+    }
+
+    .btn-delete:hover {
+        background: #fc8181;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <h1>📑 Quản lý danh mục</h1>
+        <p style="color: #718096; margin-top: 5px;">Quản lý danh mục sản phẩm</p>
+    </div>
+    <a asp-action="Create" class="btn-primary">
+        <span>➕</span>
+        Thêm danh mục mới
+    </a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="categories-grid">
+        @foreach (var category in Model)
+        {
+            <div class="category-card">
+                <div class="category-icon">📦</div>
+                <div class="category-name">@category.CategoryName</div>
+                <div class="category-actions">
+                    <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn-action btn-edit">✏️ Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@category.CategoryId" 
+                       class="btn-action btn-delete" 
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">🗑️ Xóa</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 15px;">
+        <div style="font-size: 4rem; margin-bottom: 20px;">📑</div>
+        <div style="color: #a0aec0;">Chưa có danh mục nào</div>
+    </div>
+}

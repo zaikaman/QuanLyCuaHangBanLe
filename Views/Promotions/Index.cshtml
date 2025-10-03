@@ -1,0 +1,261 @@
+@model IEnumerable<QuanLyCuaHangBanLe.Models.Promotion>
+
+@{
+    ViewData["Title"] = "Quản lý khuyến mãi";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .promotions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+    }
+
+    .promo-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+    }
+
+    .promo-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .promo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+    }
+
+    .promo-code {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #667eea;
+        font-family: 'Courier New', monospace;
+    }
+
+    .promo-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .promo-status.active {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .promo-status.inactive {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .promo-description {
+        color: #4a5568;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+    }
+
+    .promo-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .promo-detail {
+        padding: 10px;
+        background: #f7fafc;
+        border-radius: 8px;
+    }
+
+    .promo-detail-label {
+        font-size: 0.75rem;
+        color: #718096;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .promo-detail-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .promo-progress {
+        margin-top: 15px;
+    }
+
+    .promo-progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: #718096;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    .promo-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-delete {
+        background: #fed7d7;
+        color: #c53030;
+    }
+
+    .btn-delete:hover {
+        background: #fc8181;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <h1>🎁 Quản lý khuyến mãi</h1>
+        <p style="color: #718096; margin-top: 5px;">Tạo và quản lý chương trình khuyến mãi</p>
+    </div>
+    <a asp-action="Create" class="btn-primary">
+        <span>➕</span>
+        Tạo khuyến mãi mới
+    </a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="promotions-grid">
+        @foreach (var promo in Model)
+        {
+            var usagePercent = promo.UsageLimit > 0 ? (promo.UsedCount * 100.0 / promo.UsageLimit) : 0;
+            
+            <div class="promo-card">
+                <div class="promo-header">
+                    <div class="promo-code">@promo.PromoCode</div>
+                    <span class="promo-status @promo.Status">
+                        @(promo.Status == "active" ? "Đang hoạt động" : "Không hoạt động")
+                    </span>
+                </div>
+
+                <div class="promo-description">
+                    @promo.Description
+                </div>
+
+                <div class="promo-details">
+                    <div class="promo-detail">
+                        <div class="promo-detail-label">Giảm giá</div>
+                        <div class="promo-detail-value">
+                            @if (promo.DiscountType == "percent")
+                            {
+                                <span>@promo.DiscountValue%</span>
+                            }
+                            else
+                            {
+                                <span>@promo.DiscountValue.ToString("N0")đ</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="promo-detail">
+                        <div class="promo-detail-label">Đơn tối thiểu</div>
+                        <div class="promo-detail-value">@promo.MinOrderAmount.ToString("N0")đ</div>
+                    </div>
+                </div>
+
+                <div class="promo-detail" style="grid-column: 1 / -1;">
+                    <div class="promo-detail-label">Thời gian</div>
+                    <div class="promo-detail-value" style="font-size: 0.9rem;">
+                        @promo.StartDate.ToString("dd/MM/yyyy") - @promo.EndDate.ToString("dd/MM/yyyy")
+                    </div>
+                </div>
+
+                <div class="promo-progress">
+                    <div class="promo-progress-label">
+                        <span>Đã sử dụng</span>
+                        <span><strong>@promo.UsedCount</strong> / @promo.UsageLimit</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: @usagePercent%"></div>
+                    </div>
+                </div>
+
+                <div class="promo-actions">
+                    <a asp-action="Delete" asp-route-id="@promo.PromoId" 
+                       class="btn-action btn-delete" 
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa khuyến mãi này?')">
+                        🗑️ Xóa
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🎁</div>
+        <div style="color: #a0aec0;">Chưa có chương trình khuyến mãi nào</div>
+    </div>
+}
