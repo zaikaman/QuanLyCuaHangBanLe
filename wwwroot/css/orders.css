@@ -258,12 +258,12 @@
     align-items: center;
     gap: 8px;
     padding: 11px 20px;
-    background: #4E5FFF;
+    background: var(--color-primary) !important;
     border: none;
     border-radius: 12px;
     font-size: 0.9rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #ffffff !important;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
@@ -273,7 +273,7 @@
 .add-order-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(78, 95, 255, 0.4);
-    color: #ffffff;
+    color: #ffffff !important;
 }
 
 /* Pagination Info */
@@ -374,11 +374,11 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #4E5FFF;
+    background: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
+    color: #ffffff !important;
     font-weight: 700;
     font-size: 0.85rem;
 }

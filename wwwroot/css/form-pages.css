@@ -362,3 +362,156 @@ hr {
     background: var(--bg-secondary) !important;
     border-top-color: var(--border-color) !important;
 }
+
+/* ==================== ORDER DETAILS PAGE ==================== */
+.details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.details-card {
+    background: var(--card-bg) !important;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    padding: 30px;
+    border: 1px solid var(--border-primary) !important;
+    margin-bottom: 20px;
+}
+
+.details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-primary) !important;
+}
+
+.details-header h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary) !important;
+    margin: 0;
+}
+
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.status-pending {
+    background: var(--color-warning-bg) !important;
+    color: var(--color-warning) !important;
+}
+
+.status-paid {
+    background: var(--color-success-bg) !important;
+    color: var(--color-success) !important;
+}
+
+.status-canceled {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text-tertiary) !important;
+    font-size: 0.85rem;
+}
+
+.info-value {
+    color: var(--text-primary) !important;
+    font-size: 1rem;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.items-table th {
+    background: var(--bg-tertiary) !important;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-tertiary) !important;
+    border-bottom: 2px solid var(--border-primary) !important;
+}
+
+.items-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.items-table th:last-child,
+.items-table td:last-child {
+    text-align: right;
+}
+
+.total-section {
+    background: var(--bg-tertiary) !important;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary) !important;
+}
+
+.total-row.final {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary) !important;
+    border-top: 2px solid var(--border-primary) !important;
+    margin-top: 10px;
+    padding-top: 15px;
+}
+
+.btn-back {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.btn-back:hover {
+    background: var(--bg-hover) !important;
+}
+
+.actions-section {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid var(--border-primary) !important;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary) !important;
+    margin-bottom: 15px;
+}

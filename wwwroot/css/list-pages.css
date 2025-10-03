@@ -263,3 +263,516 @@
     color: var(--color-success) !important;
 }
 
+
+/* ==================== INVENTORY PAGE SPECIFIC ==================== */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    background: var(--card-bg) !important;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-primary) !important;
+    border-left: 4px solid var(--text-primary) !important;
+}
+
+.stat-box h3 {
+    font-size: 0.85rem;
+    color: var(--text-tertiary) !important;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-box .value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary) !important;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inventory-table thead {
+    background: var(--bg-tertiary) !important;
+}
+
+.inventory-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-tertiary) !important;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.inventory-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.95rem;
+}
+
+.inventory-table tbody tr:hover {
+    background: var(--bg-hover) !important;
+}
+
+.product-name {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+}
+
+.quantity-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.quantity-badge.low {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.quantity-badge.medium {
+    background: var(--color-warning-bg) !important;
+    color: var(--color-warning) !important;
+}
+
+.quantity-badge.high {
+    background: var(--color-success-bg) !important;
+    color: var(--color-success) !important;
+}
+
+.btn-action {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-action:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* ==================== USERS PAGE ==================== */
+.users-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table thead {
+    background: var(--bg-tertiary) !important;
+}
+
+.users-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-tertiary) !important;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.users-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.users-table tbody tr:hover {
+    background: var(--bg-hover) !important;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+}
+
+.user-email {
+    color: var(--text-tertiary) !important;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.role-badge.admin {
+    background: var(--color-warning-bg) !important;
+    color: var(--color-warning) !important;
+}
+
+.role-badge.staff {
+    background: var(--color-info-bg) !important;
+    color: var(--color-info) !important;
+}
+
+/* ==================== CATEGORIES PAGE ==================== */
+.categories-card,
+.category-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-left: 4px solid var(--text-primary) !important;
+}
+
+.category-name {
+    color: var(--text-primary) !important;
+}
+
+.category-description {
+    color: var(--text-secondary) !important;
+}
+
+.category-stats {
+    border-top: 1px solid var(--border-primary) !important;
+}
+
+.category-icon {
+    background: var(--color-info-bg) !important;
+    color: var(--color-info) !important;
+}
+
+.category-delete {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+/* ==================== PROMOTIONS PAGE ==================== */
+.promotions-card,
+.promotion-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-left: 4px solid var(--text-primary) !important;
+}
+
+.promotion-header {
+    background: var(--bg-tertiary) !important;
+}
+
+.promotion-title {
+    color: var(--text-primary) !important;
+}
+
+.promotion-discount {
+    color: var(--text-secondary) !important;
+}
+
+.promotion-status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.promotion-status.active {
+    background: var(--color-success-bg) !important;
+    color: var(--color-success) !important;
+}
+
+.promotion-status.expired {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.promotion-status.inactive {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+}
+
+.promotion-dates {
+    color: var(--text-tertiary) !important;
+}
+
+.promotion-footer {
+    border-top: 1px solid var(--border-primary) !important;
+    background: var(--bg-secondary) !important;
+}
+
+.promotion-delete-btn {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.promotion-progress {
+    background: var(--bg-tertiary) !important;
+}
+
+.promotion-progress-bar {
+    background: var(--color-primary) !important;
+}
+
+/* ==================== USERS PAGE ==================== */
+.users-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table thead {
+    background: var(--bg-tertiary) !important;
+}
+
+.users-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-tertiary) !important;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.users-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.users-table tbody tr:hover {
+    background: var(--bg-hover) !important;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+}
+
+.user-email {
+    color: var(--text-tertiary) !important;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.role-badge.admin {
+    background: var(--color-warning-bg) !important;
+    color: var(--color-warning) !important;
+}
+
+.role-badge.staff {
+    background: var(--color-info-bg) !important;
+    color: var(--color-info) !important;
+}
+
+/* ==================== CATEGORIES PAGE ==================== */
+.categories-card,
+.category-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-left: 4px solid var(--text-primary) !important;
+}
+
+.category-name {
+    color: var(--text-primary) !important;
+}
+
+.category-description {
+    color: var(--text-secondary) !important;
+}
+
+.category-stats {
+    border-top: 1px solid var(--border-primary) !important;
+}
+
+.category-icon {
+    background: var(--color-info-bg) !important;
+    color: var(--color-info) !important;
+}
+
+.category-delete {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+/* ==================== PROMOTIONS PAGE ==================== */
+.promotions-card,
+.promotion-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-left: 4px solid var(--text-primary) !important;
+}
+
+.promotion-header {
+    background: var(--bg-tertiary) !important;
+}
+
+.promotion-title {
+    color: var(--text-primary) !important;
+}
+
+.promotion-discount {
+    color: var(--text-secondary) !important;
+}
+
+.promotion-status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.promotion-status.active {
+    background: var(--color-success-bg) !important;
+    color: var(--color-success) !important;
+}
+
+.promotion-status.expired {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.promotion-status.inactive {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+}
+
+.promotion-dates {
+    color: var(--text-tertiary) !important;
+}
+
+.promotion-footer {
+    border-top: 1px solid var(--border-primary) !important;
+    background: var(--bg-secondary) !important;
+}
+
+.promotion-delete-btn {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.promotion-progress {
+    background: var(--bg-tertiary) !important;
+}
+
+.promotion-progress-bar {
+    background: var(--color-primary) !important;
+}
+
+/* ==================== PAGINATION BUTTONS ==================== */
+.pagination-btn,
+.pagination-current {
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.pagination-btn:hover {
+    background: var(--color-primary-dark) !important;
+}
+
+/* ==================== PROMO CARD (Promotions/Index specific) ==================== */
+.promo-card {
+    background: var(--card-bg) !important;
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--text-primary) !important;
+}
+
+.promo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.promo-code {
+    color: var(--text-primary) !important;
+}
+
+.promo-status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.promo-status.active {
+    background: var(--color-success-bg) !important;
+    color: var(--color-success) !important;
+}
+
+.promo-status.inactive {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.promo-description {
+    color: var(--text-secondary) !important;
+}
+
+.promo-detail {
+    background: var(--bg-tertiary) !important;
+    border-radius: 8px;
+}
+
+.promo-detail-label {
+    color: var(--text-tertiary) !important;
+}
+
+.promo-detail-value {
+    color: var(--text-primary) !important;
+}
+
+.promo-progress-label {
+    color: var(--text-secondary) !important;
+}
+
+.progress-bar {
+    background: var(--bg-tertiary) !important;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--color-primary) !important;
+}
+
+.promo-actions {
+    border-top: 1px solid var(--border-primary) !important;
+}
+
+.btn-delete {
+    background: var(--color-error-bg) !important;
+    color: var(--color-error) !important;
+}
+
+.btn-delete:hover {
+    background: var(--color-error) !important;
+    color: #ffffff !important;
+}

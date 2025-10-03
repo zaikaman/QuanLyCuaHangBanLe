@@ -442,3 +442,32 @@ select.form-control option {
 .sidebar .logout-link:hover {
     color: var(--color-error) !important;
 }
+
+/* ==================== BUTTON COLOR FIX ==================== */
+/* Ensure all primary buttons and links with primary background have white text */
+.btn-primary,
+button.btn-primary,
+a.btn-primary,
+.add-order-btn,
+.add-btn,
+button[style*='background: #4E5FFF'],
+button[style*='background:#4E5FFF'],
+a[style*='background: #4E5FFF'],
+a[style*='background:#4E5FFF'] {
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover,
+a.btn-primary:hover,
+.add-order-btn:hover,
+.add-btn:hover {
+    color: #ffffff !important;
+}
+
+/* Ensure icons inside primary buttons are also white */
+.btn-primary i,
+.add-order-btn i,
+.add-btn i {
+    color: #ffffff !important;
+}
