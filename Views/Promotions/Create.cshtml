@@ -149,6 +149,7 @@
         </div>
 
         <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
             <div class="form-row">
                 <div class="form-group">
                     <label asp-for="PromoCode" class="form-label">

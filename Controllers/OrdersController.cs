@@ -23,7 +23,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _productService = productService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string searchTerm = "")
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -33,6 +33,19 @@ namespace QuanLyCuaHangBanLe.Controllers
 
             const int pageSize = 10;
             var allOrders = await _orderService.GetAllAsync();
+            
+            // Áp dụng tìm kiếm TRƯỚC KHI phân trang
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim().ToLower();
+                allOrders = allOrders.Where(o =>
+                    o.OrderId.ToString().Contains(searchTerm) ||
+                    (o.Customer?.Name != null && o.Customer.Name.ToLower().Contains(searchTerm)) ||
+                    (o.Customer?.Phone != null && o.Customer.Phone.Contains(searchTerm)) ||
+                    (o.Status != null && o.Status.ToLower().Contains(searchTerm))
+                ).ToList();
+            }
+            
             var totalItems = allOrders.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -44,6 +57,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalItems = totalItems;
+            ViewBag.SearchTerm = searchTerm;
 
             return View(orders);
         }
@@ -93,49 +107,34 @@ namespace QuanLyCuaHangBanLe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Order order, List<OrderItem> orderItems)
         {
-            try
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
             {
-                var username = HttpContext.Session.GetString("Username");
-                if (string.IsNullOrEmpty(username))
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
+                return RedirectToAction("Login", "Auth");
+            }
 
-                // Lấy userId từ session
-                var userIdStr = HttpContext.Session.GetString("UserId");
-                if (!int.TryParse(userIdStr, out int userId))
-                {
-                    TempData["Error"] = "Không tìm thấy thông tin người dùng";
-                    return RedirectToAction("Index");
-                }
-
-                order.UserId = userId;
-                order.OrderDate = DateTime.Now;
-                order.DiscountAmount = order.DiscountAmount > 0 ? order.DiscountAmount : 0;
-                
-                // Tính tổng tiền từ order items
-                decimal totalAmount = 0;
-                foreach (var item in orderItems.Where(i => i.ProductId > 0))
-                {
-                    var product = await _productService.GetByIdAsync(item.ProductId);
-                    if (product != null)
-                    {
-                        item.Price = product.Price;
-                        item.Subtotal = item.Quantity * item.Price;
-                        totalAmount += item.Subtotal;
-                    }
-                }
-
-                order.TotalAmount = totalAmount;
-                order.OrderItems = orderItems.Where(i => i.ProductId > 0).ToList();
-
-                await _orderService.AddAsync(order);
-                TempData["Success"] = "Tạo đơn hàng thành công!";
+            // Lấy userId từ session
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                TempData["Error"] = "Không tìm thấy thông tin người dùng";
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+
+            // Gán userId vào đơn hàng
+            order.UserId = userId;
+
+            // Gọi service để tạo đơn hàng với validation đầy đủ
+            var (success, message, createdOrder) = await _orderService.CreateOrderAsync(order, orderItems);
+
+            if (success)
             {
-                TempData["Error"] = "Lỗi khi tạo đơn hàng: " + ex.Message;
+                TempData["Success"] = message;
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["Error"] = message;
                 await LoadDropdownData();
                 return View(order);
             }

@@ -137,6 +137,7 @@
         </div>
 
         <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <label class="form-label">
                     Họ và tên <span class="required">*</span>

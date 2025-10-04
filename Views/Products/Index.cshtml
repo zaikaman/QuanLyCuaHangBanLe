@@ -269,17 +269,12 @@
 
 <div class="products-card">
     <div class="products-header">
-        <div class="search-filter">
-            <input type="text" class="search-input" placeholder="🔍 Tìm kiếm sản phẩm..." />
-            <select class="filter-select">
-                <option>Tất cả danh mục</option>
-                <option>Đồ uống</option>
-                <option>Bánh kẹo</option>
-                <option>Gia vị</option>
-                <option>Đồ gia dụng</option>
-                <option>Mỹ phẩm</option>
-            </select>
-        </div>
+        <form asp-action="Index" method="get" style="margin: 0; display: contents;">
+            <div class="search-filter">
+                <input type="text" name="searchTerm" class="search-input" placeholder="🔍 Tìm kiếm sản phẩm..." value="@ViewBag.SearchTerm" />
+                <input type="hidden" name="page" value="1" />
+            </div>
+        </form>
         <div style="color: #718096; font-size: 0.9rem;">
             Tổng: <strong style="color: #2d3748;">@ViewBag.TotalItems</strong> sản phẩm
         </div>
@@ -340,18 +335,18 @@
             </div>
             <ul class="pagination">
                 <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">‹ Trước</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-searchTerm="@ViewBag.SearchTerm">‹ Trước</a>
                 </li>
 
                 @for (int i = 1; i <= ViewBag.TotalPages; i++)
                 {
                     <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchTerm="@ViewBag.SearchTerm">@i</a>
                     </li>
                 }
 
                 <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">Sau ›</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-searchTerm="@ViewBag.SearchTerm">Sau ›</a>
                 </li>
             </ul>
         </div>
@@ -359,47 +354,12 @@
 </div>
 
 <script>
-    // Real-time search cho sản phẩm
+    // Auto-submit search form khi gõ (với debounce)
+    let searchTimeout;
     document.querySelector('.search-input').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        const rows = document.querySelectorAll('.products-table tbody tr');
-        let visibleCount = 0;
-
-        rows.forEach(row => {
-            const productName = row.querySelector('.product-name')?.textContent.toLowerCase() || '';
-            const barcode = row.querySelector('.product-barcode')?.textContent.toLowerCase() || '';
-            const category = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-            
-            if (productName.includes(searchTerm) || barcode.includes(searchTerm) || category.includes(searchTerm)) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        // Hiển thị thông báo nếu không tìm thấy
-        const emptyState = document.querySelector('.empty-state');
-        const table = document.querySelector('.products-table');
-        const pagination = document.querySelector('.pagination-container');
-        
-        if (visibleCount === 0 && searchTerm !== '') {
-            if (table) table.style.display = 'none';
-            if (pagination) pagination.style.display = 'none';
-            if (!emptyState) {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'empty-state';
-                emptyDiv.innerHTML = `
-                    <div class="empty-state-icon">🔍</div>
-                    <div class="empty-state-title">Không tìm thấy sản phẩm</div>
-                    <p>Không có sản phẩm nào khớp với từ khóa "${searchTerm}"</p>
-                `;
-                document.querySelector('.products-card').appendChild(emptyDiv);
-            }
-        } else {
-            if (table) table.style.display = '';
-            if (pagination) pagination.style.display = searchTerm === '' ? '' : 'none';
-            if (emptyState && searchTerm !== '') emptyState.remove();
-        }
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            e.target.closest('form').submit();
+        }, 500); // Đợi 500ms sau khi người dùng ngừng gõ
     });
 </script>

@@ -123,6 +123,7 @@
         </div>
 
         <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="CategoryId" />
 
             <div class="form-group">

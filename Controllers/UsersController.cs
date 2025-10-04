@@ -13,7 +13,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _userRepository = userRepository;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string searchTerm = "")
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -23,6 +23,18 @@ namespace QuanLyCuaHangBanLe.Controllers
 
             const int pageSize = 10;
             var allUsers = await _userRepository.GetAllAsync();
+            
+            // Áp dụng tìm kiếm TRƯỚC KHI phân trang
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim().ToLower();
+                allUsers = allUsers.Where(u =>
+                    (u.Username != null && u.Username.ToLower().Contains(searchTerm)) ||
+                    (u.FullName != null && u.FullName.ToLower().Contains(searchTerm)) ||
+                    (u.Role != null && u.Role.ToLower().Contains(searchTerm))
+                ).ToList();
+            }
+            
             var totalItems = allUsers.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -34,6 +46,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalItems = totalItems;
+            ViewBag.SearchTerm = searchTerm;
 
             return View(users);
         }

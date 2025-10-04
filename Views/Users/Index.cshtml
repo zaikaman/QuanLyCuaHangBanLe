@@ -264,7 +264,10 @@
 
 <div class="users-card">
     <div class="users-header">
-        <input type="text" class="search-input" placeholder="🔍 Tìm kiếm người dùng..." />
+        <form asp-action="Index" method="get" style="margin: 0;">
+            <input type="text" name="searchTerm" class="search-input" placeholder="🔍 Tìm kiếm người dùng..." value="@ViewBag.SearchTerm" />
+            <input type="hidden" name="page" value="1" />
+        </form>
         <div style="color: #718096; font-size: 0.9rem;">
             Tổng: <strong style="color: #2d3748;">@ViewBag.TotalItems</strong> người dùng
         </div>
@@ -334,18 +337,18 @@
             </div>
             <ul class="pagination">
                 <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">‹ Trước</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-searchTerm="@ViewBag.SearchTerm">‹ Trước</a>
                 </li>
 
                 @for (int i = 1; i <= ViewBag.TotalPages; i++)
                 {
                     <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchTerm="@ViewBag.SearchTerm">@i</a>
                     </li>
                 }
 
                 <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">Sau ›</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-searchTerm="@ViewBag.SearchTerm">Sau ›</a>
                 </li>
             </ul>
         </div>
@@ -353,14 +356,12 @@
 </div>
 
 <script>
-    // Tìm kiếm người dùng
+    // Auto-submit search form khi gõ (với debounce)
+    let searchTimeout;
     document.querySelector('.search-input').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('.users-table tbody tr');
-        
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchTerm) ? '' : 'none';
-        });
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            e.target.closest('form').submit();
+        }, 500); // Đợi 500ms sau khi người dùng ngừng gõ
     });
 </script>

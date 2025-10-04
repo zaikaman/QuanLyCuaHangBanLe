@@ -18,7 +18,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _productService = productService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string searchTerm = "")
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -28,6 +28,26 @@ namespace QuanLyCuaHangBanLe.Controllers
 
             const int pageSize = 10;
             var allInventories = await _inventoryRepository.GetAllAsync();
+            
+            // Load products để có thể search
+            var products = await _productService.GetAllAsync();
+            var productDict = products.ToDictionary(p => p.ProductId, p => p);
+            
+            // Áp dụng tìm kiếm TRƯỚC KHI phân trang
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim().ToLower();
+                allInventories = allInventories.Where(i =>
+                    i.ProductId.ToString().Contains(searchTerm) ||
+                    (productDict.ContainsKey(i.ProductId) && 
+                     productDict[i.ProductId].ProductName != null && 
+                     productDict[i.ProductId].ProductName!.ToLower().Contains(searchTerm)) ||
+                    (productDict.ContainsKey(i.ProductId) && 
+                     productDict[i.ProductId].Barcode != null && 
+                     productDict[i.ProductId].Barcode!.ToLower().Contains(searchTerm))
+                ).ToList();
+            }
+            
             var totalItems = allInventories.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -35,14 +55,12 @@ namespace QuanLyCuaHangBanLe.Controllers
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
-            // Load products cho mỗi inventory item
-            var products = await _productService.GetAllAsync();
             
             ViewBag.Products = products;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalItems = totalItems;
+            ViewBag.SearchTerm = searchTerm;
 
             return View(inventories);
         }

@@ -129,6 +129,15 @@
 </div>
 
 <div class="suppliers-card">
+    <div class="suppliers-header" style="padding: 20px 25px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center;">
+        <form asp-action="Index" method="get" style="margin: 0; flex: 1;">
+            <input type="text" name="searchTerm" class="search-input" placeholder="🔍 Tìm kiếm nhà cung cấp..." value="@ViewBag.SearchTerm" style="padding: 10px 15px; border: 1px solid #e5e5e5; border-radius: 8px; width: 400px; font-size: 0.9rem; background: #fafafa;" />
+            <input type="hidden" name="page" value="1" />
+        </form>
+        <div style="color: #718096; font-size: 0.9rem;">
+            Tổng: <strong style="color: #2d3748;">@ViewBag.TotalItems</strong> nhà cung cấp
+        </div>
+    </div>
     @if (Model.Any())
     {
         <table class="suppliers-table">
@@ -180,7 +189,7 @@
     <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 30px; padding: 20px;">
         @if (ViewBag.CurrentPage > 1)
         {
-            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">← Trước</a>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-searchTerm="@ViewBag.SearchTerm" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">← Trước</a>
         }
         
         <div style="display: flex; gap: 5px;">
@@ -192,7 +201,7 @@
                 }
                 else if (i == 1 || i == ViewBag.TotalPages || (i >= ViewBag.CurrentPage - 2 && i <= ViewBag.CurrentPage + 2))
                 {
-                    <a asp-action="Index" asp-route-page="@i" style="padding: 10px 16px; background: #f5f5f5; color: #1a1a1a; border-radius: 8px; text-decoration: none; transition: all 0.3s;">@i</a>
+                    <a asp-action="Index" asp-route-page="@i" asp-route-searchTerm="@ViewBag.SearchTerm" style="padding: 10px 16px; background: #f5f5f5; color: #1a1a1a; border-radius: 8px; text-decoration: none; transition: all 0.3s;">@i</a>
                 }
                 else if (i == ViewBag.CurrentPage - 3 || i == ViewBag.CurrentPage + 3)
                 {
@@ -203,7 +212,18 @@
         
         @if (ViewBag.CurrentPage < ViewBag.TotalPages)
         {
-            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">Sau →</a>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-searchTerm="@ViewBag.SearchTerm" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">Sau →</a>
         }
     </div>
 }
+
+<script>
+    // Auto-submit search form khi gõ (với debounce)
+    let searchTimeout;
+    document.querySelector('.search-input')?.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            e.target.closest('form').submit();
+        }, 500); // Đợi 500ms sau khi người dùng ngừng gõ
+    });
+</script>

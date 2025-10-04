@@ -4,6 +4,8 @@
     ViewData["Title"] = "Quản lý tồn kho";
 }
 
+@Html.AntiForgeryToken()
+
 <style>
     .page-header {
         display: flex;
@@ -173,7 +175,10 @@
 
 <div class="inventory-card">
     <div class="inventory-header">
-        <input type="text" class="search-input" placeholder="🔍 Tìm kiếm sản phẩm..." />
+        <form asp-action="Index" method="get" style="margin: 0;">
+            <input type="text" name="searchTerm" class="search-input" placeholder="🔍 Tìm kiếm sản phẩm..." value="@ViewBag.SearchTerm" />
+            <input type="hidden" name="page" value="1" />
+        </form>
         <div style="color: #718096; font-size: 0.9rem;">
             Cập nhật: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
         </div>
@@ -232,7 +237,7 @@
     <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 30px; padding: 20px;">
         @if (ViewBag.CurrentPage > 1)
         {
-            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">← Trước</a>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-searchTerm="@ViewBag.SearchTerm" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">← Trước</a>
         }
         
         <div style="display: flex; gap: 5px;">
@@ -244,7 +249,7 @@
                 }
                 else if (i == 1 || i == ViewBag.TotalPages || (i >= ViewBag.CurrentPage - 2 && i <= ViewBag.CurrentPage + 2))
                 {
-                    <a asp-action="Index" asp-route-page="@i" style="padding: 10px 16px; background: #f5f5f5; color: #1a1a1a; border-radius: 8px; text-decoration: none; transition: all 0.3s;">@i</a>
+                    <a asp-action="Index" asp-route-page="@i" asp-route-searchTerm="@ViewBag.SearchTerm" style="padding: 10px 16px; background: #f5f5f5; color: #1a1a1a; border-radius: 8px; text-decoration: none; transition: all 0.3s;">@i</a>
                 }
                 else if (i == ViewBag.CurrentPage - 3 || i == ViewBag.CurrentPage + 3)
                 {
@@ -255,7 +260,7 @@
         
         @if (ViewBag.CurrentPage < ViewBag.TotalPages)
         {
-            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">Sau →</a>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-searchTerm="@ViewBag.SearchTerm" class="pagination-btn" style="padding: 10px 16px; background: #4E5FFF; color: white; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s;">Sau →</a>
         }
     </div>
 }
@@ -295,47 +300,13 @@
 </div>
 
 <script>
-    // Real-time search cho tồn kho
+    // Auto-submit search form khi gõ (với debounce)
+    let searchTimeout;
     document.querySelector('.search-input').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        const rows = document.querySelectorAll('.inventory-table tbody tr');
-        let visibleCount = 0;
-
-        rows.forEach(row => {
-            const productName = row.querySelector('td:first-child')?.textContent.toLowerCase() || '';
-            
-            if (productName.includes(searchTerm)) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        // Hiển thị thông báo nếu không tìm thấy
-        const table = document.querySelector('.inventory-table');
-        
-        if (visibleCount === 0 && searchTerm !== '') {
-            if (table) table.style.display = 'none';
-            
-            let emptyState = document.querySelector('.empty-search-state');
-            if (!emptyState) {
-                emptyState = document.createElement('div');
-                emptyState.className = 'empty-search-state';
-                emptyState.style.cssText = 'text-align: center; padding: 60px 20px;';
-                emptyState.innerHTML = `
-                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
-                    <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a1a; margin-bottom: 10px;">Không tìm thấy sản phẩm</div>
-                    <p style="color: #666;">Không có sản phẩm nào khớp với từ khóa "${searchTerm}"</p>
-                `;
-                document.querySelector('.inventory-card').appendChild(emptyState);
-            }
-        } else {
-            if (table) table.style.display = '';
-            
-            const emptyState = document.querySelector('.empty-search-state');
-            if (emptyState) emptyState.remove();
-        }
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            e.target.closest('form').submit();
+        }, 500); // Đợi 500ms sau khi người dùng ngừng gõ
     });
 
     let currentInventoryId = null;
@@ -360,7 +331,7 @@
         currentInventoryId = null;
     }
 
-    function submitUpdate() {
+    async function submitUpdate() {
         const quantity = document.getElementById('newQuantity').value;
         
         if (quantity === '' || quantity === null) {
@@ -373,24 +344,34 @@
             return;
         }
         
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/Inventory/UpdateQuantity';
-        
-        const idInput = document.createElement('input');
-        idInput.type = 'hidden';
-        idInput.name = 'id';
-        idInput.value = currentInventoryId;
-        
-        const quantityInput = document.createElement('input');
-        quantityInput.type = 'hidden';
-        quantityInput.name = 'quantity';
-        quantityInput.value = quantity;
-        
-        form.appendChild(idInput);
-        form.appendChild(quantityInput);
-        document.body.appendChild(form);
-        form.submit();
+        try {
+            const formData = new FormData();
+            formData.append('inventoryId', currentInventoryId);
+            formData.append('quantity', quantity);
+            
+            // Lấy anti-forgery token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (token) {
+                formData.append('__RequestVerificationToken', token.value);
+            }
+            
+            const response = await fetch('/Inventory/UpdateQuantity', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                closeUpdateModal();
+                alert(result.message);
+                location.reload(); // Reload để cập nhật dữ liệu
+            } else {
+                alert('Lỗi: ' + result.message);
+            }
+        } catch (error) {
+            alert('Lỗi khi cập nhật: ' + error.message);
+        }
     }
 
     // Close modal on ESC key

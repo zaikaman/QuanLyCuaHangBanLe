@@ -21,7 +21,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             _supplierRepository = supplierRepository;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string searchTerm = "")
         {
             var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
@@ -31,6 +31,19 @@ namespace QuanLyCuaHangBanLe.Controllers
 
             const int pageSize = 10;
             var allProducts = await _productService.GetAllAsync();
+            
+            // Áp dụng tìm kiếm TRƯỚC KHI phân trang
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.Trim().ToLower();
+                allProducts = allProducts.Where(p =>
+                    (p.ProductName != null && p.ProductName.ToLower().Contains(searchTerm)) ||
+                    (p.Barcode != null && p.Barcode.ToLower().Contains(searchTerm)) ||
+                    (p.Category?.CategoryName != null && p.Category.CategoryName.ToLower().Contains(searchTerm)) ||
+                    (p.Supplier?.Name != null && p.Supplier.Name.ToLower().Contains(searchTerm))
+                ).ToList();
+            }
+            
             var totalItems = allProducts.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -42,6 +55,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalItems = totalItems;
+            ViewBag.SearchTerm = searchTerm;
 
             return View(products);
         }
@@ -72,6 +86,20 @@ namespace QuanLyCuaHangBanLe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
+            // Kiểm tra barcode trùng lặp (nếu có barcode)
+            if (!string.IsNullOrWhiteSpace(product.Barcode))
+            {
+                var allProducts = await _productService.GetAllAsync();
+                var existingProduct = allProducts.FirstOrDefault(p => 
+                    p.Barcode != null && 
+                    p.Barcode.Equals(product.Barcode, StringComparison.OrdinalIgnoreCase));
+                
+                if (existingProduct != null)
+                {
+                    ModelState.AddModelError("Barcode", $"Mã vạch '{product.Barcode}' đã được sử dụng cho sản phẩm '{existingProduct.ProductName}'");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -83,7 +111,22 @@ namespace QuanLyCuaHangBanLe.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Lỗi khi thêm sản phẩm: " + ex.Message);
+                    // Bắt lỗi duplicate từ database
+                    if (ex.InnerException?.Message.Contains("Duplicate entry") == true)
+                    {
+                        if (ex.InnerException.Message.Contains("barcode"))
+                        {
+                            ModelState.AddModelError("Barcode", "Mã vạch này đã tồn tại trong hệ thống");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Dữ liệu bị trùng lặp");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Lỗi khi thêm sản phẩm: " + ex.Message);
+                    }
                 }
             }
             await LoadDropdownData();
@@ -110,6 +153,21 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return NotFound();
             }
 
+            // Kiểm tra barcode trùng lặp (nếu có barcode)
+            if (!string.IsNullOrWhiteSpace(product.Barcode))
+            {
+                var allProducts = await _productService.GetAllAsync();
+                var existingProduct = allProducts.FirstOrDefault(p => 
+                    p.ProductId != product.ProductId && // Không check chính nó
+                    p.Barcode != null && 
+                    p.Barcode.Equals(product.Barcode, StringComparison.OrdinalIgnoreCase));
+                
+                if (existingProduct != null)
+                {
+                    ModelState.AddModelError("Barcode", $"Mã vạch '{product.Barcode}' đã được sử dụng cho sản phẩm '{existingProduct.ProductName}'");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -120,7 +178,22 @@ namespace QuanLyCuaHangBanLe.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Lỗi khi cập nhật sản phẩm: " + ex.Message);
+                    // Bắt lỗi duplicate từ database
+                    if (ex.InnerException?.Message.Contains("Duplicate entry") == true)
+                    {
+                        if (ex.InnerException.Message.Contains("barcode"))
+                        {
+                            ModelState.AddModelError("Barcode", "Mã vạch này đã tồn tại trong hệ thống");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Dữ liệu bị trùng lặp");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Lỗi khi cập nhật sản phẩm: " + ex.Message);
+                    }
                 }
             }
             await LoadDropdownData();

@@ -155,6 +155,7 @@
         </div>
 
         <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="PromoId" />
             <input type="hidden" asp-for="UsedCount" />
 

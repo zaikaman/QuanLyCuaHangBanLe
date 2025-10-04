@@ -143,6 +143,9 @@
         </div>
 
         <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger" style="background: #ffebee; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
+            
             <div class="form-group">
                 <label class="form-label">
                     Tên sản phẩm <span class="required">*</span>
@@ -157,6 +160,7 @@
                         Mã vạch
                     </label>
                     <input asp-for="Barcode" class="form-control" placeholder="Nhập mã vạch" />
+                    <span asp-validation-for="Barcode" class="validation-error"></span>
                     <div class="form-hint">Mã vạch để quét sản phẩm</div>
                 </div>
 

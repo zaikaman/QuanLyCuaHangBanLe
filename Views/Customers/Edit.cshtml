@@ -131,6 +131,7 @@
         </div>
 
         <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="CustomerId" />
             
             <div class="form-group">

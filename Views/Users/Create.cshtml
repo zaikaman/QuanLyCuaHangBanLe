@@ -153,6 +153,7 @@
     </div>
 
     <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="form-group">

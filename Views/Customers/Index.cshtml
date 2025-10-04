@@ -239,7 +239,10 @@
 
 <div class="customers-card">
     <div class="customers-header">
-        <input type="text" class="search-input" placeholder="🔍 Tìm kiếm khách hàng..." />
+        <form asp-action="Index" method="get" style="margin: 0;">
+            <input type="text" name="searchTerm" class="search-input" placeholder="🔍 Tìm kiếm khách hàng..." value="@ViewBag.SearchTerm" />
+            <input type="hidden" name="page" value="1" />
+        </form>
         <div style="color: #718096; font-size: 0.9rem;">
             Tổng: <strong style="color: #2d3748;">@ViewBag.TotalItems</strong> khách hàng
         </div>
@@ -299,18 +302,18 @@
             </div>
             <ul class="pagination">
                 <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">‹ Trước</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-searchTerm="@ViewBag.SearchTerm">‹ Trước</a>
                 </li>
 
                 @for (int i = 1; i <= ViewBag.TotalPages; i++)
                 {
                     <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchTerm="@ViewBag.SearchTerm">@i</a>
                     </li>
                 }
 
                 <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">Sau ›</a>
+                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-searchTerm="@ViewBag.SearchTerm">Sau ›</a>
                 </li>
             </ul>
         </div>
@@ -318,54 +321,12 @@
 </div>
 
 <script>
-    // Real-time search cho khách hàng
+    // Auto-submit search form khi gõ (với debounce)
+    let searchTimeout;
     document.querySelector('.search-input').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        const rows = document.querySelectorAll('.customers-table tbody tr');
-        let visibleCount = 0;
-
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            const name = cells[0]?.textContent.toLowerCase() || '';
-            const phone = cells[1]?.textContent.toLowerCase() || '';
-            const email = cells[2]?.textContent.toLowerCase() || '';
-            const address = cells[3]?.textContent.toLowerCase() || '';
-            
-            if (name.includes(searchTerm) || phone.includes(searchTerm) || 
-                email.includes(searchTerm) || address.includes(searchTerm)) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        // Hiển thị thông báo nếu không tìm thấy
-        const table = document.querySelector('.customers-table');
-        const pagination = document.querySelector('.pagination-container');
-        
-        if (visibleCount === 0 && searchTerm !== '') {
-            if (table) table.style.display = 'none';
-            if (pagination) pagination.style.display = 'none';
-            
-            let emptyState = document.querySelector('.empty-search-state');
-            if (!emptyState) {
-                emptyState = document.createElement('div');
-                emptyState.className = 'empty-search-state';
-                emptyState.style.cssText = 'text-align: center; padding: 60px 20px;';
-                emptyState.innerHTML = `
-                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
-                    <div style="font-size: 1.2rem; font-weight: 600; color: #1a1a1a; margin-bottom: 10px;">Không tìm thấy khách hàng</div>
-                    <p style="color: #666;">Không có khách hàng nào khớp với từ khóa "${searchTerm}"</p>
-                `;
-                document.querySelector('.customers-card').appendChild(emptyState);
-            }
-        } else {
-            if (table) table.style.display = '';
-            if (pagination) pagination.style.display = searchTerm === '' ? '' : 'none';
-            
-            const emptyState = document.querySelector('.empty-search-state');
-            if (emptyState) emptyState.remove();
-        }
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            e.target.closest('form').submit();
+        }, 500); // Đợi 500ms sau khi người dùng ngừng gõ
     });
 </script>

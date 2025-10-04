@@ -170,6 +170,7 @@
     </div>
 
     <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="UserId" />
         <input type="hidden" asp-for="Password" />
         <input type="hidden" asp-for="CreatedAt" />
