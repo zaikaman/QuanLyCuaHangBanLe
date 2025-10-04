@@ -134,9 +134,7 @@
                 <div class="category-name">@category.CategoryName</div>
                 <div class="category-actions">
                     <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn-action btn-edit">✏️ Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@category.CategoryId" 
-                       class="btn-action btn-delete" 
-                       onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">🗑️ Xóa</a>
+                    <button type="button" class="btn-action btn-delete" onclick="deleteCategory(@category.CategoryId, '@category.CategoryName')">🗑️ Xóa</button>
                 </div>
             </div>
         }
@@ -182,3 +180,31 @@ else
         }
     </div>
 }
+
+<script>
+    // Function xóa danh mục
+    function deleteCategory(id, name) {
+        if (confirm(`Bạn có chắc chắn muốn xóa danh mục "${name}"?`)) {
+            fetch(`/Categories/Delete/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra khi xóa danh mục');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi xóa danh mục');
+            });
+        }
+    }
+</script>
