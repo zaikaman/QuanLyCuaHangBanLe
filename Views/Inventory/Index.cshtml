@@ -335,12 +335,12 @@
         const quantity = document.getElementById('newQuantity').value;
         
         if (quantity === '' || quantity === null) {
-            alert('Vui lòng nhập số lượng!');
+            toast.warning('Vui lòng nhập số lượng!', 'Cảnh báo');
             return;
         }
         
         if (parseInt(quantity) < 0) {
-            alert('Số lượng phải lớn hơn hoặc bằng 0!');
+            toast.warning('Số lượng phải lớn hơn hoặc bằng 0!', 'Cảnh báo');
             return;
         }
         
@@ -364,13 +364,14 @@
             
             if (result.success) {
                 closeUpdateModal();
-                alert(result.message);
-                location.reload(); // Reload để cập nhật dữ liệu
+                toast.success(result.message, 'Cập nhật tồn kho');
+                setTimeout(() => location.reload(), 1000);
             } else {
-                alert('Lỗi: ' + result.message);
+                toast.error('Lỗi: ' + result.message, 'Lỗi');
             }
         } catch (error) {
-            alert('Lỗi khi cập nhật: ' + error.message);
+            console.error('Error:', error);
+            toast.error('Lỗi khi cập nhật: ' + error.message, 'Lỗi');
         }
     }
 

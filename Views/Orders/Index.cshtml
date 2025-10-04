@@ -431,10 +431,18 @@
             });
         });
         
-        function updateOrderStatus(orderId, status) {
-            if (!confirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng này?')) {
-                return;
-            }
+        async function updateOrderStatus(orderId, status) {
+            const confirmed = await showConfirm(
+                'Bạn có chắc muốn cập nhật trạng thái đơn hàng này?',
+                'Xác nhận cập nhật',
+                {
+                    type: 'info',
+                    confirmText: 'Cập nhật',
+                    cancelText: 'Hủy'
+                }
+            );
+
+            if (!confirmed) return;
             
             const formData = new FormData();
             formData.append('id', orderId);
@@ -465,10 +473,18 @@
             });
         }
         
-        function cancelOrder(orderId) {
-            if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
-                return;
-            }
+        async function cancelOrder(orderId) {
+            const confirmed = await showConfirm(
+                'Bạn có chắc muốn hủy đơn hàng này? Hành động này không thể hoàn tác!',
+                'Xác nhận hủy đơn',
+                {
+                    type: 'danger',
+                    confirmText: 'Hủy đơn',
+                    cancelText: 'Không'
+                }
+            );
+
+            if (!confirmed) return;
             
             const formData = new FormData();
             formData.append('id', orderId);
@@ -498,15 +514,23 @@
             });
         }
         
-        function bulkUpdateStatus(status) {
+        async function bulkUpdateStatus(status) {
             if (selectedOrders.size === 0) {
                 toast.warning('Vui lòng chọn ít nhất một đơn hàng');
                 return;
             }
             
-            if (!confirm(`Bạn có chắc muốn cập nhật trạng thái cho ${selectedOrders.size} đơn hàng?`)) {
-                return;
-            }
+            const confirmed = await showConfirm(
+                `Bạn có chắc muốn cập nhật trạng thái cho ${selectedOrders.size} đơn hàng?`,
+                'Xác nhận cập nhật hàng loạt',
+                {
+                    type: 'info',
+                    confirmText: 'Cập nhật',
+                    cancelText: 'Hủy'
+                }
+            );
+
+            if (!confirmed) return;
             
             const formData = new FormData();
             selectedOrders.forEach(id => {
@@ -538,15 +562,23 @@
             });
         }
         
-        function bulkDelete() {
+        async function bulkDelete() {
             if (selectedOrders.size === 0) {
                 toast.warning('Vui lòng chọn ít nhất một đơn hàng');
                 return;
             }
             
-            if (!confirm(`Bạn có chắc muốn xóa ${selectedOrders.size} đơn hàng? Hành động này không thể hoàn tác!`)) {
-                return;
-            }
+            const confirmed = await showConfirm(
+                `Bạn có chắc muốn xóa ${selectedOrders.size} đơn hàng? Hành động này không thể hoàn tác!`,
+                'Xác nhận xóa hàng loạt',
+                {
+                    type: 'danger',
+                    confirmText: 'Xóa',
+                    cancelText: 'Hủy'
+                }
+            );
+
+            if (!confirmed) return;
             
             const formData = new FormData();
             selectedOrders.forEach(id => {

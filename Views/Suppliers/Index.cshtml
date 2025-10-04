@@ -228,28 +228,39 @@
     });
 
     // Function xóa nhà cung cấp
-    function deleteSupplier(id, name) {
-        if (confirm(`Bạn có chắc chắn muốn xóa nhà cung cấp "${name}"?`)) {
-            fetch(`/Suppliers/Delete/${id}`, {
+    async function deleteSupplier(id, name) {
+        const confirmed = await showConfirm(
+            `Bạn có chắc chắn muốn xóa nhà cung cấp "${name}"? Hành động này không thể hoàn tác!`,
+            'Xác nhận xóa nhà cung cấp',
+            {
+                type: 'danger',
+                confirmText: 'Xóa',
+                cancelText: 'Hủy'
+            }
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`/Suppliers/Delete/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra khi xóa nhà cung cấp');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi xóa nhà cung cấp');
             });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                toast.success(data.message, 'Xóa nhà cung cấp');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                toast.error(data.message || 'Có lỗi xảy ra khi xóa nhà cung cấp', 'Lỗi');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Có lỗi xảy ra khi xóa nhà cung cấp', 'Lỗi');
         }
     }
 </script>

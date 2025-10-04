@@ -360,7 +360,7 @@
             console.log('✅ Đã xóa row, còn lại:', document.querySelectorAll('.item-row').length);
         } else {
             console.log('⚠️ Không thể xóa - phải có ít nhất 1 sản phẩm');
-            alert('Phải có ít nhất một sản phẩm trong đơn hàng');
+            toast.warning('Phải có ít nhất một sản phẩm trong đơn hàng', 'Cảnh báo');
         }
     }
 

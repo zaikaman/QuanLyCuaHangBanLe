@@ -329,9 +329,17 @@ else
 
     // Delete promotion function
     async function deletePromotion(id, promoCode) {
-        if (!confirm(`Bạn có chắc chắn muốn xóa khuyến mãi "${promoCode}" không?`)) {
-            return;
-        }
+        const confirmed = await showConfirm(
+            `Bạn có chắc chắn muốn xóa khuyến mãi "${promoCode}"? Hành động này không thể hoàn tác!`,
+            'Xác nhận xóa khuyến mãi',
+            {
+                type: 'danger',
+                confirmText: 'Xóa',
+                cancelText: 'Hủy'
+            }
+        );
+
+        if (!confirmed) return;
 
         try {
             // Get anti-forgery token
@@ -351,13 +359,14 @@ else
             const result = await response.json();
 
             if (result.success) {
-                alert(result.message);
-                location.reload(); // Reload để cập nhật danh sách
+                toast.success(result.message, 'Xóa khuyến mãi');
+                setTimeout(() => location.reload(), 1000);
             } else {
-                alert('Lỗi: ' + result.message);
+                toast.error('Lỗi: ' + result.message, 'Lỗi');
             }
         } catch (error) {
-            alert('Lỗi khi xóa: ' + error.message);
+            console.error('Error:', error);
+            toast.error('Lỗi khi xóa: ' + error.message, 'Lỗi');
         }
     }
 </script>

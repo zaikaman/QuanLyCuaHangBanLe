@@ -183,28 +183,39 @@ else
 
 <script>
     // Function xóa danh mục
-    function deleteCategory(id, name) {
-        if (confirm(`Bạn có chắc chắn muốn xóa danh mục "${name}"?`)) {
-            fetch(`/Categories/Delete/${id}`, {
+    async function deleteCategory(id, name) {
+        const confirmed = await showConfirm(
+            `Bạn có chắc chắn muốn xóa danh mục "${name}"? Hành động này không thể hoàn tác!`,
+            'Xác nhận xóa danh mục',
+            {
+                type: 'danger',
+                confirmText: 'Xóa',
+                cancelText: 'Hủy'
+            }
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`/Categories/Delete/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra khi xóa danh mục');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi xóa danh mục');
             });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                toast.success(data.message, 'Xóa danh mục');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                toast.error(data.message || 'Có lỗi xảy ra khi xóa danh mục', 'Lỗi');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Có lỗi xảy ra khi xóa danh mục', 'Lỗi');
         }
     }
 </script>
