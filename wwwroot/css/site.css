@@ -112,9 +112,9 @@ a:hover {
 }
 
 .btn-primary:hover {
-    background: #3b4acc;
+    background: var(--color-primary);
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.4);
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.3);
     color: #ffffff;
 }
 
@@ -455,6 +455,7 @@ button[style*='background:#4E5FFF'],
 a[style*='background: #4E5FFF'],
 a[style*='background:#4E5FFF'] {
     color: #ffffff !important;
+    background: var(--color-primary) !important;
 }
 
 .btn-primary:hover,
@@ -463,6 +464,7 @@ a.btn-primary:hover,
 .add-order-btn:hover,
 .add-btn:hover {
     color: #ffffff !important;
+    background: var(--color-primary) !important;
 }
 
 /* Ensure icons inside primary buttons are also white */

@@ -377,19 +377,13 @@ Sau khi import database, bạn có thể đăng nhập với các tài khoản s
 ### Admin Account
 ```
 Username: admin
-Password: admin123
-```
-
-### Manager Account
-```
-Username: manager
-Password: manager123
+Password: 123456
 ```
 
 ### Staff Account
 ```
-Username: staff
-Password: staff123
+Username: staff01
+Password: 123456
 ```
 
 > ⚠️ **Lưu ý bảo mật:** Đổi password ngay sau lần đăng nhập đầu tiên trong môi trường production!

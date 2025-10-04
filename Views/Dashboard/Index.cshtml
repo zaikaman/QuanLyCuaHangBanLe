@@ -316,6 +316,19 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Function to get CSS variable colors
+        function getCSSVar(varName) {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        }
+
+        // Function to update chart colors based on theme
+        function getChartColors() {
+            return {
+                gridColor: getCSSVar('--border-secondary') || 'rgba(0, 0, 0, 0.1)',
+                textColor: getCSSVar('--text-tertiary') || '#94a3b8'
+            };
+        }
+
         // Revenue Chart
         const revenueCtx = document.getElementById('revenueChart').getContext('2d');
         const revenueChart = new Chart(revenueCtx, {
@@ -350,11 +363,11 @@
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--border-secondary').trim() || 'rgba(0, 0, 0, 0.1)',
+                            color: getChartColors().gridColor,
                             drawBorder: false
                         },
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary').trim() || '#94a3b8'
+                            color: getChartColors().textColor
                         }
                     },
                     x: {
@@ -363,7 +376,7 @@
                             drawBorder: false
                         },
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary').trim() || '#94a3b8'
+                            color: getChartColors().textColor
                         }
                     }
                 }
@@ -397,6 +410,34 @@
                     }
                 }
             }
+        });
+
+        // Function to update chart colors when theme changes
+        function updateChartColors() {
+            const colors = getChartColors();
+            
+            // Update revenue chart
+            if (revenueChart) {
+                revenueChart.options.scales.y.grid.color = colors.gridColor;
+                revenueChart.options.scales.y.ticks.color = colors.textColor;
+                revenueChart.options.scales.x.ticks.color = colors.textColor;
+                revenueChart.update('none'); // Update without animation
+            }
+        }
+
+        // Watch for theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                    updateChartColors();
+                }
+            });
+        });
+
+        // Start observing the html element for theme changes
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
         });
 
         // Order tabs interaction
