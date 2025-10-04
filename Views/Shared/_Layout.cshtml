@@ -1069,33 +1069,73 @@
             globalSearchTimeout = setTimeout(() => {
                 document.getElementById('globalSearchResults').innerHTML = '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...</p>';
                 
-                // Simulate search results
-                setTimeout(() => {
-                    const results = `
-                        <div style="margin-bottom: 16px;">
-                            <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Sản phẩm</h4>
-                            <a href="/Products" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
-                                <div style="font-weight: 600;">Coca Cola 330ml</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary);">SKU: CC001 - 15,000₫</div>
-                            </a>
-                        </div>
-                        <div style="margin-bottom: 16px;">
-                            <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Đơn hàng</h4>
-                            <a href="/Orders" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
-                                <div style="font-weight: 600;">Đơn hàng #001234</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Nguyễn Văn A - 250,000₫</div>
-                            </a>
-                        </div>
-                        <div>
-                            <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Khách hàng</h4>
-                            <a href="/Customers" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
-                                <div style="font-weight: 600;">Nguyễn Văn A</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary);">nguyenvana@email.com - 0901234567</div>
-                            </a>
-                        </div>
-                    `;
-                    document.getElementById('globalSearchResults').innerHTML = results;
-                }, 500);
+                // Call API to search
+                fetch(`/Home/GlobalSearch?query=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            document.getElementById('globalSearchResults').innerHTML = `<p style="color: var(--text-tertiary); text-align: center; padding: 20px;">${data.message}</p>`;
+                            return;
+                        }
+
+                        if (!data.hasResults) {
+                            document.getElementById('globalSearchResults').innerHTML = '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Không tìm thấy kết quả nào</p>';
+                            return;
+                        }
+
+                        let resultsHtml = '';
+
+                        // Render products
+                        if (data.products && data.products.length > 0) {
+                            resultsHtml += `
+                                <div style="margin-bottom: 16px;">
+                                    <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Sản phẩm</h4>
+                                    ${data.products.map(item => `
+                                        <a href="${item.url}" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
+                                            <div style="font-weight: 600;">${item.name}</div>
+                                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${item.detail}</div>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            `;
+                        }
+
+                        // Render orders
+                        if (data.orders && data.orders.length > 0) {
+                            resultsHtml += `
+                                <div style="margin-bottom: 16px;">
+                                    <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Đơn hàng</h4>
+                                    ${data.orders.map(item => `
+                                        <a href="${item.url}" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
+                                            <div style="font-weight: 600;">${item.name}</div>
+                                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${item.detail}</div>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            `;
+                        }
+
+                        // Render customers
+                        if (data.customers && data.customers.length > 0) {
+                            resultsHtml += `
+                                <div>
+                                    <h4 style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px;">Khách hàng</h4>
+                                    ${data.customers.map(item => `
+                                        <a href="${item.url}" style="display: block; padding: 12px; border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
+                                            <div style="font-weight: 600;">${item.name}</div>
+                                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${item.detail}</div>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            `;
+                        }
+
+                        document.getElementById('globalSearchResults').innerHTML = resultsHtml;
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                        document.getElementById('globalSearchResults').innerHTML = '<p style="color: var(--color-error); text-align: center; padding: 20px;">Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại!</p>';
+                    });
             }, 500);
         });
 
