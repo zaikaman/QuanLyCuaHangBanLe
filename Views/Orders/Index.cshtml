@@ -8,6 +8,8 @@
 
 @Html.AntiForgeryToken()
 
+@await Html.PartialAsync("_AlertMessages")
+
 <!-- Order Status Tabs -->
 <div class="order-status-tabs">
     <div class="status-tab new-orders active">

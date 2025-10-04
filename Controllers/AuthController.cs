@@ -21,27 +21,63 @@ namespace QuanLyCuaHangBanLe.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            // Validation chi tiết
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(username))
             {
-                ViewBag.Error = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu";
+                errors.Add("Tên đăng nhập không được để trống");
+            }
+            else if (username.Length < 3)
+            {
+                errors.Add("Tên đăng nhập phải có ít nhất 3 ký tự");
+            }
+            else if (username.Length > 50)
+            {
+                errors.Add("Tên đăng nhập không được vượt quá 50 ký tự");
+            }
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                errors.Add("Mật khẩu không được để trống");
+            }
+            else if (password.Length < 6)
+            {
+                errors.Add("Mật khẩu phải có ít nhất 6 ký tự");
+            }
+
+            if (errors.Any())
+            {
+                ViewBag.Error = string.Join(", ", errors);
                 return View();
             }
 
-            var user = await _authService.AuthenticateAsync(username, password);
-            
-            if (user != null)
+            try
             {
-                // Lưu thông tin người dùng vào session
-                HttpContext.Session.SetString("Username", user.Username);
-                HttpContext.Session.SetString("FullName", user.FullName ?? "");
-                HttpContext.Session.SetString("Role", user.Role);
-                HttpContext.Session.SetInt32("UserId", user.UserId);
+                var user = await _authService.AuthenticateAsync(username.Trim(), password);
                 
-                return RedirectToAction("Index", "Dashboard");
-            }
+                if (user != null)
+                {
+                    // Lưu thông tin người dùng vào session
+                    HttpContext.Session.SetString("Username", user.Username);
+                    HttpContext.Session.SetString("FullName", user.FullName ?? "");
+                    HttpContext.Session.SetString("Role", user.Role);
+                    HttpContext.Session.SetInt32("UserId", user.UserId);
+                    
+                    Console.WriteLine($"✅ Đăng nhập thành công: {user.Username} (ID: {user.UserId})");
+                    return RedirectToAction("Index", "Dashboard");
+                }
 
-            ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng";
-            return View();
+                ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng";
+                Console.WriteLine($"❌ Đăng nhập thất bại cho username: {username}");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi đăng nhập: {ex.Message}");
+                ViewBag.Error = "Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại sau.";
+                return View();
+            }
         }
 
         public IActionResult Logout()

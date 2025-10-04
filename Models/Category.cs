@@ -7,8 +7,9 @@ namespace QuanLyCuaHangBanLe.Models
     {
         public int CategoryId { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Tên danh mục là bắt buộc")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Tên danh mục phải có từ 2 đến 100 ký tự")]
+        [Display(Name = "Tên danh mục")]
         public string CategoryName { get; set; } = null!;
 
         // Navigation properties

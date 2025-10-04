@@ -1,0 +1,92 @@
+@* Partial view để hiển thị các thông báo Success, Error, Warning *@
+
+@if (TempData["Success"] != null || TempData["SuccessMessage"] != null)
+{
+    var message = TempData["Success"] ?? TempData["SuccessMessage"];
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px 20px; border-radius: 12px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724;">
+        <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i>
+        <strong>Thành công!</strong> @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; opacity: 0.7;">&times;</button>
+    </div>
+}
+
+@if (TempData["Error"] != null || TempData["ErrorMessage"] != null)
+{
+    var message = TempData["Error"] ?? TempData["ErrorMessage"];
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px 20px; border-radius: 12px; background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;">
+        <i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i>
+        <strong>Lỗi!</strong> @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; opacity: 0.7;">&times;</button>
+    </div>
+}
+
+@if (TempData["Warning"] != null || TempData["WarningMessage"] != null)
+{
+    var message = TempData["Warning"] ?? TempData["WarningMessage"];
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px 20px; border-radius: 12px; background: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
+        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i>
+        <strong>Cảnh báo!</strong> @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; opacity: 0.7;">&times;</button>
+    </div>
+}
+
+@if (TempData["Info"] != null || TempData["InfoMessage"] != null)
+{
+    var message = TempData["Info"] ?? TempData["InfoMessage"];
+    <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px 20px; border-radius: 12px; background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460;">
+        <i class="fa-solid fa-circle-info" style="margin-right: 8px;"></i>
+        <strong>Thông tin!</strong> @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="float: right; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; opacity: 0.7;">&times;</button>
+    </div>
+}
+
+<style>
+    .alert {
+        animation: slideInDown 0.3s ease-out;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    // Tự động ẩn thông báo sau 5 giây
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            }
+        });
+    }, 5000);
+
+    // Xử lý đóng thông báo
+    document.querySelectorAll('.btn-close').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var alert = this.closest('.alert');
+            if (alert) {
+                alert.style.transition = 'opacity 0.3s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 300);
+            }
+        });
+    });
+</script>

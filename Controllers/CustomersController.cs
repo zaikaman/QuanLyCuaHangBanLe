@@ -77,17 +77,54 @@ namespace QuanLyCuaHangBanLe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Customer customer)
         {
+            if (customer == null)
+            {
+                TempData["Error"] = "Dữ liệu không hợp lệ";
+                return RedirectToAction("Index");
+            }
+
+            // Validation bổ sung
+            if (string.IsNullOrWhiteSpace(customer.Name))
+            {
+                ModelState.AddModelError("Name", "Tên khách hàng không được để trống");
+            }
+
+            // Kiểm tra email và phone nếu có
+            if (!string.IsNullOrWhiteSpace(customer.Email))
+            {
+                var existingCustomers = await _customerRepository.GetAllAsync();
+                if (existingCustomers.Any(c => c.Email != null && c.Email.Equals(customer.Email, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("Email", "Email này đã được sử dụng");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(customer.Phone))
+            {
+                var existingCustomers = await _customerRepository.GetAllAsync();
+                if (existingCustomers.Any(c => c.Phone != null && c.Phone.Equals(customer.Phone)))
+                {
+                    ModelState.AddModelError("Phone", "Số điện thoại này đã được sử dụng");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     customer.CreatedAt = DateTime.Now;
+                    customer.Name = customer.Name.Trim();
+                    customer.Phone = customer.Phone?.Trim();
+                    customer.Email = customer.Email?.Trim();
+                    customer.Address = customer.Address?.Trim();
+                    
                     await _customerRepository.AddAsync(customer);
                     TempData["Success"] = "Thêm khách hàng thành công!";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"❌ Lỗi thêm khách hàng: {ex.Message}");
                     ModelState.AddModelError("", "Lỗi khi thêm khách hàng: " + ex.Message);
                 }
             }
@@ -110,19 +147,60 @@ namespace QuanLyCuaHangBanLe.Controllers
         {
             if (id != customer.CustomerId)
             {
-                return NotFound();
+                TempData["Error"] = "Dữ liệu không khớp";
+                return RedirectToAction("Index");
+            }
+
+            if (customer == null)
+            {
+                TempData["Error"] = "Dữ liệu không hợp lệ";
+                return RedirectToAction("Index");
+            }
+
+            // Validation bổ sung
+            if (string.IsNullOrWhiteSpace(customer.Name))
+            {
+                ModelState.AddModelError("Name", "Tên khách hàng không được để trống");
+            }
+
+            // Kiểm tra email trùng (trừ chính nó)
+            if (!string.IsNullOrWhiteSpace(customer.Email))
+            {
+                var allCustomers = await _customerRepository.GetAllAsync();
+                if (allCustomers.Any(c => c.CustomerId != customer.CustomerId && 
+                    c.Email != null && c.Email.Equals(customer.Email, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("Email", "Email này đã được sử dụng");
+                }
+            }
+
+            // Kiểm tra phone trùng (trừ chính nó)
+            if (!string.IsNullOrWhiteSpace(customer.Phone))
+            {
+                var allCustomers = await _customerRepository.GetAllAsync();
+                if (allCustomers.Any(c => c.CustomerId != customer.CustomerId && 
+                    c.Phone != null && c.Phone.Equals(customer.Phone)))
+                {
+                    ModelState.AddModelError("Phone", "Số điện thoại này đã được sử dụng");
+                }
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    customer.Name = customer.Name.Trim();
+                    customer.Phone = customer.Phone?.Trim();
+                    customer.Email = customer.Email?.Trim();
+                    customer.Address = customer.Address?.Trim();
+                    
                     await _customerRepository.UpdateAsync(customer);
                     TempData["Success"] = "Cập nhật khách hàng thành công!";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"❌ Lỗi cập nhật khách hàng: {ex.Message}");
                     ModelState.AddModelError("", "Lỗi khi cập nhật khách hàng: " + ex.Message);
                 }
             }
@@ -151,10 +229,23 @@ namespace QuanLyCuaHangBanLe.Controllers
         {
             try
             {
+                if (id <= 0)
+                {
+                    TempData["Error"] = "ID không hợp lệ";
+                    return RedirectToAction("Index");
+                }
+
                 var customer = await _customerRepository.GetByIdAsync(id);
                 if (customer == null)
                 {
                     TempData["Error"] = "Không tìm thấy khách hàng";
+                    return RedirectToAction("Index");
+                }
+
+                // Kiểm tra xem khách hàng có đơn hàng nào không
+                if (customer.Orders != null && customer.Orders.Any())
+                {
+                    TempData["Error"] = $"Không thể xóa khách hàng '{customer.Name}' vì còn {customer.Orders.Count} đơn hàng liên quan";
                     return RedirectToAction("Index");
                 }
 
@@ -164,7 +255,20 @@ namespace QuanLyCuaHangBanLe.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Lỗi khi xóa khách hàng: " + ex.Message;
+                Console.WriteLine($"❌ Lỗi xóa khách hàng: {ex.Message}");
+                
+                // Kiểm tra lỗi foreign key constraint
+                if (ex.InnerException?.Message.Contains("foreign key constraint") == true || 
+                    ex.Message.Contains("FOREIGN KEY") || 
+                    ex.Message.Contains("DELETE statement conflicted"))
+                {
+                    TempData["Error"] = "Không thể xóa khách hàng này vì còn đơn hàng liên quan";
+                }
+                else
+                {
+                    TempData["Error"] = "Lỗi khi xóa khách hàng: " + ex.Message;
+                }
+                
                 return RedirectToAction("Index");
             }
         }
