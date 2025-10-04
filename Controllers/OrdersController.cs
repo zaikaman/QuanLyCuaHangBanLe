@@ -87,12 +87,17 @@ namespace QuanLyCuaHangBanLe.Controllers
         [HttpPost]
         public async Task<IActionResult> GetProductInfo(int productId)
         {
+            Console.WriteLine($"🔵 GetProductInfo được gọi - ProductId: {productId}");
+            
             var product = await _productService.GetByIdAsync(productId);
             if (product == null)
             {
+                Console.WriteLine($"❌ Không tìm thấy sản phẩm với ID: {productId}");
                 return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
             }
 
+            Console.WriteLine($"✅ Tìm thấy sản phẩm: {product.ProductName}, Giá: {product.Price}");
+            
             return Json(new
             {
                 success = true,
@@ -107,33 +112,66 @@ namespace QuanLyCuaHangBanLe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Order order, List<OrderItem> orderItems)
         {
+            Console.WriteLine("🔵 ========== BẮT ĐẦU TẠO ĐỠN HÀNG ==========");
+            
             var username = HttpContext.Session.GetString("Username");
+            Console.WriteLine($"   Username từ session: {username}");
+            
             if (string.IsNullOrEmpty(username))
             {
+                Console.WriteLine("❌ Không tìm thấy username trong session");
                 return RedirectToAction("Login", "Auth");
             }
 
-            // Lấy userId từ session
-            var userIdStr = HttpContext.Session.GetString("UserId");
-            if (!int.TryParse(userIdStr, out int userId))
+            // Lấy userId từ session - SỬA LỖI: Dùng GetInt32 thay vì GetString
+            var userId = HttpContext.Session.GetInt32("UserId");
+            Console.WriteLine($"   UserId từ session: {userId}");
+            
+            if (userId == null || userId <= 0)
             {
+                Console.WriteLine($"❌ UserId không hợp lệ: {userId}");
                 TempData["Error"] = "Không tìm thấy thông tin người dùng";
                 return RedirectToAction("Index");
             }
 
+            // Log thông tin đơn hàng
+            Console.WriteLine($"   CustomerId: {order.CustomerId}");
+            Console.WriteLine($"   Status: {order.Status}");
+            Console.WriteLine($"   DiscountAmount: {order.DiscountAmount}");
+            Console.WriteLine($"   Số lượng orderItems nhận được: {orderItems?.Count ?? 0}");
+            
+            if (orderItems != null && orderItems.Any())
+            {
+                for (int i = 0; i < orderItems.Count; i++)
+                {
+                    var item = orderItems[i];
+                    Console.WriteLine($"   Item [{i}]: ProductId={item.ProductId}, Quantity={item.Quantity}, Price={item.Price}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("⚠️ orderItems null hoặc rỗng!");
+            }
+
             // Gán userId vào đơn hàng
-            order.UserId = userId;
+            order.UserId = userId.Value;
 
+            Console.WriteLine("   Đang gọi OrderService.CreateOrderAsync...");
+            
             // Gọi service để tạo đơn hàng với validation đầy đủ
-            var (success, message, createdOrder) = await _orderService.CreateOrderAsync(order, orderItems);
+            var (success, message, createdOrder) = await _orderService.CreateOrderAsync(order, orderItems ?? new List<OrderItem>());
 
+            Console.WriteLine($"   Kết quả: Success={success}, Message={message}");
+            
             if (success)
             {
+                Console.WriteLine($"✅ Tạo đơn hàng thành công! OrderId: {createdOrder?.OrderId}");
                 TempData["Success"] = message;
                 return RedirectToAction("Index");
             }
             else
             {
+                Console.WriteLine($"❌ Tạo đơn hàng thất bại: {message}");
                 TempData["Error"] = message;
                 await LoadDropdownData();
                 return View(order);

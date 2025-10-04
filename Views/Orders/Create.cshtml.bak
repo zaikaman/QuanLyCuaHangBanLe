@@ -192,14 +192,13 @@
 </style>
 
 <div class="form-container">
-    <form asp-action="Create" method="post" id="orderForm">
-        @Html.AntiForgeryToken()
-        
-        <div class="form-card">
-            <div class="form-header">
-                <h2>🛍️ Tạo đơn hàng mới</h2>
-            </div>
+    <div class="form-card">
+        <div class="form-header">
+            <h2>🛍️ Tạo đơn hàng mới</h2>
+        </div>
 
+        <form asp-action="Create" method="post" id="orderForm">
+            @Html.AntiForgeryToken()
             <!-- Thông tin khách hàng -->
             <div class="form-row">
                 <div class="form-group">
@@ -219,12 +218,12 @@
                     </select>
                 </div>
             </div>
-        </div>
+    </div>
 
-        <div class="form-card">
-            <div class="form-header">
-                <h2>📦 Sản phẩm trong đơn hàng</h2>
-            </div>
+    <div class="form-card">
+        <div class="form-header">
+            <h2>📦 Sản phẩm trong đơn hàng</h2>
+        </div>
 
         <table class="items-table">
             <thead>
@@ -303,7 +302,6 @@
     let itemIndex = 1;
 
     function addItem() {
-        console.log('🔵 addItem() được gọi, itemIndex hiện tại:', itemIndex);
         const container = document.getElementById('itemsContainer');
         const newRow = document.createElement('tr');
         newRow.className = 'item-row';
@@ -345,36 +343,23 @@
         `;
         container.appendChild(newRow);
         itemIndex++;
-        console.log('✅ Đã thêm row mới, itemIndex mới:', itemIndex);
     }
 
     function removeItem(btn) {
-        console.log('🔴 removeItem() được gọi');
         const row = btn.closest('tr');
-        const itemCount = document.querySelectorAll('.item-row').length;
-        console.log('   Số lượng items hiện tại:', itemCount);
-        
-        if (itemCount > 1) {
+        if (document.querySelectorAll('.item-row').length > 1) {
             row.remove();
             calculateTotal();
-            console.log('✅ Đã xóa row, còn lại:', document.querySelectorAll('.item-row').length);
         } else {
-            console.log('⚠️ Không thể xóa - phải có ít nhất 1 sản phẩm');
             alert('Phải có ít nhất một sản phẩm trong đơn hàng');
         }
     }
 
     async function loadProductInfo(select, index) {
         const productId = select.value;
-        console.log(`🔵 loadProductInfo() - index: ${index}, productId: ${productId}`);
-        
-        if (!productId) {
-            console.log('⚠️ Không có productId, bỏ qua');
-            return;
-        }
+        if (!productId) return;
 
         try {
-            console.log('   Đang gọi API GetProductInfo...');
             const response = await fetch('/Orders/GetProductInfo?productId=' + productId, {
                 method: 'POST',
                 headers: {
@@ -384,119 +369,49 @@
             });
 
             const data = await response.json();
-            console.log('   Kết quả API:', data);
-            
             if (data.success) {
                 const row = select.closest('tr');
                 const priceInput = row.querySelector('.price-input');
                 const quantityInput = row.querySelector('.quantity-input');
                 
                 priceInput.value = data.price;
-                console.log(`✅ Đã set giá: ${data.price} cho sản phẩm: ${data.productName}`);
                 calculateSubtotal(index);
-            } else {
-                console.error('❌ API trả về lỗi:', data.message);
             }
         } catch (error) {
-            console.error('❌ Error loading product info:', error);
+            console.error('Error loading product info:', error);
         }
     }
 
     function calculateSubtotal(index) {
-        console.log(`🔵 calculateSubtotal() - index: ${index}`);
         const rows = document.querySelectorAll('.item-row');
         const row = rows[index];
-        
-        if (!row) {
-            console.log('⚠️ Không tìm thấy row với index:', index);
-            return;
-        }
+        if (!row) return;
 
         const quantity = parseFloat(row.querySelector('.quantity-input').value) || 0;
         const price = parseFloat(row.querySelector('.price-input').value) || 0;
         const subtotal = quantity * price;
-        
-        console.log(`   Quantity: ${quantity}, Price: ${price}, Subtotal: ${subtotal}`);
         
         row.querySelector('.subtotal-input').value = subtotal;
         calculateTotal();
     }
 
     function calculateTotal() {
-        console.log('🔵 calculateTotal() được gọi');
         let total = 0;
-        const subtotals = [];
-        
         document.querySelectorAll('.subtotal-input').forEach(input => {
-            const value = parseFloat(input.value) || 0;
-            subtotals.push(value);
-            total += value;
+            total += parseFloat(input.value) || 0;
         });
-
-        console.log('   Các subtotals:', subtotals);
-        console.log('   Tổng tiền hàng:', total);
 
         document.getElementById('totalAmount').textContent = total.toLocaleString('vi-VN') + 'đ';
         
         const discount = parseFloat(document.querySelector('input[name="DiscountAmount"]').value) || 0;
         const finalTotal = Math.max(0, total - discount);
         
-        console.log('   Giảm giá:', discount);
-        console.log('   Tổng thanh toán:', finalTotal);
-        
         document.getElementById('finalTotal').textContent = finalTotal.toLocaleString('vi-VN') + 'đ';
     }
 
     // Khởi tạo
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Trang Create Order đã load');
-        console.log('   Số lượng products trong dropdown:', document.querySelectorAll('.product-select option').length - 1);
-        console.log('   Số lượng customers trong dropdown:', document.querySelectorAll('select[name="CustomerId"] option').length - 1);
         calculateTotal();
-    });
-    
-    // Log khi submit form
-    document.getElementById('orderForm').addEventListener('submit', function(e) {
-        console.log('📤 Form đang được submit...');
-        
-        // Thu thập dữ liệu form
-        const formData = new FormData(this);
-        const orderData = {
-            customerId: formData.get('CustomerId'),
-            status: formData.get('Status'),
-            discountAmount: formData.get('DiscountAmount'),
-            items: []
-        };
-        
-        // Thu thập items
-        document.querySelectorAll('.item-row').forEach((row, index) => {
-            const productId = row.querySelector('.product-select').value;
-            const quantity = row.querySelector('.quantity-input').value;
-            const price = row.querySelector('.price-input').value;
-            const subtotal = row.querySelector('.subtotal-input').value;
-            
-            orderData.items.push({
-                index,
-                productId,
-                quantity,
-                price,
-                subtotal
-            });
-        });
-        
-        console.log('📦 Dữ liệu đơn hàng:', orderData);
-        
-        // Validation
-        if (!orderData.customerId) {
-            console.error('❌ Chưa chọn khách hàng!');
-        }
-        
-        const invalidItems = orderData.items.filter(item => !item.productId || !item.quantity || !item.price);
-        if (invalidItems.length > 0) {
-            console.error('❌ Có items không hợp lệ:', invalidItems);
-        }
-        
-        console.log('✅ Validation passed, đang submit...');
     });
 </script>
 
