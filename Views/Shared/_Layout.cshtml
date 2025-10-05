@@ -513,10 +513,7 @@
                     <button class="topbar-action" title="Chế độ giao diện" id="themeToggleBtn">
                         <i class="fas fa-sun" id="themeIcon"></i>
                     </button>
-                    <button class="topbar-action" title="Thông báo" id="notificationBtn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </button>
+                    <!-- Notification button removed per request -->
                     <button class="topbar-action" title="Cài đặt" id="settingsBtn">
                         <i class="fas fa-cog"></i>
                     </button>
@@ -559,51 +556,7 @@
         </div>
     </div>
 
-    <!-- Notifications Modal -->
-    <div id="notificationsModal" class="modal-overlay" style="display: none;">
-        <div class="modal-container" style="max-width: 400px; max-height: 600px;">
-            <div class="modal-header">
-                <h3>Thông báo</h3>
-                <button class="modal-close" onclick="closeNotifications()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body" style="padding: 0;">
-                <div class="notification-list">
-                    <div class="notification-item unread">
-                        <div class="notification-icon" style="background: var(--color-primary);">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Đơn hàng mới</div>
-                            <div class="notification-text">Bạn có 3 đơn hàng mới cần xử lý</div>
-                            <div class="notification-time">5 phút trước</div>
-                        </div>
-                    </div>
-                    <div class="notification-item">
-                        <div class="notification-icon" style="background: var(--color-success);">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Đơn hàng hoàn thành</div>
-                            <div class="notification-text">Đơn hàng #001234 đã được giao thành công</div>
-                            <div class="notification-time">1 giờ trước</div>
-                        </div>
-                    </div>
-                    <div class="notification-item">
-                        <div class="notification-icon" style="background: var(--color-warning);">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Sản phẩm sắp hết</div>
-                            <div class="notification-text">Có 5 sản phẩm sắp hết hàng trong kho</div>
-                            <div class="notification-time">2 giờ trước</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Notifications UI removed -->
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal-overlay" style="display: none;">
@@ -622,18 +575,6 @@
                             <input type="checkbox" id="darkModeCheckbox"> Chế độ tối
                         </label>
                     </div>
-                    <div class="setting-item">
-                        <label>
-                            <input type="checkbox" checked> Hiển thị thông báo
-                        </label>
-                    </div>
-                </div>
-                <div class="settings-section" style="margin-top: 20px;">
-                    <h4>Ngôn ngữ</h4>
-                    <select class="form-control">
-                        <option selected>Tiếng Việt</option>
-                        <option>English</option>
-                    </select>
                 </div>
                 <div class="settings-section" style="margin-top: 20px;">
                     <h4>Tài khoản</h4>
@@ -1146,14 +1087,7 @@
             }, 500);
         });
 
-        // Notifications
-        document.getElementById('notificationBtn')?.addEventListener('click', function() {
-            document.getElementById('notificationsModal').style.display = 'flex';
-        });
-
-        function closeNotifications() {
-            document.getElementById('notificationsModal').style.display = 'none';
-        }
+        // Notifications UI removed - no handlers required
 
         // Settings
         document.getElementById('settingsBtn')?.addEventListener('click', function() {
