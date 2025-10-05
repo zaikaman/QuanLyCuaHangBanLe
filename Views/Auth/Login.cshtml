@@ -19,31 +19,123 @@
 
         body {
             font-family: 'Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8f9fc;
+            background: linear-gradient(135deg, #4E5FFF 0%, #2563eb 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(72, 61, 139, 0.3) 0%, transparent 50%);
+            animation: moveBackground 20s ease infinite;
+        }
+
+        @@keyframes moveBackground {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 70%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .particle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 40%;
+            left: 90%;
+            animation-delay: 4s;
+        }
+
+        .particle:nth-child(4) {
+            width: 50px;
+            height: 50px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-25px) translateX(10px);
+            }
         }
 
         .login-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
             overflow: hidden;
             width: 100%;
-            max-width: 950px;
+            max-width: 1000px;
             display: flex;
-            min-height: 580px;
-            border: 1px solid #f0f0f5;
+            min-height: 600px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-left {
             flex: 1;
-            background: #4E5FFF;
-            padding: 50px 40px;
+            background: linear-gradient(135deg, #4E5FFF 0%, #2563eb 100%);
+            padding: 60px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -56,15 +148,15 @@
         .login-left::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 70%);
-            animation: pulse 12s infinite ease-in-out;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
 
-        @@keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.15); }
+        @@keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .login-left-content {
@@ -74,81 +166,128 @@
         }
 
         .logo-circle {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.15);
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 24px;
+            margin: 0 auto 30px;
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .logo-circle i {
-            font-size: 36px;
+            font-size: 45px;
             color: white;
         }
 
         .login-left h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 14px;
-            letter-spacing: -0.02em;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .login-left p {
-            font-size: 1rem;
-            opacity: 0.9;
-            line-height: 1.6;
-            max-width: 340px;
+            font-size: 1.1rem;
+            opacity: 0.95;
+            line-height: 1.7;
+            max-width: 380px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .login-illustration {
+        .features-list {
             margin-top: 40px;
-            opacity: 0.1;
+            text-align: left;
         }
 
-        .login-illustration i {
-            font-size: 140px;
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .feature-item:nth-child(1) { animation-delay: 0.2s; }
+        .feature-item:nth-child(2) { animation-delay: 0.4s; }
+        .feature-item:nth-child(3) { animation-delay: 0.6s; }
+
+        @@keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
 
         .login-right {
             flex: 1;
-            padding: 50px 44px;
+            padding: 60px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: white;
         }
 
         .login-header {
-            margin-bottom: 32px;
+            margin-bottom: 36px;
         }
 
         .login-header h2 {
-            font-size: 1.7rem;
+            font-size: 2rem;
             color: #1e293b;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #4E5FFF 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .login-header p {
             color: #64748b;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #1e293b;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
+            letter-spacing: 0.3px;
         }
 
         .input-wrapper {
@@ -157,21 +296,22 @@
 
         .input-icon {
             position: absolute;
-            left: 14px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            transition: all 0.3s;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 14px 12px 40px;
-            border: 1px solid #f0f0f5;
+            padding: 14px 16px 14px 46px;
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 0.95rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #f8f9fc;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
             font-family: 'Gilroy', sans-serif;
         }
 
@@ -179,49 +319,65 @@
             outline: none;
             border-color: #4E5FFF;
             background: white;
-            box-shadow: 0 0 0 3px rgba(78, 95, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(78, 95, 255, 0.1);
+        }
+
+        .form-control:focus + .input-icon {
+            color: #4E5FFF;
         }
 
         .btn-login {
             width: 100%;
-            padding: 13px;
-            background: #4E5FFF;
+            padding: 15px;
+            background: linear-gradient(135deg, #4E5FFF 0%, #2563eb 100%);
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 12px;
             font-family: 'Gilroy', sans-serif;
-            box-shadow: 0 4px 14px rgba(78, 95, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(78, 95, 255, 0.4);
+            letter-spacing: 0.5px;
         }
 
         .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(78, 95, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(78, 95, 255, 0.5);
         }
 
         .btn-login:active {
-            transform: translateY(-1px);
+            transform: translateY(0);
         }
 
         .error-message {
-            background: #fef2f2;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
             color: #dc2626;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             font-size: 0.9rem;
-            border: 1px solid #fee2e2;
+            border: 1px solid #fca5a5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            animation: shake 0.5s;
+        }
+
+        @@keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .remember-forgot {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 14px;
+            margin-top: 16px;
             font-size: 0.9rem;
         }
 
@@ -231,11 +387,12 @@
             gap: 8px;
             color: #64748b;
             cursor: pointer;
+            font-weight: 500;
         }
 
         .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
             accent-color: #4E5FFF;
         }
@@ -243,95 +400,120 @@
         .forgot-password {
             color: #4E5FFF;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
+            transition: all 0.3s;
         }
 
         .forgot-password:hover {
-            color: #3b4acc;
+            color: #2563eb;
+            text-decoration: underline;
         }
 
         .divider {
             display: flex;
             align-items: center;
-            margin: 28px 0;
+            margin: 32px 0;
             color: #94a3b8;
             font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .divider::before,
         .divider::after {
             content: '';
             flex: 1;
-            height: 1px;
-            background: #f0f0f5;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
         }
 
         .divider span {
-            padding: 0 15px;
+            padding: 0 16px;
         }
 
         .demo-accounts {
-            background: #f8f9fc;
-            padding: 18px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 20px;
             border-radius: 12px;
-            border: 1px solid #f0f0f5;
+            border: 2px solid #e2e8f0;
         }
 
         .demo-accounts h4 {
             color: #1e293b;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+        }
+
+        .demo-accounts h4 i {
+            color: #4E5FFF;
         }
 
         .demo-accounts p {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin: 6px 0;
+            font-size: 0.9rem;
+            color: #475569;
+            margin: 8px 0;
             font-family: 'Courier New', monospace;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .demo-accounts strong {
+            color: #1e293b;
         }
 
         @@media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
+                min-height: auto;
             }
 
             .login-left {
                 padding: 40px 30px;
-                min-height: 280px;
+                min-height: auto;
             }
 
             .logo-circle {
-                width: 60px;
-                height: 60px;
+                width: 80px;
+                height: 80px;
             }
 
             .logo-circle i {
-                font-size: 28px;
+                font-size: 35px;
             }
 
             .login-left h1 {
-                font-size: 1.6rem;
+                font-size: 2rem;
             }
 
-            .login-illustration {
+            .features-list {
                 display: none;
             }
 
             .login-right {
-                padding: 40px 28px;
+                padding: 40px 30px;
             }
 
             .login-header h2 {
-                font-size: 1.4rem;
+                font-size: 1.6rem;
+            }
+
+            .particle {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
     <div class="login-container">
         <div class="login-left">
             <div class="login-left-content">
@@ -340,39 +522,58 @@
                 </div>
                 <h1>Store Manager</h1>
                 <p>Hệ thống quản lý cửa hàng bán lẻ hiện đại, thông minh và dễ sử dụng</p>
-                <div class="login-illustration">
-                    <i class="fa-solid fa-chart-line"></i>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <span>Thống kê & báo cáo chi tiết</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <span>Quản lý kho hàng thông minh</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span>Quản lý khách hàng hiệu quả</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="login-right">
             <div class="login-header">
-                <h2>Chào mừng trở lại!</h2>
+                <h2>Chào mừng trở lại! 👋</h2>
                 <p>Đăng nhập để tiếp tục quản lý cửa hàng của bạn</p>
             </div>
 
             @if (ViewBag.Error != null)
             {
                 <div class="error-message">
-                    <i class="fa-solid fa-circle-exclamation"></i> @ViewBag.Error
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>@ViewBag.Error</span>
                 </div>
             }
 
             <form method="post" asp-action="Login" asp-controller="Auth">
                 <div class="form-group">
-                    <label for="username">Tên đăng nhập</label>
+                    <label for="username">TÊN ĐĂNG NHẬP</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-user input-icon"></i>
                         <input type="text" id="username" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                        <i class="fa-solid fa-user input-icon"></i>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Mật khẩu</label>
+                    <label for="password">MẬT KHẨU</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-lock input-icon"></i>
                         <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                        <i class="fa-solid fa-lock input-icon"></i>
                     </div>
                 </div>
 
@@ -384,17 +585,19 @@
                     <a href="#" class="forgot-password">Quên mật khẩu?</a>
                 </div>
 
-                <button type="submit" class="btn-login">Đăng nhập</button>
+                <button type="submit" class="btn-login">
+                    <i class="fa-solid fa-right-to-bracket"></i> ĐĂNG NHẬP
+                </button>
             </form>
 
             <div class="divider">
-                <span>Tài khoản demo</span>
+                <span>TÀI KHOẢN DEMO</span>
             </div>
 
             <div class="demo-accounts">
-                <h4><i class="fa-solid fa-key"></i> Thông tin đăng nhập thử nghiệm:</h4>
-                <p><strong>Admin:</strong> admin / 123456</p>
-                <p><strong>Nhân viên:</strong> staff01 / 123456</p>
+                <h4><i class="fa-solid fa-key"></i> Thông tin đăng nhập thử nghiệm</h4>
+                <p><strong>👨‍💼 Admin:</strong> admin / 123456</p>
+                <p><strong>👤 Nhân viên:</strong> staff01 / 123456</p>
             </div>
         </div>
     </div>

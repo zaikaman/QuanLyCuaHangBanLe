@@ -135,4 +135,4 @@ C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\co
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\xg6yvh1ur0-fex5ybwphs.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\89hujsi9sy-bblylg49cl.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\ff8ryeq75w-d2l7xr7qnt.gz
-C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\ank9nlfo0t-yitxddv4xe.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\ank9nlfo0t-qwqqlcuea7.gz
