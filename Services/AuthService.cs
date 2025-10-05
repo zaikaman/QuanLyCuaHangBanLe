@@ -55,5 +55,34 @@ namespace QuanLyCuaHangBanLe.Services
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == username);
         }
+
+        public async Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            try
+            {
+                var user = await _context.Users.FindAsync(userId);
+                
+                if (user == null)
+                {
+                    return false;
+                }
+
+                // Kiểm tra mật khẩu cũ có đúng không
+                if (user.Password != oldPassword)
+                {
+                    return false;
+                }
+
+                // Cập nhật mật khẩu mới
+                user.Password = newPassword;
+                await _context.SaveChangesAsync();
+                
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

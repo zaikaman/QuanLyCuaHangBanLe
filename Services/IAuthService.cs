@@ -8,5 +8,6 @@ namespace QuanLyCuaHangBanLe.Services
         Task<bool> RegisterAsync(User user);
         Task<User?> GetUserByIdAsync(int userId);
         Task<User?> GetUserByUsernameAsync(string username);
+        Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
     }
 }

@@ -85,5 +85,93 @@ namespace QuanLyCuaHangBanLe.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
+
+        public IActionResult ChangePassword()
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login");
+            }
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            // Validation
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(oldPassword))
+            {
+                errors.Add("Mật khẩu cũ không được để trống");
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                errors.Add("Mật khẩu mới không được để trống");
+            }
+            else if (newPassword.Length < 6)
+            {
+                errors.Add("Mật khẩu mới phải có ít nhất 6 ký tự");
+            }
+
+            if (string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                errors.Add("Xác nhận mật khẩu không được để trống");
+            }
+
+            if (!string.IsNullOrWhiteSpace(newPassword) && !string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                if (newPassword != confirmPassword)
+                {
+                    errors.Add("Mật khẩu mới và xác nhận mật khẩu không khớp");
+                }
+            }
+
+            if (errors.Any())
+            {
+                TempData["Error"] = string.Join(", ", errors);
+                return View();
+            }
+
+            try
+            {
+                var result = await _authService.ChangePasswordAsync(userId.Value, oldPassword, newPassword);
+
+                if (result)
+                {
+                    TempData["Success"] = "Đổi mật khẩu thành công!";
+                    Console.WriteLine($"✅ Đổi mật khẩu thành công cho user ID: {userId}");
+                    return RedirectToAction("ChangePassword");
+                }
+                else
+                {
+                    TempData["Error"] = "Mật khẩu cũ không đúng";
+                    Console.WriteLine($"❌ Đổi mật khẩu thất bại: Mật khẩu cũ không đúng");
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi đổi mật khẩu: {ex.Message}");
+                TempData["Error"] = "Có lỗi xảy ra trong quá trình đổi mật khẩu. Vui lòng thử lại sau.";
+                return View();
+            }
+        }
     }
 }

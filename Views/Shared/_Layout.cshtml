@@ -480,6 +480,12 @@
 
         <div class="sidebar-footer">
             <div class="nav-item">
+                <a class="nav-link" asp-controller="Auth" asp-action="ChangePassword">
+                    <i class="nav-icon fas fa-key"></i>
+                    <span>Đổi mật khẩu</span>
+                </a>
+            </div>
+            <div class="nav-item">
                 <a class="nav-link logout-link" asp-controller="Auth" asp-action="Logout">
                     <i class="nav-icon fas fa-sign-out-alt"></i>
                     <span>Đăng xuất</span>
@@ -631,7 +637,7 @@
                 </div>
                 <div class="settings-section" style="margin-top: 20px;">
                     <h4>Tài khoản</h4>
-                    <button class="btn btn-outline" style="width: 100%; margin-bottom: 10px;">Đổi mật khẩu</button>
+                    <a asp-controller="Auth" asp-action="ChangePassword" class="btn btn-outline" style="width: 100%; margin-bottom: 10px; text-decoration: none; display: inline-block; text-align: center;">🔐 Đổi mật khẩu</a>
                     <a asp-controller="Auth" asp-action="Logout" class="btn btn-danger" style="width: 100%; text-decoration: none; display: inline-block; text-align: center;">Đăng xuất</a>
                 </div>
             </div>
