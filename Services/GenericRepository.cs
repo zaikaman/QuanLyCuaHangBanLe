@@ -38,6 +38,22 @@ namespace QuanLyCuaHangBanLe.Services
 
         public virtual async Task UpdateAsync(T entity)
         {
+            // Detach tất cả entities đang được tracked với cùng key
+            var entry = _context.Entry(entity);
+            var keyValues = entry.Metadata.FindPrimaryKey()!.Properties
+                .Select(p => entry.Property(p.Name).CurrentValue)
+                .ToArray();
+            
+            var trackedEntity = _context.ChangeTracker.Entries<T>()
+                .FirstOrDefault(e => e.Metadata.FindPrimaryKey()!.Properties
+                    .Select(p => e.Property(p.Name).CurrentValue)
+                    .SequenceEqual(keyValues));
+            
+            if (trackedEntity != null && trackedEntity.Entity != entity)
+            {
+                trackedEntity.State = EntityState.Detached;
+            }
+            
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }

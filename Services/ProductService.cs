@@ -13,6 +13,7 @@ namespace QuanLyCuaHangBanLe.Services
         public override async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _dbSet
+                .AsNoTracking() // Không track để tránh conflict khi update
                 .Include(p => p.Category)
                 .Include(p => p.Supplier)
                 .Include(p => p.Inventory)
@@ -31,6 +32,7 @@ namespace QuanLyCuaHangBanLe.Services
         public async Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId)
         {
             return await _dbSet
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.Supplier)
                 .Include(p => p.Inventory)
@@ -41,6 +43,7 @@ namespace QuanLyCuaHangBanLe.Services
         public async Task<IEnumerable<Product>> GetBySupplierAsync(int supplierId)
         {
             return await _dbSet
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.Supplier)
                 .Include(p => p.Inventory)
@@ -51,6 +54,7 @@ namespace QuanLyCuaHangBanLe.Services
         public async Task<Product?> GetByBarcodeAsync(string barcode)
         {
             return await _dbSet
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.Supplier)
                 .Include(p => p.Inventory)
@@ -60,6 +64,7 @@ namespace QuanLyCuaHangBanLe.Services
         public async Task<IEnumerable<Product>> SearchAsync(string keyword)
         {
             return await _dbSet
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.Supplier)
                 .Include(p => p.Inventory)
