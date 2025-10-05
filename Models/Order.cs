@@ -19,7 +19,7 @@ namespace QuanLyCuaHangBanLe.Models
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Trạng thái đơn hàng là bắt buộc")]
-        [RegularExpression(@"^(pending|paid|cancelled|processing|shipped)$", ErrorMessage = "Trạng thái không hợp lệ")]
+        [RegularExpression(@"^(pending|paid|canceled)$", ErrorMessage = "Trạng thái không hợp lệ")]
         [Display(Name = "Trạng thái")]
         public string Status { get; set; } = "pending"; // pending, paid, canceled
 

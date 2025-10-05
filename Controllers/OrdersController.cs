@@ -34,6 +34,11 @@ namespace QuanLyCuaHangBanLe.Controllers
             const int pageSize = 10;
             var allOrders = await _orderService.GetAllAsync();
             
+            // Thống kê theo trạng thái
+            ViewBag.PendingCount = allOrders.Count(o => o.Status == "pending");
+            ViewBag.PaidCount = allOrders.Count(o => o.Status == "paid");
+            ViewBag.CanceledCount = allOrders.Count(o => o.Status == "canceled");
+            
             // Áp dụng tìm kiếm TRƯỚC KHI phân trang
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -213,7 +218,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                     return Json(new { success = false, message = "Không tìm thấy đơn hàng" });
                 }
 
-                order.Status = "cancelled";
+                order.Status = "canceled";
                 await _orderService.UpdateAsync(order);
                 
                 return Json(new { success = true, message = "Hủy đơn hàng thành công!" });
@@ -320,9 +325,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                         {
                             "paid" => "Đã thanh toán",
                             "pending" => "Chờ xử lý",
-                            "cancelled" => "Đã hủy",
-                            "processing" => "Đang xử lý",
-                            "shipped" => "Đã giao",
+                            "canceled" => "Đã hủy",
                             _ => order.Status
                         };
                         

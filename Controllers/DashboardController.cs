@@ -89,9 +89,8 @@ namespace QuanLyCuaHangBanLe.Controllers
             
             // Thống kê đơn hàng theo trạng thái (theo bộ lọc)
             ViewBag.PendingOrders = filteredOrders.Count(o => o.Status == "pending");
-            ViewBag.ProcessingOrders = filteredOrders.Count(o => o.Status == "processing");
-            ViewBag.ShippedOrders = filteredOrders.Count(o => o.Status == "shipped");
             ViewBag.PaidOrders = filteredOrders.Count(o => o.Status == "paid");
+            ViewBag.CanceledOrders = filteredOrders.Count(o => o.Status == "canceled");
             
             ViewBag.DateRange = dateRange;
             ViewBag.StartDate = filterStart;
@@ -128,9 +127,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                 {
                     "paid" => "Đã thanh toán",
                     "pending" => "Chờ xử lý",
-                    "cancelled" => "Đã hủy",
-                    "processing" => "Đang xử lý",
-                    "shipped" => "Đã giao",
+                    "canceled" => "Đã hủy",
                     _ => "Chờ xử lý"
                 }
             });
@@ -168,9 +165,7 @@ namespace QuanLyCuaHangBanLe.Controllers
                 {
                     "paid" => "Đã thanh toán",
                     "pending" => "Chờ xử lý",
-                    "cancelled" => "Đã hủy",
-                    "processing" => "Đang xử lý",
-                    "shipped" => "Đã giao",
+                    "canceled" => "Đã hủy",
                     _ => "Chờ xử lý"
                 }
             });

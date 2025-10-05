@@ -187,17 +187,13 @@
         <div class="order-tab-count">@(ViewBag.PendingOrders ?? 0)</div>
         <div class="order-tab-label">Chờ xử lý</div>
     </div>
-    <div class="order-tab processing" data-status="processing">
-        <div class="order-tab-count">@(ViewBag.ProcessingOrders ?? 0)</div>
-        <div class="order-tab-label">Đang xử lý</div>
-    </div>
-    <div class="order-tab shipped" data-status="shipped">
-        <div class="order-tab-count">@(ViewBag.ShippedOrders ?? 0)</div>
-        <div class="order-tab-label">Đã giao</div>
-    </div>
     <div class="order-tab delivered" data-status="paid">
         <div class="order-tab-count">@(ViewBag.PaidOrders ?? 0)</div>
-        <div class="order-tab-label">Hoàn thành</div>
+        <div class="order-tab-label">Đã thanh toán</div>
+    </div>
+    <div class="order-tab cancelled" data-status="canceled">
+        <div class="order-tab-count">@(ViewBag.CanceledOrders ?? 0)</div>
+        <div class="order-tab-label">Đã hủy</div>
     </div>
 </div>
 
@@ -277,14 +273,14 @@
                                 {
                                     "paid" => "paid",
                                     "pending" => "pending",
-                                    "cancelled" => "cancelled",
+                                    "canceled" => "cancelled",
                                     _ => "pending"
                                 };
                                 var statusText = order.Status switch
                                 {
                                     "paid" => "Đã thanh toán",
                                     "pending" => "Chờ xử lý",
-                                    "cancelled" => "Đã hủy",
+                                    "canceled" => "Đã hủy",
                                     _ => "Chờ xử lý"
                                 };
                             }

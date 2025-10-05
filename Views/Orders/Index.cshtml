@@ -12,40 +12,28 @@
 
 <!-- Order Status Tabs -->
 <div class="order-status-tabs">
-    <div class="status-tab new-orders active">
-        <div class="status-tab-content">
-            <div class="status-count">12</div>
-            <div class="status-label">Đơn hàng mới</div>
-            <div class="status-badge positive">+2.5%</div>
-        </div>
-        <div class="status-subtitle">So với tuần trước</div>
-    </div>
-    
     <div class="status-tab await-accepting">
         <div class="status-tab-content">
-            <div class="status-count">20</div>
-            <div class="status-label">Chờ xác nhận</div>
-            <div class="status-badge positive">+1.2%</div>
+            <div class="status-count">@(ViewBag.PendingCount ?? 0)</div>
+            <div class="status-label">Chờ xử lý</div>
         </div>
-        <div class="status-subtitle">So với tuần trước</div>
-    </div>
-    
-    <div class="status-tab on-way">
-        <div class="status-tab-content">
-            <div class="status-count">57</div>
-            <div class="status-label">Đang giao</div>
-            <div class="status-badge positive">+5.6%</div>
-        </div>
-        <div class="status-subtitle">So với tuần trước</div>
+        <div class="status-subtitle">Đơn hàng chờ xử lý</div>
     </div>
     
     <div class="status-tab delivered">
         <div class="status-tab-content">
-            <div class="status-count">98</div>
-            <div class="status-label">Đã giao</div>
-            <div class="status-badge positive">+3.2%</div>
+            <div class="status-count">@(ViewBag.PaidCount ?? 0)</div>
+            <div class="status-label">Đã thanh toán</div>
         </div>
-        <div class="status-subtitle">So với tuần trước</div>
+        <div class="status-subtitle">Đơn đã hoàn thành</div>
+    </div>
+    
+    <div class="status-tab canceled">
+        <div class="status-tab-content">
+            <div class="status-count">@(ViewBag.CanceledCount ?? 0)</div>
+            <div class="status-label">Đã hủy</div>
+        </div>
+        <div class="status-subtitle">Đơn hàng đã hủy</div>
     </div>
 </div>
 
@@ -57,14 +45,14 @@
             <span id="selectedCount">0</span> đơn hàng được chọn
         </div>
         <div class="bulk-actions">
-            <button class="bulk-btn" onclick="bulkUpdateStatus('processing')">
-                <i class="fas fa-spinner"></i> Đang xử lý
-            </button>
-            <button class="bulk-btn" onclick="bulkUpdateStatus('shipped')">
-                <i class="fas fa-truck"></i> Đã giao
+            <button class="bulk-btn" onclick="bulkUpdateStatus('pending')">
+                <i class="fas fa-clock"></i> Chờ xử lý
             </button>
             <button class="bulk-btn" onclick="bulkUpdateStatus('paid')">
-                <i class="fas fa-check"></i> Hoàn thành
+                <i class="fas fa-check"></i> Đã thanh toán
+            </button>
+            <button class="bulk-btn" onclick="bulkUpdateStatus('canceled')">
+                <i class="fas fa-times"></i> Đã hủy
             </button>
             <button class="bulk-btn btn-danger" onclick="bulkDelete()">
                 <i class="fas fa-trash"></i> Xóa
@@ -164,15 +152,19 @@
                         <td>
                             @if (order.Status == "paid")
                             {
-                                <span class="status-tag delivered">Đã giao</span>
+                                <span class="status-tag delivered">Đã thanh toán</span>
                             }
                             else if (order.Status == "pending")
                             {
-                                <span class="status-tag on-way">Đang giao</span>
+                                <span class="status-tag await">Chờ xử lý</span>
+                            }
+                            else if (order.Status == "canceled")
+                            {
+                                <span class="status-tag canceled">Đã hủy</span>
                             }
                             else
                             {
-                                <span class="status-tag await">Chờ xử lý</span>
+                                <span class="status-tag await">@order.Status</span>
                             }
                         </td>
                         <td>
@@ -184,14 +176,11 @@
                                     <a href="@Url.Action("Details", "Orders", new { id = order.OrderId })" class="menu-item">
                                         <i class="fas fa-eye"></i> Xem chi tiết
                                     </a>
-                                    <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'processing')">
-                                        <i class="fas fa-spinner"></i> Đang xử lý
-                                    </button>
-                                    <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'shipped')">
-                                        <i class="fas fa-truck"></i> Đã giao
+                                    <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'pending')">
+                                        <i class="fas fa-clock"></i> Chờ xử lý
                                     </button>
                                     <button type="button" class="menu-item" onclick="updateOrderStatus(@order.OrderId, 'paid')">
-                                        <i class="fas fa-check"></i> Hoàn thành
+                                        <i class="fas fa-check"></i> Đã thanh toán
                                     </button>
                                     <button type="button" class="menu-item text-danger" onclick="cancelOrder(@order.OrderId)">
                                         <i class="fas fa-times"></i> Hủy đơn
