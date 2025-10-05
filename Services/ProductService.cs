@@ -72,5 +72,35 @@ namespace QuanLyCuaHangBanLe.Services
                            (p.Barcode != null && p.Barcode.Contains(keyword)))
                 .ToListAsync();
         }
+
+        /// <summary>
+        /// Kiểm tra xem sản phẩm có thể xóa được không
+        /// </summary>
+        public async Task<(bool CanDelete, string Message)> CanDeleteProductAsync(int productId)
+        {
+            // Kiểm tra xem sản phẩm có tồn tại không
+            var product = await GetByIdAsync(productId);
+            if (product == null)
+            {
+                return (false, "Không tìm thấy sản phẩm");
+            }
+
+            // Kiểm tra xem sản phẩm có trong đơn hàng nào không
+            var hasOrders = await _context.OrderItems
+                .AnyAsync(oi => oi.ProductId == productId);
+
+            if (hasOrders)
+            {
+                var orderCount = await _context.OrderItems
+                    .Where(oi => oi.ProductId == productId)
+                    .Select(oi => oi.OrderId)
+                    .Distinct()
+                    .CountAsync();
+
+                return (false, $"Không thể xóa sản phẩm '{product.ProductName}' vì đã có {orderCount} đơn hàng sử dụng sản phẩm này");
+            }
+
+            return (true, "Có thể xóa sản phẩm");
+        }
     }
 }

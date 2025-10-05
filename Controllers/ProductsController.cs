@@ -229,13 +229,34 @@ namespace QuanLyCuaHangBanLe.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // Kiểm tra xem sản phẩm có đang được sử dụng trong đơn hàng không
+                var (canDelete, message) = await _productService.CanDeleteProductAsync(id);
+                if (!canDelete)
+                {
+                    TempData["Error"] = message;
+                    return RedirectToAction("Index");
+                }
+
                 await _productService.DeleteAsync(id);
                 TempData["Success"] = "Xóa sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Lỗi khi xóa sản phẩm: " + ex.Message;
+                Console.WriteLine($"❌ Lỗi xóa sản phẩm: {ex.Message}");
+                
+                // Kiểm tra lỗi foreign key constraint
+                if (ex.InnerException?.Message.Contains("foreign key constraint") == true || 
+                    ex.Message.Contains("FOREIGN KEY") || 
+                    ex.Message.Contains("DELETE statement conflicted"))
+                {
+                    TempData["Error"] = "Không thể xóa sản phẩm này vì đã có đơn hàng sử dụng";
+                }
+                else
+                {
+                    TempData["Error"] = "Lỗi khi xóa sản phẩm: " + ex.Message;
+                }
+                
                 return RedirectToAction("Index");
             }
         }

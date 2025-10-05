@@ -115,7 +115,7 @@ namespace QuanLyCuaHangBanLe.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Order order, List<OrderItem> orderItems)
+        public async Task<IActionResult> Create(Order order, List<OrderItem> orderItems, string paymentMethod = "cash")
         {
             Console.WriteLine("🔵 ========== BẮT ĐẦU TẠO ĐỠN HÀNG ==========");
             
@@ -143,6 +143,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             Console.WriteLine($"   CustomerId: {order.CustomerId}");
             Console.WriteLine($"   Status: {order.Status}");
             Console.WriteLine($"   DiscountAmount: {order.DiscountAmount}");
+            Console.WriteLine($"   PaymentMethod: {paymentMethod}");
             Console.WriteLine($"   Số lượng orderItems nhận được: {orderItems?.Count ?? 0}");
             
             if (orderItems != null && orderItems.Any())
@@ -164,7 +165,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             Console.WriteLine("   Đang gọi OrderService.CreateOrderAsync...");
             
             // Gọi service để tạo đơn hàng với validation đầy đủ
-            var (success, message, createdOrder) = await _orderService.CreateOrderAsync(order, orderItems ?? new List<OrderItem>());
+            var (success, message, createdOrder) = await _orderService.CreateOrderAsync(order, orderItems ?? new List<OrderItem>(), paymentMethod);
 
             Console.WriteLine($"   Kết quả: Success={success}, Message={message}");
             

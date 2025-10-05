@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangBanLe.Data;
 using QuanLyCuaHangBanLe.Services;
 using QuanLyCuaHangBanLe.Models;
+// using QuanLyCuaHangBanLe.Filters; // TODO: Uncomment sau khi build lần đầu
 
 namespace QuanLyCuaHangBanLe
 {
@@ -29,7 +30,12 @@ namespace QuanLyCuaHangBanLe
             builder.Services.AddScoped<IGenericRepository<Payment>, GenericRepository<Payment>>();
 
             // Thêm các dịch vụ vào container
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                // TODO: Uncomment sau khi build lần đầu
+                // Đăng ký SessionAuthorizationFilter cho tất cả controllers
+                // options.Filters.Add<SessionAuthorizationFilter>();
+            });
             
             // Thêm hỗ trợ session
             builder.Services.AddDistributedMemoryCache();

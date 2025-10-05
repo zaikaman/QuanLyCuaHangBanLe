@@ -13,7 +13,7 @@ namespace QuanLyCuaHangBanLe.Services
         /// <summary>
         /// Tạo đơn hàng mới với validation đầy đủ và cập nhật tồn kho
         /// </summary>
-        public async Task<(bool Success, string Message, Order? Order)> CreateOrderAsync(Order order, List<OrderItem> orderItems)
+        public async Task<(bool Success, string Message, Order? Order)> CreateOrderAsync(Order order, List<OrderItem> orderItems, string paymentMethod = "cash")
         {
             Console.WriteLine("🔵 ========== OrderService.CreateOrderAsync ==========");
             
@@ -223,16 +223,25 @@ namespace QuanLyCuaHangBanLe.Services
                 if (order.Status == "paid")
                 {
                     Console.WriteLine("   [9] Tạo Payment record...");
+                    
+                    // Validate payment method
+                    var validPaymentMethods = new[] { "cash", "card", "bank_transfer", "e_wallet" };
+                    if (!validPaymentMethods.Contains(paymentMethod.ToLower()))
+                    {
+                        Console.WriteLine($"   ⚠️ Payment method không hợp lệ: {paymentMethod}, dùng mặc định 'cash'");
+                        paymentMethod = "cash";
+                    }
+                    
                     var payment = new Payment
                     {
                         OrderId = order.OrderId,
                         Amount = finalAmount,
-                        PaymentMethod = "cash", // Mặc định là tiền mặt
+                        PaymentMethod = paymentMethod,
                         PaymentDate = DateTime.Now
                     };
                     await _context.Payments.AddAsync(payment);
                     await _context.SaveChangesAsync();
-                    Console.WriteLine($"   ✅ Payment đã lưu, Amount: {finalAmount}");
+                    Console.WriteLine($"   ✅ Payment đã lưu, Amount: {finalAmount}, Method: {paymentMethod}");
                 }
 
                 // 10. Commit transaction

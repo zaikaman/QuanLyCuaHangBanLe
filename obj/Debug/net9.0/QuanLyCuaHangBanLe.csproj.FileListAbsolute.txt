@@ -136,3 +136,10 @@ C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\co
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\89hujsi9sy-bblylg49cl.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\ff8ryeq75w-d2l7xr7qnt.gz
 C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\ank9nlfo0t-qwqqlcuea7.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\docs\dev-docs.json
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\docs\fern\apis\api\openapi.json
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\docs\fern\fern.config.json
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\docs\fern\widget\package-lock.json
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\bin\Debug\net9.0\docs\fern\widget\package.json
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\6381dj8r1a-uxvahpodne.gz
+C:\Users\ADMIN\Desktop\QuanLyCuaHangBanLe\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\k4fic2x1ma-127dd1cg22.gz
