@@ -333,6 +333,20 @@
                     }
                 </tbody>
             </table>
+
+            @if (!string.IsNullOrEmpty(Model.TransferContent))
+            {
+                <div class="transfer-content-section" style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">🔍</span>
+                        <div>
+                            <div style="font-weight: 600; color: #856404; margin-bottom: 5px;">Nội dung chuyển khoản cần kiểm tra:</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: #1a1a1a; font-family: monospace; background: #fff; padding: 8px 12px; border-radius: 4px; display: inline-block;">@Model.TransferContent</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #856404;">⚠️ Vui lòng kiểm tra nội dung chuyển khoản này trong lịch sử giao dịch ngân hàng/ví điện tử để xác nhận thanh toán.</p>
+                </div>
+            }
         </div>
     }
 

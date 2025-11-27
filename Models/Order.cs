@@ -32,6 +32,10 @@ namespace QuanLyCuaHangBanLe.Models
         [Display(Name = "Giảm giá")]
         public decimal DiscountAmount { get; set; } = 0;
 
+        [Display(Name = "Nội dung chuyển khoản")]
+        [MaxLength(100)]
+        public string? TransferContent { get; set; }
+
         // Các thuộc tính điều hướng
         public Customer? Customer { get; set; }
         public User? User { get; set; }

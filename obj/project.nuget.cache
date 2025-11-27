@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/qxfamXzsoM=",
+  "dgSpecHash": "ngbbGalhE10=",
   "success": true,
-  "projectFilePath": "d:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj",
+  "projectFilePath": "D:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\closedxml\\0.102.3\\closedxml.0.102.3.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\cloudinarydotnet\\1.27.9\\cloudinarydotnet.1.27.9.nupkg.sha512",

@@ -147,6 +147,7 @@ namespace QuanLyCuaHangBanLe.Data
                 entity.Property(e => e.Status).HasColumnName("status").HasMaxLength(20);
                 entity.Property(e => e.TotalAmount).HasColumnName("total_amount").HasColumnType("decimal(10,2)");
                 entity.Property(e => e.DiscountAmount).HasColumnName("discount_amount").HasColumnType("decimal(10,2)");
+                entity.Property(e => e.TransferContent).HasColumnName("transfer_content").HasMaxLength(100);
 
                 // Quan hệ với Customer
                 entity.HasOne(e => e.Customer)
