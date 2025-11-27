@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using DotNetEnv;
 using QuanLyCuaHangBanLe.Data;
 using QuanLyCuaHangBanLe.Services;
 using QuanLyCuaHangBanLe.Models;
@@ -11,22 +12,36 @@ namespace QuanLyCuaHangBanLe
     {
         public static void Main(string[] args)
         {
+            // Load .env file nếu tồn tại (chỉ cho local development)
+            if (File.Exists(".env"))
+            {
+                Env.Load();
+            }
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Kiểm tra môi trường Heroku
             var isHeroku = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DYNO"));
 
             // Cấu hình DbContext với MySQL
+            // Ưu tiên: JAWSDB_URL (Heroku) -> DATABASE_URL (.env) -> appsettings.json
             string? connectionString;
-            if (isHeroku)
+            var jawsDbUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            
+            if (!string.IsNullOrEmpty(jawsDbUrl))
             {
-                // Lấy JAWSDB_URL từ Heroku
-                var jawsDbUrl = Environment.GetEnvironmentVariable("JAWSDB_URL");
+                // Heroku với JawsDB
                 connectionString = ConvertMySqlUrlToConnectionString(jawsDbUrl);
+            }
+            else if (!string.IsNullOrEmpty(databaseUrl))
+            {
+                // Local với .env file (DATABASE_URL)
+                connectionString = ConvertMySqlUrlToConnectionString(databaseUrl);
             }
             else
             {
-                // Development: sử dụng connection string từ appsettings
+                // Fallback: appsettings.json
                 connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             }
             

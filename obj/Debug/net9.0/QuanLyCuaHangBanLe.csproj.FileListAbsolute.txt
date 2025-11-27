@@ -284,3 +284,5 @@ D:\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\fa0mi5olxm-{0}-mlv21k5csn-mlv2
 D:\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\fw27e1m8sg-{0}-y6pdf76udl-y6pdf76udl.gz
 D:\QuanLyCuaHangBanLe\obj\Debug\net9.0\compressed\li384tj4u9-{0}-y6pdf76udl-y6pdf76udl.gz
 D:\QuanLyCuaHangBanLe\obj\Debug\net9.0\swae.build.ex.cache
+D:\QuanLyCuaHangBanLe\bin\Debug\net9.0\DotNetEnv.dll
+D:\QuanLyCuaHangBanLe\bin\Debug\net9.0\Sprache.dll
