@@ -128,6 +128,50 @@
         margin-top: 5px;
     }
 
+    /* Image Upload Styles */
+    .image-upload-container {
+        position: relative;
+    }
+
+    .image-preview {
+        margin-top: 15px;
+        position: relative;
+        display: inline-block;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-preview img {
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .btn-remove-image {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(229, 62, 62, 0.9);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-image:hover {
+        background: #e53e3e;
+        transform: scale(1.1);
+    }
+
     @@media (max-width: 768px) {
         .form-row {
             grid-template-columns: 1fr;
@@ -144,7 +188,7 @@
 
         @await Html.PartialAsync("_AlertMessages")
 
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             
             @if (!ViewData.ModelState.IsValid)
@@ -231,6 +275,20 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">
+                    Ảnh sản phẩm
+                </label>
+                <div class="image-upload-container">
+                    <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" onchange="previewImage(this)" />
+                    <div class="form-hint">Chấp nhận: JPG, PNG, GIF, WebP. Tối đa 5MB.</div>
+                    <div id="imagePreview" class="image-preview" style="display: none;">
+                        <img id="previewImg" src="" alt="Preview" />
+                        <button type="button" class="btn-remove-image" onclick="removeImage()">✕</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="btn btn-submit">
                     ✅ Lưu sản phẩm
@@ -245,4 +303,37 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Kiểm tra kích thước file (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Kích thước file quá lớn. Tối đa 5MB.');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'inline-block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeImage() {
+            const input = document.getElementById('imageFile');
+            const preview = document.getElementById('imagePreview');
+            
+            input.value = '';
+            preview.style.display = 'none';
+        }
+    </script>
 }

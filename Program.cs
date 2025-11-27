@@ -71,6 +71,7 @@ namespace QuanLyCuaHangBanLe
 
             // Đăng ký các services
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
             builder.Services.AddScoped<IGenericRepository<Customer>, GenericRepository<Customer>>();
             builder.Services.AddScoped<IGenericRepository<Category>, GenericRepository<Category>>();

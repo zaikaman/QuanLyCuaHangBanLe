@@ -148,6 +148,32 @@
         font-weight: 700;
         color: #1a1a1a;
     }
+
+    .product-image-section {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .product-image-large {
+        max-width: 300px;
+        max-height: 300px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+    }
+
+    .no-image-placeholder {
+        width: 200px;
+        height: 150px;
+        background: #f7fafc;
+        border: 2px dashed #e2e8f0;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #a0aec0;
+        font-size: 3rem;
+    }
     
     .actions-section {
         display: flex;
@@ -235,6 +261,17 @@
         </div>
         
         <div class="card-body">
+            <div class="product-image-section">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.ProductName" class="product-image-large" />
+                }
+                else
+                {
+                    <div class="no-image-placeholder">📷</div>
+                }
+            </div>
+
             <div class="info-section">
                 <h3 class="section-title">💰 Thông Tin Giá</h3>
                 <div class="price-section">

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj": {}
+    "d:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj": {}
   },
   "projects": {
-    "D:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj": {
+    "d:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj",
+        "projectUniqueName": "d:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj",
         "projectName": "QuanLyCuaHangBanLe",
-        "projectPath": "D:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj",
+        "projectPath": "d:\\QuanLyCuaHangBanLe\\QuanLyCuaHangBanLe.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\QuanLyCuaHangBanLe\\obj\\",
+        "outputPath": "d:\\QuanLyCuaHangBanLe\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -54,6 +54,10 @@
             "ClosedXML": {
               "target": "Package",
               "version": "[0.102.3, )"
+            },
+            "CloudinaryDotNet": {
+              "target": "Package",
+              "version": "[1.27.9, )"
             },
             "DotNetEnv": {
               "target": "Package",

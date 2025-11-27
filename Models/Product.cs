@@ -33,6 +33,9 @@ namespace QuanLyCuaHangBanLe.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [Display(Name = "Ảnh sản phẩm")]
+        public string? ImageUrl { get; set; }
+
         // Navigation properties
         public Category? Category { get; set; }
         public Supplier? Supplier { get; set; }

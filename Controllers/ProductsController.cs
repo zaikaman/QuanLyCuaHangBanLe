@@ -11,15 +11,18 @@ namespace QuanLyCuaHangBanLe.Controllers
         private readonly ProductService _productService;
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IGenericRepository<Supplier> _supplierRepository;
+        private readonly ICloudinaryService _cloudinaryService;
 
         public ProductsController(
             ProductService productService,
             IGenericRepository<Category> categoryRepository,
-            IGenericRepository<Supplier> supplierRepository)
+            IGenericRepository<Supplier> supplierRepository,
+            ICloudinaryService cloudinaryService)
         {
             _productService = productService;
             _categoryRepository = categoryRepository;
             _supplierRepository = supplierRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<IActionResult> Index(int page = 1, string searchTerm = "")
@@ -87,7 +90,7 @@ namespace QuanLyCuaHangBanLe.Controllers
         [AdminOnly]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(Product product, IFormFile? imageFile)
         {
             // Kiểm tra barcode trùng lặp (nếu có barcode)
             if (!string.IsNullOrWhiteSpace(product.Barcode))
@@ -107,6 +110,22 @@ namespace QuanLyCuaHangBanLe.Controllers
             {
                 try
                 {
+                    // Upload ảnh lên Cloudinary nếu có
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        try
+                        {
+                            var imageUrl = await _cloudinaryService.UploadImageAsync(imageFile, "products");
+                            product.ImageUrl = imageUrl;
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            ModelState.AddModelError("ImageFile", ex.Message);
+                            await LoadDropdownData();
+                            return View(product);
+                        }
+                    }
+
                     product.CreatedAt = DateTime.Now;
                     await _productService.AddAsync(product);
                     TempData["Success"] = "Thêm sản phẩm thành công!";
@@ -151,7 +170,7 @@ namespace QuanLyCuaHangBanLe.Controllers
         [AdminOnly]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(int id, Product product, IFormFile? imageFile)
         {
             if (id != product.ProductId)
             {
@@ -177,6 +196,42 @@ namespace QuanLyCuaHangBanLe.Controllers
             {
                 try
                 {
+                    // Upload ảnh mới nếu có
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        try
+                        {
+                            // Lấy sản phẩm hiện tại để lấy URL ảnh cũ
+                            var currentProduct = await _productService.GetByIdAsync(id);
+                            
+                            // Xóa ảnh cũ trên Cloudinary nếu có
+                            if (!string.IsNullOrEmpty(currentProduct?.ImageUrl))
+                            {
+                                var publicId = _cloudinaryService.GetPublicIdFromUrl(currentProduct.ImageUrl);
+                                if (!string.IsNullOrEmpty(publicId))
+                                {
+                                    await _cloudinaryService.DeleteImageAsync(publicId);
+                                }
+                            }
+
+                            // Upload ảnh mới
+                            var imageUrl = await _cloudinaryService.UploadImageAsync(imageFile, "products");
+                            product.ImageUrl = imageUrl;
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            ModelState.AddModelError("ImageFile", ex.Message);
+                            await LoadDropdownData();
+                            return View(product);
+                        }
+                    }
+                    else
+                    {
+                        // Giữ nguyên ảnh cũ nếu không upload ảnh mới
+                        var currentProduct = await _productService.GetByIdAsync(id);
+                        product.ImageUrl = currentProduct?.ImageUrl;
+                    }
+
                     await _productService.UpdateAsync(product);
                     TempData["Success"] = "Cập nhật sản phẩm thành công!";
                     return RedirectToAction("Index");
@@ -242,6 +297,16 @@ namespace QuanLyCuaHangBanLe.Controllers
                 {
                     TempData["Error"] = message;
                     return RedirectToAction("Index");
+                }
+
+                // Xóa ảnh trên Cloudinary nếu có
+                if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    var publicId = _cloudinaryService.GetPublicIdFromUrl(product.ImageUrl);
+                    if (!string.IsNullOrEmpty(publicId))
+                    {
+                        await _cloudinaryService.DeleteImageAsync(publicId);
+                    }
                 }
 
                 await _productService.DeleteAsync(id);
