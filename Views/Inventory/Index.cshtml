@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Quản lý tồn kho";
+    var userRole = ViewBag.UserRole ?? "staff";
+    var isAdmin = userRole.ToString().ToLower() == "admin";
 }
 
 @Html.AntiForgeryToken()
@@ -222,9 +224,16 @@
                     </td>
                     <td>@item.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>
+                        @if (isAdmin)
+                        {
                         <button class="btn-action" onclick="updateInventory(@item.InventoryId)">
                             📦 Cập nhật
                         </button>
+                        }
+                        else
+                        {
+                        <span style="color: var(--text-tertiary); font-style: italic;">Chỉ xem</span>
+                        }
                     </td>
                 </tr>
             }

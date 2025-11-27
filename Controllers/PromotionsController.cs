@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using QuanLyCuaHangBanLe.Filters;
 using QuanLyCuaHangBanLe.Models;
 using QuanLyCuaHangBanLe.Services;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
+    [AdminOnly]
     public class PromotionsController : Controller
     {
         private readonly IGenericRepository<Promotion> _promotionRepository;

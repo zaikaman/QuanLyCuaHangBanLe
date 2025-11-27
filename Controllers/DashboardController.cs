@@ -28,6 +28,14 @@ namespace QuanLyCuaHangBanLe.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            // Kiểm tra thông báo lỗi từ session (ví dụ: khi bị từ chối quyền truy cập)
+            var errorMessage = HttpContext.Session.GetString("ErrorMessage");
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                TempData["Error"] = errorMessage;
+                HttpContext.Session.Remove("ErrorMessage");
+            }
+
             // Lấy thống kê
             var today = DateTime.Today;
             var startOfMonth = new DateTime(today.Year, today.Month, 1);

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using QuanLyCuaHangBanLe.Filters;
 using QuanLyCuaHangBanLe.Models;
 using QuanLyCuaHangBanLe.Services;
 
 namespace QuanLyCuaHangBanLe.Controllers
 {
+    [AdminOnly]
     public class SuppliersController : Controller
     {
         private readonly IGenericRepository<Supplier> _supplierRepository;

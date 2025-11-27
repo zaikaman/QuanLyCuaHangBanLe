@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using QuanLyCuaHangBanLe.Filters;
 using QuanLyCuaHangBanLe.Models;
 using QuanLyCuaHangBanLe.Services;
 using Microsoft.EntityFrameworkCore;
@@ -61,10 +62,14 @@ namespace QuanLyCuaHangBanLe.Controllers
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalItems = totalItems;
             ViewBag.SearchTerm = searchTerm;
+            
+            // Truyền thông tin role để view biết ẩn/hiện nút cập nhật
+            ViewBag.UserRole = HttpContext.Session.GetString("Role") ?? "staff";
 
             return View(inventories);
         }
 
+        [AdminOnly]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateQuantity(int inventoryId, int quantity)

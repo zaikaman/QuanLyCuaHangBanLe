@@ -397,6 +397,10 @@
     </style>
 </head>
 <body>
+    @{
+        var sidebarUserRole = Context.Session.GetString("Role") ?? "staff";
+        var isAdmin = sidebarUserRole.ToLower() == "admin";
+    }
     <div class="sidebar">
         <div class="sidebar-header">
             <h1>
@@ -445,8 +449,10 @@
                 </div>
             </div>
 
+            @if (isAdmin)
+            {
             <div class="nav-section">
-                <div class="nav-section-title">Kinh doanh</div>
+                <div class="nav-section-title">Kinh doanh <span style="font-size: 0.6rem; background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">Admin</span></div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Promotions" asp-action="Index">
                         <i class="nav-icon fas fa-gift"></i>
@@ -468,7 +474,7 @@
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">Hệ thống</div>
+                <div class="nav-section-title">Hệ thống <span style="font-size: 0.6rem; background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">Admin</span></div>
                 <div class="nav-item">
                     <a class="nav-link" asp-controller="Users" asp-action="Index">
                         <i class="nav-icon fas fa-user-cog"></i>
@@ -476,6 +482,7 @@
                     </a>
                 </div>
             </div>
+            }
         </nav>
 
         <div class="sidebar-footer">
@@ -518,13 +525,20 @@
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
+                @{
+                    var userName = Context.Session.GetString("FullName") ?? Context.Session.GetString("Username") ?? "Người dùng";
+                    var userRole = Context.Session.GetString("Role") ?? "staff";
+                    var displayRole = userRole.ToLower() == "admin" ? "Quản trị viên" : "Nhân viên";
+                    var avatarName = System.Net.WebUtility.UrlEncode(userName);
+                    var avatarColor = userRole.ToLower() == "admin" ? "667eea" : "10b981";
+                }
                 <div class="user-menu">
                     <div class="user-avatar">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=667eea&color=fff" alt="Admin" />
+                        <img src="https://ui-avatars.com/api/?name=@avatarName&background=@avatarColor&color=fff" alt="@userName" />
                     </div>
                     <div class="user-info">
-                        <div class="user-name">Admin</div>
-                        <div class="user-role">Quản trị viên</div>
+                        <div class="user-name">@userName</div>
+                        <div class="user-role">@displayRole</div>
                     </div>
                 </div>
             </div>

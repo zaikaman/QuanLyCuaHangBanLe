@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using QuanLyCuaHangBanLe.Filters;
 using QuanLyCuaHangBanLe.Models;
 using QuanLyCuaHangBanLe.Services;
 
@@ -76,12 +77,14 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(product);
         }
 
+        [AdminOnly]
         public async Task<IActionResult> Create()
         {
             await LoadDropdownData();
             return View();
         }
 
+        [AdminOnly]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
@@ -133,6 +136,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(product);
         }
 
+        [AdminOnly]
         public async Task<IActionResult> Edit(int id)
         {
             var product = await _productService.GetByIdAsync(id);
@@ -144,6 +148,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(product);
         }
 
+        [AdminOnly]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Product product)
@@ -200,6 +205,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(product);
         }
 
+        [AdminOnly]
         public async Task<IActionResult> Delete(int id)
         {
             var username = HttpContext.Session.GetString("Username");
@@ -216,6 +222,7 @@ namespace QuanLyCuaHangBanLe.Controllers
             return View(product);
         }
 
+        [AdminOnly]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

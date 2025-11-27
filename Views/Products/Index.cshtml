@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Quản lý sản phẩm";
+    var userRole = Context.Session.GetString("Role") ?? "staff";
+    var isAdmin = userRole.ToLower() == "admin";
 }
 
 @await Html.PartialAsync("_AlertMessages")
@@ -177,6 +179,18 @@
         color: #c53030 !important;
     }
 
+    .btn-view {
+        background: var(--color-primary) !important;
+        color: white !important;
+        border: 2px solid transparent !important;
+    }
+
+    .btn-view:hover {
+        background: white !important;
+        border: 2px solid var(--color-primary) !important;
+        color: var(--color-primary) !important;
+    }
+
     .empty-state {
         text-align: center;
         padding: 60px 20px;
@@ -263,10 +277,13 @@
         <h1>📦 Quản lý sản phẩm</h1>
         <p style="color: #718096; margin-top: 5px;">Quản lý thông tin sản phẩm trong cửa hàng</p>
     </div>
+    @if (isAdmin)
+    {
     <a asp-action="Create" class="btn-primary">
         <i class="fas fa-plus"></i>
         Thêm sản phẩm mới
     </a>
+    }
 </div>
 
 <div class="products-card">
@@ -310,9 +327,16 @@
                         <td>@product.Unit</td>
                         <td>
                             <div class="actions">
+                                @if (isAdmin)
+                                {
                                 <a asp-action="Edit" asp-route-id="@product.ProductId" class="btn-action btn-edit">✏️ Sửa</a>
                                 <a asp-action="Delete" asp-route-id="@product.ProductId" 
                                    class="btn-action btn-delete">🗑️ Xóa</a>
+                                }
+                                else
+                                {
+                                <a asp-action="Details" asp-route-id="@product.ProductId" class="btn-action btn-view">👁️ Xem</a>
+                                }
                             </div>
                         </td>
                     </tr>

@@ -1,13 +1,34 @@
 @{
     ViewData["Title"] = "Dashboard";
+    var currentUserName = Context.Session.GetString("FullName") ?? Context.Session.GetString("Username") ?? "bạn";
+    var currentUserRole = Context.Session.GetString("Role") ?? "staff";
+    var roleDisplay = currentUserRole.ToLower() == "admin" ? "👑 Quản trị viên" : "👨‍💼 Nhân viên";
+    var isAdmin = currentUserRole.ToLower() == "admin";
 }
 
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 
+@if (TempData["Error"] != null)
+{
+    <div style="background: linear-gradient(135deg, #fee2e2, #fecaca); border: 1px solid #f87171; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+        <i class="fas fa-exclamation-circle" style="color: #dc2626; font-size: 1.2rem;"></i>
+        <span style="color: #b91c1c; font-weight: 500;">@TempData["Error"]</span>
+    </div>
+}
+
 <div class="dashboard-header">
     <div>
-        <h1 class="dashboard-title">Chào mừng trở lại! </h1>
-        <p style="color: #94a3b8; margin-top: 8px;">Đây là tổng quan về cửa hàng của bạn</p>
+        <h1 class="dashboard-title">Chào mừng, @currentUserName! <span style="font-size: 0.7em; background: @(isAdmin ? "linear-gradient(135deg, #667eea, #764ba2)" : "linear-gradient(135deg, #10b981, #059669)"); padding: 4px 12px; border-radius: 20px; color: white; font-weight: 500;">@roleDisplay</span></h1>
+        <p style="color: #94a3b8; margin-top: 8px;">
+            @if (isAdmin)
+            {
+                <text>Bạn có toàn quyền quản lý hệ thống</text>
+            }
+            else
+            {
+                <text>Bạn có thể quản lý đơn hàng, khách hàng và xem sản phẩm, tồn kho</text>
+            }
+        </p>
     </div>
     <div class="date-range-selector">
         <button class="date-btn @(ViewBag.DateRange == "today" ? "active" : "")" data-range="today">Hôm nay</button>
