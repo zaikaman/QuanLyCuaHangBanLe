@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyCuaHangBanLe.Models
 {
@@ -33,6 +34,7 @@ namespace QuanLyCuaHangBanLe.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [Column("image_url")]
         [Display(Name = "Ảnh sản phẩm")]
         public string? ImageUrl { get; set; }
 
