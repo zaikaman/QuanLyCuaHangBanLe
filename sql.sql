@@ -1,7 +1,7 @@
 -- DATABASE STORE MANAGEMENT FULL
 
-CREATE DATABASE store_management;
-USE store_management;
+-- CREATE DATABASE store_management;
+-- USE store_management;
 
 -- Bảng người dùng
 CREATE TABLE users (
