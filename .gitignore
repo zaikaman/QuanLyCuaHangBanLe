@@ -1,3 +1,19 @@
 .env
 .github
 GEMINI.md
+
+# Build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+
+# IDE
+.idea/
+*.suo
+*.sln.docstates
+
+# User-specific files
+appsettings.Development.json
