@@ -148,7 +148,20 @@
                         </td>
                         <td><strong>@order.TotalAmount.ToString("N0")</strong></td>
                         <td>@order.OrderDate.ToString("dd.MM.yyyy")</td>
-                        <td><span class="payment-badge">Paypal</span></td>
+                        <td>
+                            @{
+                                var payment = order.Payments?.FirstOrDefault();
+                                var paymentMethod = payment?.PaymentMethod ?? "cash";
+                                var (badgeClass, badgeText) = paymentMethod switch
+                                {
+                                    "cash" => ("payment-cod", "COD"),
+                                    "bank_transfer" => ("payment-bank", "Chuyển khoản"),
+                                    "e-wallet" or "e_wallet" => ("payment-ewallet", "Ví điện tử"),
+                                    _ => ("payment-other", paymentMethod)
+                                };
+                            }
+                            <span class="payment-badge @badgeClass">@badgeText</span>
+                        </td>
                         <td>
                             @if (order.Status == "paid")
                             {

@@ -408,6 +408,31 @@
     color: var(--text-secondary);
 }
 
+/* Payment Method Variants */
+.payment-badge.payment-cod {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+.payment-badge.payment-bank {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-color: #3b82f6;
+    color: #1e40af;
+}
+
+.payment-badge.payment-ewallet {
+    background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+    border-color: #ec4899;
+    color: #be185d;
+}
+
+.payment-badge.payment-other {
+    background: var(--bg-tertiary);
+    border-color: var(--border-secondary);
+    color: var(--text-secondary);
+}
+
 /* Status Tags */
 .status-tag {
     display: inline-flex;
