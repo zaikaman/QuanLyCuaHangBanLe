@@ -77,17 +77,44 @@ namespace QuanLyCuaHangBanLe.Controllers
             // Doanh thu tháng này
             ViewBag.MonthRevenue = await _orderService.GetTotalRevenueAsync(startOfMonth, today.AddDays(1));
             
+            // Doanh thu tháng trước (để so sánh)
+            var lastMonthStart = startOfMonth.AddMonths(-1);
+            var lastMonthEnd = startOfMonth;
+            var lastMonthRevenue = await _orderService.GetTotalRevenueAsync(lastMonthStart, lastMonthEnd);
+            ViewBag.LastMonthRevenue = lastMonthRevenue;
+            
             // Doanh thu theo khoảng thời gian được chọn
             ViewBag.FilteredRevenue = await _orderService.GetTotalRevenueAsync(filterStart, filterEnd);
             
             // Tổng số đơn hàng
             ViewBag.TotalOrders = await _orderService.GetTotalOrdersAsync();
             
+            // Đơn hàng tháng này và tháng trước
+            var ordersThisMonth = await _orderService.GetTotalOrdersAsync(startOfMonth, today.AddDays(1));
+            var ordersLastMonth = await _orderService.GetTotalOrdersAsync(lastMonthStart, lastMonthEnd);
+            ViewBag.OrdersThisMonth = ordersThisMonth;
+            ViewBag.OrdersLastMonth = ordersLastMonth;
+            
             // Tổng số khách hàng
             ViewBag.TotalCustomers = await _customerRepository.CountAsync();
             
             // Tổng số sản phẩm
             ViewBag.TotalProducts = await _productService.CountAsync();
+
+            // Doanh thu theo tháng (cho biểu đồ)
+            var monthlyRevenue = await _orderService.GetMonthlyRevenueAsync(6);
+            ViewBag.MonthlyRevenueLabels = monthlyRevenue.Keys.ToList();
+            ViewBag.MonthlyRevenueData = monthlyRevenue.Values.ToList();
+
+            // Doanh thu theo danh mục (cho biểu đồ donut)
+            var categoryRevenue = await _orderService.GetRevenueByCategoryAsync();
+            ViewBag.CategoryLabels = categoryRevenue.Keys.ToList();
+            ViewBag.CategoryData = categoryRevenue.Values.ToList();
+            var totalCategoryRevenue = categoryRevenue.Values.Sum();
+            ViewBag.CategoryPercentages = categoryRevenue.ToDictionary(
+                x => x.Key,
+                x => totalCategoryRevenue > 0 ? Math.Round((x.Value / totalCategoryRevenue) * 100, 1) : 0
+            );
 
             // Đơn hàng gần đây (theo bộ lọc)
             var allOrders = await _orderService.GetAllAsync();

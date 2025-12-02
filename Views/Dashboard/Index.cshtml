@@ -84,8 +84,16 @@
             <div>
                 <div class="stat-label">Tổng đơn hàng</div>
                 <div class="stat-value">@ViewBag.TotalOrders</div>
-                <span class="stat-change positive">
-                    <i class="fas fa-arrow-up"></i> 0%
+                @{
+                    int ordersThisMonth = ViewBag.OrdersThisMonth ?? 0;
+                    int ordersLastMonth = ViewBag.OrdersLastMonth ?? 0;
+                    decimal orderChangePercent = ordersLastMonth > 0 
+                        ? Math.Round(((decimal)(ordersThisMonth - ordersLastMonth) / ordersLastMonth) * 100, 1) 
+                        : (ordersThisMonth > 0 ? 100 : 0);
+                    bool orderIsPositive = orderChangePercent >= 0;
+                }
+                <span class="stat-change @(orderIsPositive ? "positive" : "negative")">
+                    <i class="fas fa-arrow-@(orderIsPositive ? "up" : "down")"></i> @Math.Abs(orderChangePercent)%
                 </span>
             </div>
             <div class="stat-icon orange">
@@ -115,8 +123,8 @@
                         }
                     }
                 </div>
-                <span class="stat-change positive">
-                    <i class="fas fa-arrow-up"></i> 0%
+                <span class="stat-change" style="color: #64748b;">
+                    <i class="fas fa-box"></i> Tổng số
                 </span>
             </div>
             <div class="stat-icon green">
@@ -130,8 +138,8 @@
             <div>
                 <div class="stat-label">Tổng khách hàng</div>
                 <div class="stat-value">@ViewBag.TotalCustomers</div>
-                <span class="stat-change positive">
-                    <i class="fas fa-arrow-up"></i> 0%
+                <span class="stat-change" style="color: #64748b;">
+                    <i class="fas fa-users"></i> Tổng số
                 </span>
             </div>
             <div class="stat-icon blue">
@@ -170,34 +178,33 @@
             <canvas id="categoryChart"></canvas>
         </div>
         <div class="category-legend">
-            <div class="legend-item">
-                <div class="legend-label">
-                    <div class="legend-dot" style="background: #4E5FFF;"></div>
-                    <div class="legend-name">Đồ uống</div>
+            @{
+                var categoryLabels = ViewBag.CategoryLabels as List<string> ?? new List<string>();
+                var categoryPercentages = ViewBag.CategoryPercentages as Dictionary<string, decimal> ?? new Dictionary<string, decimal>();
+                var categoryColors = new[] { "#4E5FFF", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#ec4899" };
+            }
+            @for (int i = 0; i < categoryLabels.Count && i < categoryColors.Length; i++)
+            {
+                var label = categoryLabels[i];
+                var percentage = categoryPercentages.ContainsKey(label) ? categoryPercentages[label] : 0;
+                <div class="legend-item">
+                    <div class="legend-label">
+                        <div class="legend-dot" style="background: @categoryColors[i];"></div>
+                        <div class="legend-name">@label</div>
+                    </div>
+                    <div class="legend-value">@percentage%</div>
                 </div>
-                <div class="legend-value">42%</div>
-            </div>
-            <div class="legend-item">
-                <div class="legend-label">
-                    <div class="legend-dot" style="background: #f59e0b;"></div>
-                    <div class="legend-name">Thực phẩm</div>
+            }
+            @if (categoryLabels.Count == 0)
+            {
+                <div class="legend-item">
+                    <div class="legend-label">
+                        <div class="legend-dot" style="background: #e2e8f0;"></div>
+                        <div class="legend-name">Chưa có dữ liệu</div>
+                    </div>
+                    <div class="legend-value">0%</div>
                 </div>
-                <div class="legend-value">28%</div>
-            </div>
-            <div class="legend-item">
-                <div class="legend-label">
-                    <div class="legend-dot" style="background: #10b981;"></div>
-                    <div class="legend-name">Snack</div>
-                </div>
-                <div class="legend-value">18%</div>
-            </div>
-            <div class="legend-item">
-                <div class="legend-label">
-                    <div class="legend-dot" style="background: #ef4444;"></div>
-                    <div class="legend-name">Khác</div>
-                </div>
-                <div class="legend-value">12%</div>
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -346,15 +353,19 @@
             };
         }
 
+        // Dữ liệu doanh thu từ server
+        const monthlyRevenueLabels = @Html.Raw(Json.Serialize(ViewBag.MonthlyRevenueLabels ?? new List<string>()));
+        const monthlyRevenueData = @Html.Raw(Json.Serialize(ViewBag.MonthlyRevenueData ?? new List<decimal>()));
+
         // Revenue Chart
         const revenueCtx = document.getElementById('revenueChart').getContext('2d');
         const revenueChart = new Chart(revenueCtx, {
             type: 'bar',
             data: {
-                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                labels: monthlyRevenueLabels,
                 datasets: [{
                     label: 'Doanh thu',
-                    data: [45000, 52000, 48000, 65000, 70000, 85000],
+                    data: monthlyRevenueData,
                     backgroundColor: function(context) {
                         const chart = context.chart;
                         const {ctx, chartArea} = chart;
@@ -400,20 +411,20 @@
             }
         });
 
+        // Dữ liệu danh mục từ server
+        const categoryLabels = @Html.Raw(Json.Serialize(ViewBag.CategoryLabels ?? new List<string>()));
+        const categoryData = @Html.Raw(Json.Serialize(ViewBag.CategoryData ?? new List<decimal>()));
+        const categoryColors = ['#4E5FFF', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'];
+
         // Category Chart (Donut)
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         const categoryChart = new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Đồ uống', 'Thực phẩm', 'Snack', 'Khác'],
+                labels: categoryLabels.length > 0 ? categoryLabels : ['Chưa có dữ liệu'],
                 datasets: [{
-                    data: [42, 28, 18, 12],
-                    backgroundColor: [
-                        '#4E5FFF',
-                        '#f59e0b',
-                        '#10b981',
-                        '#ef4444'
-                    ],
+                    data: categoryData.length > 0 ? categoryData : [1],
+                    backgroundColor: categoryData.length > 0 ? categoryColors.slice(0, categoryLabels.length) : ['#e2e8f0'],
                     borderWidth: 0,
                     cutout: '70%'
                 }]

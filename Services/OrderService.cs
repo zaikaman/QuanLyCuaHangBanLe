@@ -361,5 +361,69 @@ namespace QuanLyCuaHangBanLe.Services
 
             return await query.CountAsync();
         }
+
+        /// <summary>
+        /// Lấy doanh thu theo từng tháng trong khoảng thời gian
+        /// </summary>
+        public async Task<Dictionary<string, decimal>> GetMonthlyRevenueAsync(int numberOfMonths = 6)
+        {
+            var endDate = DateTime.Today;
+            var startDate = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(-(numberOfMonths - 1));
+
+            var orders = await _dbSet
+                .Where(o => o.Status == "paid" && o.OrderDate >= startDate && o.OrderDate <= endDate.AddDays(1))
+                .ToListAsync();
+
+            var monthlyRevenue = new Dictionary<string, decimal>();
+
+            for (int i = 0; i < numberOfMonths; i++)
+            {
+                var monthStart = startDate.AddMonths(i);
+                var monthEnd = monthStart.AddMonths(1);
+                
+                var revenue = orders
+                    .Where(o => o.OrderDate >= monthStart && o.OrderDate < monthEnd)
+                    .Sum(o => o.TotalAmount - o.DiscountAmount);
+
+                var monthLabel = $"Tháng {monthStart.Month}";
+                monthlyRevenue[monthLabel] = revenue;
+            }
+
+            return monthlyRevenue;
+        }
+
+        /// <summary>
+        /// Lấy doanh số theo danh mục sản phẩm
+        /// </summary>
+        public async Task<Dictionary<string, decimal>> GetRevenueByCategoryAsync()
+        {
+            var orders = await _dbSet
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.Category)
+                .Where(o => o.Status == "paid")
+                .ToListAsync();
+
+            var categoryRevenue = new Dictionary<string, decimal>();
+
+            foreach (var order in orders)
+            {
+                if (order.OrderItems != null)
+                {
+                    foreach (var item in order.OrderItems)
+                    {
+                        var categoryName = item.Product?.Category?.CategoryName ?? "Khác";
+                        var itemRevenue = item.Subtotal;
+
+                        if (categoryRevenue.ContainsKey(categoryName))
+                            categoryRevenue[categoryName] += itemRevenue;
+                        else
+                            categoryRevenue[categoryName] = itemRevenue;
+                    }
+                }
+            }
+
+            return categoryRevenue;
+        }
     }
 }
